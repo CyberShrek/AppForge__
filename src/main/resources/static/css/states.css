@@ -1,0 +1,35 @@
+.unframed {
+    border: none;
+    background: transparent;
+}
+
+.wrong { outline: 3px solid var(--negative-color) }
+
+.error, .error * { 
+    color: white;
+    background: var(--negative-color)
+}
+
+.unavailable {
+    pointer-events: none;
+    user-select: none;
+    filter: grayscale(0.5) opacity(0.5);
+}
+
+.collapsed, .collapsed * {
+    user-select: none;
+    pointer-events: none;
+    height: 0;
+    padding: 0;
+    font-size: 0;
+    border-width: 0;
+    opacity: 0;
+
+}
+.collapsed input{
+    display: none;
+}
+
+.none{
+    display: none;
+}

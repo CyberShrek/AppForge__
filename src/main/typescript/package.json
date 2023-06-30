@@ -1,0 +1,14 @@
+{
+  "name": "appforge",
+  "version": "1.0.0",
+  "location": {
+    "dir": "dist"
+  },
+  "scripts": {
+    "clean": "rm -rf ../resources/static/js",
+    "build": "npm run clean && tsc --outDir ../resources/static/js"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}

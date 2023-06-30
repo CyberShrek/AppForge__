@@ -1,0 +1,66 @@
+#params-form {
+    display: flex;
+    justify-self: start;
+    align-items: start;
+    flex-wrap: wrap;
+}
+
+#params-form > field {
+    display: flex;
+    justify-content: start;
+    align-content: start;
+    justify-items: start;
+    align-items: start;
+    flex-direction: column;
+}
+#params-form > field{
+    margin-right: var(--indent);
+    padding-right: var(--indent);
+}
+
+#params-form > field > p {
+    width: 100%;
+    text-align: center;
+    font-size: medium;
+    font-weight: bold;
+    padding-bottom: var(--indent); 
+    margin:  var(--indent) 0;
+    margin-top: calc(2 * var(--indent));
+}
+
+#params-form > field > div {
+    display: flex;
+    flex-direction: column;    
+}
+
+#params-form > field > div > :is(input, button, period, multi-select) {
+    min-width: 230px;
+}
+#params-form > field > div > :is(input, button, period, multi-select) {
+    margin-bottom: var(--indent);
+}
+#params-form > field > div  input[type=checkbox] {
+    margin-bottom: var(--indent);
+}
+
+#params-form > field > div select {
+    display: flex;
+    margin-left: 25px;
+    background: white;
+    border: 0;
+    transform: translateY(-5px);
+}
+
+#params-submit{
+    z-index: 1;
+    display: block;
+    margin: var(--indent);
+    margin-left: auto;
+    align-self: end;
+    padding: var(--indent);
+    font-size: x-large;
+    color: white;
+    background: var(--primary-color);
+    border: 0;
+    box-shadow: var(--shadow);
+}
