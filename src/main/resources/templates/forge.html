@@ -2,15 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${config.titleName}"></title>
+    <link rel="stylesheet" th:href="@{http://localhost:8080/appforge/css/root.css}">
 </head>
 <body>
+    <div th:if="${config.mainForm}">
+        main form
+    </div>
 
-<th:block th:each="report : ${config.reports}">
-    <div th:text="${report.title}"></div>
-</th:block>
+    <th:block th:each="report : ${config.reports}">
+        <div th:text="${report.title}"></div>
+    </th:block>
 </body>
 
 <th:block>
-    <script type="text/javascript" th:src="@{http://localhost:8080/appforge/js/indicator.js}"></script>
+
 </th:block>
 </html>
