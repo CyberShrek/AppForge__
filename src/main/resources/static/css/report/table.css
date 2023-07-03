@@ -1,46 +1,3 @@
-.report {
-    display: flex;
-    flex-direction: column;
-    color: black;
-    background: white;
-    height: min-content;
-    overflow-x: hidden;
-    border-radius: calc(var(--border-radius) + 2px);
-    border: var(--light-border);
-    box-shadow: var(--shadow);
-}
-
-.report.windowed{
-    width: 95vw;
-    max-height: 95vh;
-}
-.report .head {
-    display:flex;
-    align-items: center;
-    padding: var(--indent)
-}
-.report head p {
-    font-size: larger;
-    margin: 0 var(--indent);
-}
-
-.report .buttons{
-    margin-left: auto;
-}
-
-.report button{
-    height: 35px;
-    width: 35px;
-    border: 0;
-}
-
-.report info.link{
-    white-space: nowrap;
-    font-weight: normal;
-    margin: var(--indent);
-    margin-top: 0;
-}
-
 .report table-container {
     overflow-y: hidden;
     margin-bottom: var(--border-radius);
@@ -94,7 +51,7 @@
 
 .report tr td.group{
     vertical-align: top;
-} 
+}
 
 .report tr.total td.group button{
     padding: 0;
@@ -106,7 +63,7 @@
 
 .report td {
     color: var(--primary-color);
-    padding: var(--indent) calc(var(--indent)/2); 
+    padding: var(--indent) calc(var(--indent)/2);
     text-align: center;
     transition: all 0.3s;
     background-color: #fff;
@@ -145,43 +102,13 @@
 .report table input[type=text]{
     padding: calc(var(--indent)/2);
     min-width: auto;
-/*     margin-left: auto; */
+    /*     margin-left: auto; */
     justify-self: end;
     width: 22px;
     color: var(--primary-color);
 }
 .report table input[type=text]:not(:placeholder-shown){
     width: 100px;
-}
-
-/* Chart.js */
-.report charts-block {
-    display: grid;
-    
-    justify-items: center;
-    
-    padding: var(--indent);
-    
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(2, 48vh);
-    
-    gap: var(--indent);
-    
-    flex-shrink: 1;
-    flex-grow: 1;
-    
-    background: inherit;
-    border-top: var(--light-border);
-}
-.report chart{
-    display: inline-flex;
-    justify-content: center;
-    min-height: auto;
-    min-width: auto;
-    width: 100%;
-    height: 100%;
-    border: var(--light-border);
-    border-radius: var(--border-radius);
 }
 
 .report td img{

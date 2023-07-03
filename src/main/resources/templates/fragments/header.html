@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="eng" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+  <meta charset="UTF-8" />
+</head>
+<body>
+<header th:fragment="header(appName, sourcesResolver)">
+    <p th:text="${appName}"></p>
+    <button title="Сброс"
+            class="reset">
+      <img th:src="${sourcesResolver.nameToSvg('reset')}" alt="">
+    </button>
+    <button title="Информация о приложении"
+            class="info">
+      <img th:src="${sourcesResolver.nameToSvg('info')}" alt="">
+    </button>
+    <button title="Руководство пользователя"
+            class="help">
+      <img th:src="${sourcesResolver.nameToSvg('help')}" alt="">
+    </button>
+</header>
+</body>
+</html>

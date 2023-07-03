@@ -10,5 +10,9 @@
   },
   "devDependencies": {
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@types/node": "^20.3.3",
+    "wretch": "^2.6.0"
   }
 }
