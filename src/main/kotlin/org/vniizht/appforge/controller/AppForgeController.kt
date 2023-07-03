@@ -1,6 +1,5 @@
 package org.vniizht.appforge.controller
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -11,14 +10,18 @@ import org.vniizht.appforge.entity.Config
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class AppForgeController(@Autowired val request: HttpServletRequest) {
+class AppForgeController(private val request: HttpServletRequest) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody config: Config): ModelAndView {
         val forgedApp = ModelAndView()
+        val forgeUrl = with(request){ "$scheme://$serverName:$serverPort$contextPath" }
         forgedApp.viewName = "forge"
         forgedApp.addObject(config)
-        forgedApp.addObject(SourcesResolver(config))
+        forgedApp.addObject(forgeUrl)
+        forgedApp.addObject("stylesUrl", "$forgeUrl/css")
+        forgedApp.addObject("imagesUrl", "$forgeUrl/img")
+        forgedApp.addObject("scriptsUrl", "$forgeUrl/js")
         forgedAppsCache[config.appName] = forgedApp
         return forgedApp
     }
@@ -56,29 +59,4 @@ class AppForgeController(@Autowired val request: HttpServletRequest) {
             )
         )
     )
-
-    private inner class SourcesResolver(config: Config){
-
-        val forgeUrl = with(request){ "$scheme://$serverName:$serverPort$contextPath" }
-        val cssSources: Set<String> = mutableSetOf(nameToCss("root"))
-        val jsSources:  Set<String> = mutableSetOf(nameToJs("index"))
-
-        fun nameToCss(name: String) = "${forgeUrl}/css/$name.css"
-        fun nameToSvg(name: String) = "${forgeUrl}/img/$name.svg"
-        fun nameToJs(name: String) = "${forgeUrl}/js/$name.js"
-
-        init {
-            fun String.addAsCss() = (cssSources as MutableSet).add(nameToCss(this))
-            fun String.addAsJs() = (jsSources as MutableSet).add(nameToJs(this))
-
-            config.apply {
-                mainForm?.apply {
-                    "main-form".addAsCss()
-                }
-                reports?.apply {
-                    "report/root".addAsCss()
-                }
-            }
-        }
-    }
 }

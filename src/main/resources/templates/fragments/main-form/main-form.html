@@ -1,0 +1,6 @@
+<form th:fragment="index(config, stylesUrl, scriptsUrl)" id="main-form">
+  хуёвая форма
+
+  <link rel="stylesheet" th:href="${stylesUrl+'/main-form.css'}">
+  <script th:src="${scriptsUrl+'/main-form.js'}"></script>
+</form>

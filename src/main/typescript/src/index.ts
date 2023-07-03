@@ -1,1 +1,1 @@
-const debug = "123"
+console.log("mainForm: " + mainForm)
