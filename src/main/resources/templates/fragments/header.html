@@ -1,4 +1,11 @@
-<header th:fragment="header(appName, imagesUrl)">
+<header th:fragment="header(appGroup, appName, imagesUrl, scriptsUrl)" id="header">
+    <th:block th:if="${appGroup} != null">
+        <!--/*@thymesVar id="appGroup" type="org.vniizht.appforge.entity.Config.AppGroup"*/-->
+        <href th:text=""></href>
+        <a th:href="${appGroup.url}"
+           th:text="${appGroup.name}"></a>
+        |
+    </th:block>
     <p th:text="${appName}"></p>
     <button title="Сброс"
             class="reset">
@@ -12,4 +19,6 @@
             class="help">
       <img th:src="${imagesUrl+'/help.svg'}" alt="">
     </button>
+
+    <script th:src="${scriptsUrl+'/header.js'}"></script>
 </header>

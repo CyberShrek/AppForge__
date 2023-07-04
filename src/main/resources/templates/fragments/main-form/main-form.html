@@ -1,5 +1,31 @@
 <form th:fragment="index(config, stylesUrl, scriptsUrl)" id="main-form">
-  хуёвая форма
+  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entity.Config.MainForm"*/-->
+  <th:block th:each="sectionItem : ${config.sectionsMap}"
+            th:with="name = ${sectionItem.key}, section = ${sectionItem.value}">
+    <div th:class="${section.type.toLowerCase()}+' section'" th:name="${name}">
+      <p th:text="${section.title}"></p>
+      <th:block th:switch="${section.type}">
+        <div th:case="PERIOD">
+          <div class="period"></div>
+          <link rel="stylesheet" th:href="${stylesUrl+'/easepick.css'}">
+          <script th:src="${scriptsUrl+'/period.js'}"></script>
+        </div>
+        <div th:case="CARRIER">
+          <div class="carriers multiselect"></div>
+        </div>
+        <div th:case="WAYPOINT">
+          <div class="countries multiselect"></div>
+          <div class="roads multiselect"></div>
+          <div class="stations multiselect"></div>
+        </div>
+        <div th:case="SHIPMENT">
+          <div class="shipment-type multiselect"></div>
+          <div class="transfer-type multiselect"></div>
+          <div class="extras multiselect"></div>
+        </div>
+      </th:block>
+    </div>
+  </th:block>
 
   <link rel="stylesheet" th:href="${stylesUrl+'/main-form.css'}">
   <script th:src="${scriptsUrl+'/main-form.js'}"></script>

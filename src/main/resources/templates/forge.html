@@ -5,22 +5,24 @@
     <link rel="stylesheet" th:href="${stylesUrl+'/root.css'}">
 </head>
 <body>
-    <header th:replace="fragments/header.html :: header(
-            appName = ${config.appName},
-            imagesUrl = ${imagesUrl})">
-    </header>
-
-    <form th:if="${config.mainForm}"
-          th:replace="fragments/main-form/main-form.html :: index(
-          config = ${config.mainForm},
-          stylesUrl = ${stylesUrl+'/main-form'},
-          scriptsUrl = ${scriptsUrl+'/main-form'}
-          )">
-    </form>
-
-    <th:block th:each="report : ${config.reports}">
-        <div th:text="${report.title}"></div>
+    <th:block th:insert="fragments/header :: header(
+                appGroup = ${config.appGroup},
+                appName = ${config.appName},
+                imagesUrl = ${imagesUrl},
+                scriptsUrl = ${scriptsUrl})">
     </th:block>
+
+    <th:block th:if="${config.mainForm != null}">
+        <th:block th:insert="fragments/main-form/main-form.html :: index(
+                config = ${config.mainForm},
+                stylesUrl = ${stylesUrl+'/main-form'},
+                scriptsUrl = ${scriptsUrl+'/main-form'})">
+        </th:block>
+    </th:block>
+
+<!--    <th:block th:each="report : ${config.reports}">-->
+<!--        <div th:text="${report.title}"></div>-->
+<!--    </th:block>-->
 </body>
 <script th:src="${scriptsUrl+'/index.js'}"></script>
 </html>

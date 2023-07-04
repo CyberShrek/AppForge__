@@ -1,0 +1,1 @@
+const periodSection = document.getElementById("header") as HTMLFormElement

@@ -2,39 +2,45 @@ package org.vniizht.appforge.entity
 
 data class Config(
     val appName: String,
+    val appGroup: AppGroup? = null,
     val titleName: String = appName,
     val mainForm: MainForm? = null,
     val reports: Set<Report>? = null
 ){
+    data class AppGroup(
+        val name: String,
+        val url: String
+    )
     data class MainForm(
-        val period: Period? = null,
-        val carrier: Carrier? = null,
-        val shipmentType: ShipmentType? = null,
-        val departure: Waypoint? = null,
-        val destination: Waypoint? = null,
+        // Key is section name
+        val sectionsMap: Map<String, Section>
     ) {
+        open class Section(
+            val type: String,
+            open val title: String? = null
+        )
         data class Period(
-            val title: String? = null,
+            override val title: String? = null,
             val maxDays: Int? = null,
             val addComparison: Boolean = false,
             val addSeparation: Boolean = false
-        )
+        ): Section("PERIOD", title)
         data class Carrier(
-            val title: String? = null,
+            override val title: String? = null,
             val maxCarriers: Int? = null
-        )
+        ): Section("CARRIER", title)
+        data class Waypoint(
+            override val title: String? = null
+        ): Section("WAYPOINT", title)
         // Bullshit
-        data class ShipmentType(
-            val title: String? = null,
+        data class Shipment(
+            override val title: String? = null,
             val types: Set<Any>,
             val transferTypes: Set<Any>,
             val carriageTypes: Set<Any>,
             val transferAdditional: Set<Any>,
             val carriageAdditional: Set<Any>
-        )
-        data class Waypoint(
-            val title: String? = null
-        )
+        ): Section("SHIPMENT", title)
     }
 
     data class Report(

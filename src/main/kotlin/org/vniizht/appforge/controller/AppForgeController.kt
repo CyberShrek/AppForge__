@@ -16,16 +16,15 @@ class AppForgeController(private val request: HttpServletRequest) {
     fun createApp(@RequestBody config: Config): ModelAndView {
         val forgedApp = ModelAndView()
         val forgeUrl = with(request){ "$scheme://$serverName:$serverPort$contextPath" }
-        forgedApp.viewName = "forge"
-        forgedApp.addObject(config)
         forgedApp.addObject(forgeUrl)
         forgedApp.addObject("stylesUrl", "$forgeUrl/css")
         forgedApp.addObject("imagesUrl", "$forgeUrl/img")
         forgedApp.addObject("scriptsUrl", "$forgeUrl/js")
+        forgedApp.viewName = "forge"
+        forgedApp.addObject(config)
         forgedAppsCache[config.appName] = forgedApp
         return forgedApp
     }
-
     @GetMapping("/forged/{appName}")
     fun readApp(@PathVariable appName: String) = forgedAppsCache[appName].apply {
         if (this == null)
@@ -50,13 +49,15 @@ class AppForgeController(private val request: HttpServletRequest) {
             appName = "debug",
             titleName = "AppForgeDebug",
             mainForm = Config.MainForm(
-                period = Config.MainForm.Period(
-
-                )
+                mapOf("period" to Config.MainForm.Period(
+                    title = "Период"
+                ))
             ),
             reports = setOf(
                 Config.Report(title = "Debug")
             )
-        )
+        ).also {
+            println(it.toString())
+        }
     )
 }
