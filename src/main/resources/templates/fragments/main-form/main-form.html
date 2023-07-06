@@ -1,4 +1,4 @@
-<form th:fragment="index(config, stylesUrl, scriptsUrl)" id="main-form">
+<form th:fragment="main-form(config)" id="main-form">
     <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainForm"*/-->
   <th:block th:each="sectionItem : ${config.sectionsMap}"
             th:with="name = ${sectionItem.key}, section = ${sectionItem.value}">
@@ -7,8 +7,6 @@
       <th:block th:switch="${section.type}">
         <div th:case="PERIOD">
           <div class="period"></div>
-          <link rel="stylesheet" th:href="${stylesUrl+'/easepick.css'}">
-          <script th:src="${scriptsUrl+'/period.js'}"></script>
         </div>
         <div th:case="CARRIER">
           <div class="carriers multiselect"></div>
@@ -26,6 +24,4 @@
       </th:block>
     </div>
   </th:block>
-
-  <link rel="stylesheet" th:href="${stylesUrl+'/main-form.css'}">
 </form>

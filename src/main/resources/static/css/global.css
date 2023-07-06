@@ -35,13 +35,6 @@ body {
 	background-color: #E9F3FF;
 }
 
-div {
-	padding: var(--indent);
-	background: white;
-	border-radius: var(--border-radius);
-	border: var(--border);
-}
-
 *::-webkit-scrollbar {
   width: calc(var(--indent)/2);
 }

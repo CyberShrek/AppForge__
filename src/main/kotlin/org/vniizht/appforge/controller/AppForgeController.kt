@@ -14,17 +14,13 @@ class AppForgeController(private val request: HttpServletRequest) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody config: AppConfig): ModelAndView {
-        val forgedApp = ModelAndView()
-        val forgeUrl = with(request){ "$scheme://$serverName:$serverPort$contextPath" }
-        forgedApp.addObject("forgeUrl", forgeUrl)
-        forgedApp.addObject("stylesUrl", "$forgeUrl/css")
-        forgedApp.addObject("imagesUrl", "$forgeUrl/img")
-        forgedApp.addObject("scriptsUrl", "$forgeUrl/js")
-        forgedApp.viewName = "forge"
+        val forgedApp = ModelAndView("forge")
+//        forgedApp.addObject("forgeUrl", with(request){ "$scheme://$serverName:$serverPort$contextPath" })
         forgedApp.addObject("config", config)
         forgedAppsCache[config.appName] = forgedApp
         return forgedApp
     }
+
     @GetMapping("/forged/{appName}")
     fun readApp(@PathVariable appName: String) = forgedAppsCache[appName].apply {
         if (this == null)

@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 src/main/typescript/node_modules
+src/main/resources/static/js/build
 
 ### STS ###
 .apt_generated

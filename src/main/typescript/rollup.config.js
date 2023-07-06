@@ -11,14 +11,15 @@ export default  {
             format: "es",
             sourcemap: true,
             manualChunks:{
-                wretch: ["wretch"]
+                wretch: ["wretch"],
+                sweetalert2: ["sweetalert2"]
             }
         }
     ],
     plugins: [
         clean(),
         resolveNodeJs({
-            browser: true,
+            mainFields: [ "module", "browser", "main" ],
             dedupe: ['s']
         }),
         applyTypescript(),

@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:attr="forge = ${forgeUrl}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="${config.titleName}"></title>
-    <link rel="stylesheet" th:href="${stylesUrl+'/root.css'}">
 </head>
 <body>
     <th:block th:insert="fragments/header :: header(
                 appGroup = ${config.appGroup},
-                appName = ${config.appName},
-                imagesUrl = ${imagesUrl},
-                scriptsUrl = ${scriptsUrl}+'/build')">
+                appName = ${config.appName}
+                )">
     </th:block>
 
     <th:block th:if="${config.mainForm != null}">
-        <th:block th:insert="fragments/main-form/main-form.html :: index(
-                config = ${config.mainForm},
-                stylesUrl = ${stylesUrl+'/main-form'},
-                scriptsUrl = ${scriptsUrl+'/build/main-form'})">
+        <th:block th:insert="fragments/main-form/main-form.html :: main-form(
+                config = ${config.mainForm}
+                )">
         </th:block>
     </th:block>
 
@@ -30,5 +27,5 @@
         </div>
     </th:block>
 </body>
-<script type="module" th:src="${scriptsUrl+'/build/index.js'}"></script>
+<script type="module" src="./js/build/index.js"></script>
 </html>
