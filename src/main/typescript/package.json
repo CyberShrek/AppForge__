@@ -2,14 +2,16 @@
   "name": "appforge",
   "version": "1.0.0",
   "scripts": {
-    "clean": "rm -rf ../resources/static/js",
-    "build": "tsc --outDir ../resources/static/js"
+    "clean": "rm -rf ../resources/static/js/build",
+    "build": "tsc --outDir ../resources/static/js/build"
   },
   "devDependencies": {
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.2",
+    "wretch": "^2.6.0",
+    "chart.js": "^4.3.0"
   },
   "dependencies": {
-    "@types/node": "^20.3.3",
-    "wretch": "^2.6.0"
+    "@types/node": "^20.3.3"
+
   }
 }

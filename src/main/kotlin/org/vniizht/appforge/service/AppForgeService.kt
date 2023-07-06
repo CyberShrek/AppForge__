@@ -1,12 +1,12 @@
 package org.vniizht.appforge.service
 
 import org.springframework.stereotype.Service
-import org.vniizht.appforge.entity.Config
+import org.vniizht.appforge.entity.AppConfig
 
 @Service
 class AppForgeService {
 
-    fun forge(config: Config){
+    fun forge(config: AppConfig){
         
     }
 }

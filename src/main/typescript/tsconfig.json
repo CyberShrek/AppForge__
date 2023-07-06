@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
-    "outDir": "../resources/static/js"
+    "outDir": "../resources/static/js/build",
+    "moduleResolution": "node",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./custom_typings"
+    ]
   },
   "include": [
     "src/**/*.ts"

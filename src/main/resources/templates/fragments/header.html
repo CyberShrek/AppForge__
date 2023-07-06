@@ -1,6 +1,6 @@
 <header th:fragment="header(appGroup, appName, imagesUrl, scriptsUrl)" id="header">
     <th:block th:if="${appGroup} != null">
-        <!--/*@thymesVar id="appGroup" type="org.vniizht.appforge.entity.Config.AppGroup"*/-->
+        <!--/*@thymesVar id="appGroup" type="org.vniizht.appforge.entity.AppConfig.AppGroup"*/-->
         <href th:text=""></href>
         <a th:href="${appGroup.url}"
            th:text="${appGroup.name}"></a>
@@ -20,5 +20,5 @@
       <img th:src="${imagesUrl+'/help.svg'}" alt="">
     </button>
 
-    <script th:src="${scriptsUrl+'/header.js'}"></script>
+    <script type="module" th:src="${scriptsUrl+'/header.js'}"></script>
 </header>

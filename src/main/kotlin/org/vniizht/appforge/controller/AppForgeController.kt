@@ -6,22 +6,22 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.data.forgedAppsCache
-import org.vniizht.appforge.entity.Config
+import org.vniizht.appforge.entity.AppConfig
 import javax.servlet.http.HttpServletRequest
 
 @RestController
 class AppForgeController(private val request: HttpServletRequest) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createApp(@RequestBody config: Config): ModelAndView {
+    fun createApp(@RequestBody config: AppConfig): ModelAndView {
         val forgedApp = ModelAndView()
         val forgeUrl = with(request){ "$scheme://$serverName:$serverPort$contextPath" }
-        forgedApp.addObject(forgeUrl)
+        forgedApp.addObject("forgeUrl", forgeUrl)
         forgedApp.addObject("stylesUrl", "$forgeUrl/css")
         forgedApp.addObject("imagesUrl", "$forgeUrl/img")
         forgedApp.addObject("scriptsUrl", "$forgeUrl/js")
         forgedApp.viewName = "forge"
-        forgedApp.addObject(config)
+        forgedApp.addObject("config", config)
         forgedAppsCache[config.appName] = forgedApp
         return forgedApp
     }
@@ -33,7 +33,7 @@ class AppForgeController(private val request: HttpServletRequest) {
 
     @PatchMapping("/forged/{appName}")
     fun updateApp(@PathVariable appName: String,
-                  @RequestBody config: Config): ModelAndView {
+                  @RequestBody config: AppConfig): ModelAndView {
         deleteApp(appName)
         return createApp(config)
     }
@@ -45,16 +45,16 @@ class AppForgeController(private val request: HttpServletRequest) {
 
     @GetMapping("/debug")
     fun debug() = createApp(
-        Config(
+        AppConfig(
             appName = "debug",
             titleName = "AppForgeDebug",
-            mainForm = Config.MainForm(
-                mapOf("period" to Config.MainForm.Period(
+            mainForm = AppConfig.MainForm(
+                mapOf("period" to AppConfig.MainForm.Period(
                     title = "Период"
                 ))
             ),
-            reports = setOf(
-                Config.Report(title = "Debug")
+            reportSlots = mapOf(
+                "debug" to AppConfig.ReportSlot(title = "Debug")
             )
         ).also {
             println(it.toString())

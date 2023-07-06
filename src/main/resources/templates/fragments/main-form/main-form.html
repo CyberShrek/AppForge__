@@ -1,5 +1,5 @@
 <form th:fragment="index(config, stylesUrl, scriptsUrl)" id="main-form">
-  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entity.Config.MainForm"*/-->
+  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entity.AppConfig.MainForm"*/-->
   <th:block th:each="sectionItem : ${config.sectionsMap}"
             th:with="name = ${sectionItem.key}, section = ${sectionItem.value}">
     <div th:class="${section.type.toLowerCase()}+' section'" th:name="${name}">
