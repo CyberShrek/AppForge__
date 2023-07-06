@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.data.forgedAppsCache
-import org.vniizht.appforge.entity.AppConfig
+import org.vniizht.appforge.entities.AppConfig
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -56,8 +56,6 @@ class AppForgeController(private val request: HttpServletRequest) {
             reportSlots = mapOf(
                 "debug" to AppConfig.ReportSlot(title = "Debug")
             )
-        ).also {
-            println(it.toString())
-        }
+        )
     )
 }

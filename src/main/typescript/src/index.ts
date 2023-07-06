@@ -1,3 +1,4 @@
-import wretch from "wretch"
 
-export const appForgeUrl = document.querySelector("html")!.getAttribute("forge")!.valueOf()
+// Modules resolving
+if(document.getElementById("header") !== null)
+    import("./core/header")

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../../../../../../typescript/src/index.ts"],"sourcesContent":["\n// Modules resolving\nif(document.getElementById(\"header\") !== null)\n    import(\"./core/header\")\n"],"names":["document","getElementById","import"],"mappings":"AAEyC,OAAtCA,SAASC,eAAe,WACvBC,OAAO"}

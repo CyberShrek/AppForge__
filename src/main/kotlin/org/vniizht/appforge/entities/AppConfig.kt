@@ -1,4 +1,4 @@
-package org.vniizht.appforge.entity
+package org.vniizht.appforge.entities
 
 data class AppConfig(
     val appName: String,

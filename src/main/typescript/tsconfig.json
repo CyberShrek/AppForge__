@@ -3,6 +3,7 @@
     "target": "es6",
     "outDir": "../resources/static/js/build",
     "moduleResolution": "node",
+    "module": "esnext",
     "typeRoots": [
       "./node_modules/@types",
       "./custom_typings"

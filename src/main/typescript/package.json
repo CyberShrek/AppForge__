@@ -1,17 +1,21 @@
 {
   "name": "appforge",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "clean": "rm -rf ../resources/static/js/build",
-    "build": "tsc --outDir ../resources/static/js/build"
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
   "devDependencies": {
+    "@rollup-extras/plugin-clean": "^1.3.6",
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "@rollup/plugin-typescript": "^11.1.2",
+    "@types/node": "^20.3.3",
+    "chart.js": "^4.3.0",
+    "rollup": "^3.26.2",
     "typescript": "^4.8.2",
-    "wretch": "^2.6.0",
-    "chart.js": "^4.3.0"
-  },
-  "dependencies": {
-    "@types/node": "^20.3.3"
-
+    "wretch": "^2.6.0"
   }
 }

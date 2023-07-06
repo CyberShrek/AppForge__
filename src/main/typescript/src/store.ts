@@ -1,0 +1,1 @@
+export const getAppForgeUrl = () => document.querySelector("html")!.getAttribute("forge")!.valueOf()

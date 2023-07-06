@@ -3,7 +3,6 @@
 <head>
     <title th:text="${config.titleName}"></title>
     <link rel="stylesheet" th:href="${stylesUrl+'/root.css'}">
-    <script type="module" th:src="${scriptsUrl+'/lib/wretch.min.js'}"></script>
 </head>
 <body>
     <th:block th:insert="fragments/header :: header(
@@ -31,5 +30,5 @@
         </div>
     </th:block>
 </body>
-<script th:src="${scriptsUrl+'/build/index.js'}"></script>
+<script type="module" th:src="${scriptsUrl+'/build/index.js'}"></script>
 </html>
