@@ -3,7 +3,7 @@
 <head>
     <title th:text="${config.titleName}"></title>
 </head>
-<body>
+<body hidden="until-found">
     <th:block th:insert="fragments/header :: header(
                 appGroup = ${config.appGroup},
                 appName = ${config.appName}

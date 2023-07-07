@@ -35,6 +35,10 @@ body {
 	background-color: #E9F3FF;
 }
 
+li{
+	text-align: left;
+}
+
 *::-webkit-scrollbar {
   width: calc(var(--indent)/2);
 }

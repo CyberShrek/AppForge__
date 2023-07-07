@@ -1,0 +1,53 @@
+/* COMMONS */
+input, button{
+    padding: var(--indent);
+    color: var(--primary-color);
+    border-radius: var(--border-radius);
+    border: var(--border);
+}
+
+input[type=date],
+input[type=text]{cursor: text;}
+
+input[type=text]{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 100px;
+}input[type=text]:focus{
+    outline: 0;
+}
+
+/* BUTTONS */
+:is(option, button){ cursor: pointer; }
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+button img{
+    height: 100%;
+    width: 100%;
+}
+button:is(.affirmative, .negative){
+    color: white;
+}
+button.frameless{
+  padding: 0;
+  border: 0;
+  background: 0;
+}
+button.affirmative{
+    background: var(--primary-color);
+}
+button.negative{
+    background: var(--negative-color);
+    border-color: var(--negative-color);
+}
+:is(option, button):hover  {
+    filter: contrast(85%)
+}
+:is(option, button):active {
+    filter: contrast(60%)
+}

@@ -24,5 +24,12 @@ export default  {
         }),
         applyTypescript(),
         applyTerser()
-    ]
+    ],
+    onwarn: (warning, handle) => {
+        // Ignore node_modules warnings
+        if(warning.loc?.file?.includes("/node_modules/") || warning.ids?.toString()?.includes("/node_modules/") )
+            return
+
+        handle(warning.message)
+    }
 }

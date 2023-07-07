@@ -1,1 +1,2 @@
-export const getAppForgeUrl = () => document.querySelector("html")!.getAttribute("forge")!.valueOf()
+export let mouseEvent: MouseEvent
+document.addEventListener("mousemove", event => mouseEvent = event)
