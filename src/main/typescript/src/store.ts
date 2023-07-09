@@ -1,6 +1,6 @@
 // All necessaries are stored here
 
-import {fetchAppInfo} from "./api/appInfo"
+import {fetchAppInfo} from "./utils/api/appInfo"
 
 export let appInfo = {}
 fetchAppInfo().then(gottenAppInfo => appInfo = gottenAppInfo)

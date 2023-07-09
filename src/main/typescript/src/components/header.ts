@@ -1,17 +1,17 @@
-import {resolveCSS} from "../resolvers/resolver"
+import {resolveCSS} from "../utils/resolver"
 import {popupList, popupTimeoutAction} from "../utils/modal"
 import {fetchAppInfo} from "../utils/api/appInfo"
 import {Component} from "./core/Component"
 
-export class Header extends Component{
-
-    constructor() {
-        super(document.getElementById("header")!)
-        this.listen("", () => {
-
-        })
-    }
-}
+// export class Header extends Component{
+//
+//     constructor() {
+//         super(document.getElementById("header")!)
+//         this.listen("", () => {
+//
+//         })
+//     }
+// }
 
 export function resolveHeader(){
     resolveCSS("header")
