@@ -1,7 +1,6 @@
 import {buildLocatedElement} from "../../utils/elementBuilder"
 
-// Allow to listen and handle component updates
-const updateEvent = new Event("update")
+const updatingEvent = new Event("update")
 
 export abstract class Component {
     private readonly core: HTMLElement
@@ -10,7 +9,7 @@ export abstract class Component {
         core: HTMLElement|LocatedElementOptions
     ) {
         this.core = core instanceof HTMLElement ? core : buildLocatedElement(core.location, core)
-        this.core.addEventListener(updateEvent.type, () => this.update())
+        this.core.addEventListener(updatingEvent.type, () => this.update())
         this.onMount(this.core)
     }
 
