@@ -1,8 +1,8 @@
 import wretch from "wretch"
 import {popupHttpResourceError} from "../modal"
-import {AppInfo} from "../entities/AppInfo"
+import {AppInfo} from "../../entities/AppInfo"
 
-export const fetchApplicationInfo=(): Promise<AppInfo|null> =>
+export const fetchAppInfo=(): Promise<AppInfo|null> =>
     wretch("../info")
         .get()
         .res(response => response.body as AppInfo)

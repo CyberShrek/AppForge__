@@ -1,7 +1,17 @@
-import {resolveCSS} from "../stylesResolver"
-import {popupError, popupList, popupTimeoutAction} from "../modal"
-import {fetchApplicationInfo} from "../api/misc"
-import {text} from "stream/consumers";
+import {resolveCSS} from "../resolvers/resolver"
+import {popupList, popupTimeoutAction} from "../utils/modal"
+import {fetchAppInfo} from "../utils/api/appInfo"
+import {Component} from "./core/Component"
+
+export class Header extends Component{
+
+    constructor() {
+        super(document.getElementById("header")!)
+        this.listen("", () => {
+
+        })
+    }
+}
 
 export function resolveHeader(){
     resolveCSS("header")
@@ -18,7 +28,7 @@ function resolveResetButton(){
 
 function resolveInfoButton(){
     resolveButtonAction("info", () => {
-        fetchApplicationInfo().then(appInfo => {
+        fetchAppInfo().then(appInfo => {
             if(appInfo){popupList(
                 "Информация о приложении",
                 [

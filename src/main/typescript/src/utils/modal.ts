@@ -1,7 +1,7 @@
 import swal, {SweetAlertResult} from "sweetalert2"
 import {type SweetAlertOptions, type SweetAlertPosition} from "sweetalert2"
-import {resolveCSS} from "./stylesResolver"
-import {mouseEvent} from "./store"
+import {resolveCSS} from "./resolver"
+import {mouseEvent} from "../store"
 
 resolveCSS("third-party/sweetalert2")
 
@@ -56,6 +56,8 @@ function popupSweetModal(options: SweetAlertOptions): Promise<SweetAlertResult>{
 }
 
 function getSweetMousePosition(): SweetAlertPosition{
+    if(!mouseEvent) return "center"
+
     const { clientX, clientY } = mouseEvent,
         screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
         screenHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,

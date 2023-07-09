@@ -12,4 +12,5 @@ export interface AppInfo{
     helpPath?: string
     comment?: string
     tables?: string
+    manualPath?: string
 }

@@ -1,5 +1,5 @@
-import {resolveHeader} from "./core/header"
-import {resolveCSS} from "./stylesResolver"
+import {resolveHeader} from "./components/header"
+import {resolveCSS} from "./resolvers/resolver"
 
 resolveCSS("global")
 resolveCSS("inputs")
