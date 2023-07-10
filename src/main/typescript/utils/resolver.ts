@@ -5,6 +5,6 @@ export function resolveCSS(name: string){
         const styleEl = document.createElement("link")
         styleEl.setAttribute("rel", "stylesheet")
         styleEl.setAttribute("href", source)
-        headElement.append(styleEl)
+        headElement.appendChild(styleEl)
     }
 }

@@ -1,4 +1,4 @@
-import {buildLocatedElement} from "../../utils/elementBuilder"
+import {createLocatedElement} from "../../utils/domWizard"
 
 const updatingEvent = new Event("update")
 
@@ -8,7 +8,7 @@ export abstract class Component {
     protected constructor(
         core: HTMLElement|LocatedElementOptions
     ) {
-        this.core = core instanceof HTMLElement ? core : buildLocatedElement(core.location, core)
+        this.core = core instanceof HTMLElement ? core : createLocatedElement(core.location, core)
         this.core.addEventListener(updatingEvent.type, () => this.update())
         this.onMount(this.core)
     }

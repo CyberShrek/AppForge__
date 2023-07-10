@@ -4,10 +4,10 @@ import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
 
 export default  {
-    input: `src/index.ts`,
+    input: `./src/main/typescript/index.ts`,
     output: [
         {
-            dir: "../resources/static/js/build",
+            dir: "./src/main/resources/static/js/build",
             format: "es",
             sourcemap: true,
             manualChunks:{

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "outDir": "../resources/static/js/build",
+    "outDir": "./src/main/resources/static/js/build",
     "moduleResolution": "node",
     "module": "esnext",
     "typeRoots": [
@@ -10,7 +10,7 @@
     ]
   },
   "include": [
-    "src/**/*.ts"
+    "src/main/typescript/**/*.ts"
   ],
   "exclude": [
     "node_modules"

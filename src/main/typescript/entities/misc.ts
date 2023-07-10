@@ -1,0 +1,8 @@
+interface Pair<F, S>{
+    first: F
+    second: S
+}
+
+interface ElementLocation{
+
+}
