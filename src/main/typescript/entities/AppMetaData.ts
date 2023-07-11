@@ -1,4 +1,4 @@
-export interface AppInfo{
+interface AppMetaData {
     name?: string
     superName?: string
     path?: string

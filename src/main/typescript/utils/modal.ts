@@ -1,9 +1,11 @@
 import swal, {SweetAlertResult} from "sweetalert2"
 import {type SweetAlertOptions, type SweetAlertPosition} from "sweetalert2"
 import {resolveCSS} from "./resolver"
-import {mouseEvent} from "../store"
 
 resolveCSS("third-party/sweetalert2")
+
+let mouseEvent: MouseEvent
+document.addEventListener("mousemove", event => mouseEvent = event)
 
 export function popupMessage(title?: string, text?: string){
     popupSweetModal({title, text})

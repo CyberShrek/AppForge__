@@ -9,7 +9,3 @@ export function mapOf<K, V>(...pairs: Pair<K, V>[]): Map<K, V>{
 export function pairOf<F, S>(first: F, second: S): Pair<F, S>{
     return {first, second}
 }
-
-export function htmlOf(tagName: string, ): string{
-
-}

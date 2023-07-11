@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2017",
     "outDir": "./src/main/resources/static/js/build",
     "moduleResolution": "node",
     "module": "esnext",
