@@ -7,6 +7,9 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.data.forgedAppsCache
 import org.vniizht.appforge.entities.AppConfig
+import org.vniizht.appforge.entities.FormSectionConfig
+import org.vniizht.appforge.entities.MainFormConfig
+import org.vniizht.appforge.entities.ReportSlotConfig
 import javax.servlet.http.HttpServletRequest
 
 @RestController
@@ -44,13 +47,19 @@ class AppForgeController(private val request: HttpServletRequest) {
         AppConfig(
             appName = "debug",
             titleName = "AppForgeDebug",
-            mainForm = AppConfig.MainForm(
-                mapOf("period" to AppConfig.MainForm.Period(
-                    title = "Период"
+            mainForm = MainFormConfig(
+                mapOf("period" to FormSectionConfig(
+                    title = "Период",
+                    fieldsMap = mapOf(
+                        "range" to FormSectionConfig.Datepicker(maxDays = 10),
+                        "list" to FormSectionConfig.Select(
+                            title = "Some list"
+                        )
+                    )
                 ))
             ),
             reportSlots = mapOf(
-                "debug" to AppConfig.ReportSlot(title = "Debug")
+                "debug" to ReportSlotConfig(title = "Debug")
             )
         )
     )

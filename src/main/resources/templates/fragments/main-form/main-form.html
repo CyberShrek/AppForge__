@@ -1,25 +1,25 @@
 <form th:fragment="main-form(config)" id="main-form">
     <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainForm"*/-->
   <th:block th:each="sectionItem : ${config.sectionsMap}"
-            th:with="name = ${sectionItem.key}, section = ${sectionItem.value}">
-    <div th:class="${section.type.toLowerCase()}+' section'" th:name="${name}">
+            th:with="key = ${sectionItem.key}, section = ${sectionItem.value}">
+    <div th:class="${section.type.toLowerCase()}+' section'" th:key="${key}">
       <p th:text="${section.title}"></p>
       <th:block th:switch="${section.type}">
         <div th:case="PERIOD">
-          <div class="period"></div>
+          <div class="period field"></div>
         </div>
         <div th:case="CARRIER">
-          <div class="carriers multiselect"></div>
+          <div class="carriers select"></div>
         </div>
         <div th:case="WAYPOINT">
-          <div class="countries multiselect"></div>
-          <div class="roads multiselect"></div>
-          <div class="stations multiselect"></div>
+          <div class="countries select"></div>
+          <div class="roads select"></div>
+          <div class="stations select"></div>
         </div>
         <div th:case="SHIPMENT">
-          <div class="shipment-type multiselect"></div>
-          <div class="transfer-type multiselect"></div>
-          <div class="extras multiselect"></div>
+          <div class="shipment-type select"></div>
+          <div class="transfer-type select"></div>
+          <div class="extras select"></div>
         </div>
       </th:block>
     </div>

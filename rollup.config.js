@@ -12,7 +12,8 @@ export default  {
             sourcemap: true,
             manualChunks:{
                 wretch: ["wretch"],
-                sweetalert2: ["sweetalert2"]
+                sweetalert2: ["sweetalert2"],
+                easepick: ["@easepick/amp-plugin", "@easepick/core", "@easepick/lock-plugin", "@easepick/range-plugin"]
             }
         }
     ],

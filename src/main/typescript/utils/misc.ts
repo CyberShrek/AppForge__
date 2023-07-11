@@ -9,3 +9,14 @@ export function mapOf<K, V>(...pairs: Pair<K, V>[]): Map<K, V>{
 export function pairOf<F, S>(first: F, second: S): Pair<F, S>{
     return {first, second}
 }
+
+export function numberOf(word: string): number {
+    return isNaN(Number(word)) ? 0 : Number(word)
+}
+
+export function formatDate(date: Date): string {
+    const year = date.getFullYear(),
+        month = date.getMonth() + 1,
+        day = date.getDate()
+    return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`
+}

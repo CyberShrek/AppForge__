@@ -10,7 +10,11 @@
   "dependencies": {
     "chart.js": "^4.3.0",
     "sweetalert2": "~11.3.10",
-    "wretch": "^2.6.0"
+    "wretch": "^2.6.0",
+    "@easepick/amp-plugin": "^1.2.1",
+    "@easepick/core": "^1.2.1",
+    "@easepick/lock-plugin": "^1.2.1",
+    "@easepick/range-plugin": "^1.2.1"
   },
   "devDependencies": {
     "@rollup-extras/plugin-clean": "^1.3.6",

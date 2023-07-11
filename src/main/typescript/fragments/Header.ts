@@ -2,7 +2,7 @@ import {resolveCSS} from "../utils/resolver"
 import {downloadUserManual, fetchAppMetaData} from "../utils/api/appMetaData"
 import {popupList, popupTimeoutAction} from "../utils/modal"
 
-export default class Header implements Fragments{
+export default class Header implements Fragment{
 
     private appMetaData: AppMetaData
 
