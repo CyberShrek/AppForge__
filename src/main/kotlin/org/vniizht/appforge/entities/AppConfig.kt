@@ -19,25 +19,26 @@ data class MainFormConfig(
 data class FormSectionConfig(
     val title: String? = null,
     // Key is the field id
-    val fieldsMap: Map<String, SectionField>? = null
+    val fieldsMap: Map<String, Field>? = null
 ) {
-    abstract class SectionField(
-        open val title: String? = null
+    abstract class Field(
+        open val title: String? = null,
+        val type: String
     )
 
     data class CheckBox(
         override val title: String?
-    ) : SectionField(title)
+    ) : Field(title, "checkbox")
 
     data class Datepicker(
         override val title: String? = null,
         val maxDays: Int? = null
-    ) : SectionField(title)
+    ) : Field(title, "datepicker")
 
     data class Select(
         override val title: String? = null,
         val content: Content? = null
-    ) : SectionField(title){
+    ) : Field(title, "select"){
         data class Content(
             val staticMap: Map<String, String>? = null,
             val dynamicMap: DynamicMap? = null,
@@ -47,26 +48,26 @@ data class FormSectionConfig(
             val serviceBankStations: ServiceBankStations? = null
         ){
             data class DynamicMap(
-                val dependsOnFields: Map<String, String>,
-                val httpGet: String
+                val subscribeOnFields: Set<String>,
+                val sourceUrl: String
             )
             data class ServiceBankCarriers(
-                val dependsOnDate: String,
-                val extraProperties: Map<String, String>
+                val subscribeOnDate: String,
+                val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankCountries(
-                val dependsOnDate: String,
-                val extraProperties: Map<String, String>
+                val subscribeOnDate: String,
+                val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankRoads(
-                val dependsOnDate: String,
-                val dependsOnCountries: String,
-                val extraProperties: Map<String, String>
+                val subscribeOnDate: String,
+                val subscribeOnCountries: String,
+                val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankStations(
-                val dependsOnDate: String,
-                val dependsOnRoads: String,
-                val extraProperties: Map<String, String>
+                val subscribeOnDate: String,
+                val subscribeOnRoads: String,
+                val extraProperties: Map<String, String>? = null
             )
         }
 

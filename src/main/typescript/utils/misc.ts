@@ -14,7 +14,7 @@ export function numberOf(word: string): number {
     return isNaN(Number(word)) ? 0 : Number(word)
 }
 
-export function formatDate(date: Date): string {
+export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,
         day = date.getDate()

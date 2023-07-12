@@ -1,4 +1,5 @@
 import {resolveCSS} from "./utils/resolver"
+import {popupMessage} from "./utils/modal";
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -18,7 +19,12 @@ if(headerElement !== null)
     import("./fragments/Header").then(fragment => new fragment.default(headerElement))
 
 if(mainFormElement !== null)
-    import("./fragments/mainForm/MainForm").then(fragment => new fragment.default(mainFormElement))
+    import("./fragments/mainForm/MainForm").then(fragment => {
+        const mainForm = new fragment.default(mainFormElement)
+
+        // mainForm.sections.get("period").fields.get("list").subscribeOnField("period", "range",
+        //     value => popupMessage("Выбрано", value))
+    })
 
 if(headerElement !== null)
     import("./fragments/report/ReportSlot").then(fragment => reportSlotElements

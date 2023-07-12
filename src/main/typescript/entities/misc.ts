@@ -3,6 +3,7 @@ interface Pair<F, S>{
     second: S
 }
 
-interface ElementLocation{
-
+interface DateRange{
+    start: Date|string
+    end: Date|string
 }

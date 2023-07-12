@@ -1,19 +1,21 @@
 import {resolveCSS} from "../../utils/resolver"
 import {CustomSection} from "./section/CustomSection"
+import {Form} from "./Form";
 
 resolveCSS("main-form")
 
-export default class MainForm implements MainFormFragment{
+export default class MainForm extends Form{
 
-    sections: Map<SectionKey, FormSectionFragment> = new Map()
+    constructor(public core: HTMLFormElement) { super(core)
 
-    constructor(public core: HTMLFormElement) {
         core.querySelectorAll<HTMLElement>(".section").forEach(
-            section =>
+            sectionCore =>
                 this.sections.set(
-                    section.getAttribute("key"),
-                    new CustomSection(section)
+                    sectionCore.getAttribute("key"),
+                    new CustomSection(sectionCore, this)
                 )
         )
+
+        this.mount()
     }
 }

@@ -4,17 +4,24 @@ import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {AmpPlugin} from "@easepick/amp-plugin"
 import {DateTime} from "@easepick/datetime"
-import {numberOf} from "../../../../utils/misc"
+import {stringifyDate, numberOf} from "../../../../utils/misc"
+import {Field} from "./Field"
+import {Section} from "../Section"
 
 resolveCSS("third-party/easepick")
 
-export default class Datepicker implements SectionFieldFragment{
-    startDate: Date
-    endDate: Date
-    constructor(public core: HTMLElement) {
+export default class Datepicker extends Field{
+
+    value: DateRange
+    constructor(public core: HTMLElement,
+                public section: Section) { super(core, section)
+
         applyPicker(core, (startDate, endDate) => {
-            this.startDate = startDate
-            this.endDate = endDate
+            this.value = {
+                start: stringifyDate(startDate),
+                end: stringifyDate(endDate)
+            }
+            this.dispatchUpdate()
         })
     }
 }

@@ -53,7 +53,10 @@ class AppForgeController(private val request: HttpServletRequest) {
                     fieldsMap = mapOf(
                         "range" to FormSectionConfig.Datepicker(maxDays = 10),
                         "list" to FormSectionConfig.Select(
-                            title = "Some list"
+                            title = "Some list",
+                            content = FormSectionConfig.Select.Content(
+                                staticMap = mapOf("1" to "214dd", "31" to "frfrfrf rfrgtrg", "12" to "dsfefffrfr44rr4")
+                            )
                         )
                     )
                 ))
