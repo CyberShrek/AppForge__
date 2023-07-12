@@ -20,3 +20,19 @@ export function stringifyDate(date: Date): string {
         day = date.getDate()
     return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`
 }
+
+export function javaMapToMap(javaMap: string): Map<string, string>{
+    return mapOf(
+        ...javaMap
+        .slice(1, -1) // Removing '{' and '}' in the both sides of the string
+        .split(", ")
+        .map(pair => {
+            const entry = pair.split("=")
+            return pairOf(entry[0], entry[1])
+        })
+    )
+}
+
+export function mapToArray(map: Map<string, string>, includeKeys: boolean = false): string[]{
+    return [...map.entries()].map(entry => entry[1])
+}

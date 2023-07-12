@@ -11,6 +11,7 @@
     "chart.js": "^4.3.0",
     "sweetalert2": "~11.3.10",
     "wretch": "^2.6.0",
+    "virtual-select-plugin": "^1.0.39",
     "@easepick/amp-plugin": "^1.2.1",
     "@easepick/core": "^1.2.1",
     "@easepick/lock-plugin": "^1.2.1",

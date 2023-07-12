@@ -3,7 +3,7 @@ import Select from "./fields/Select"
 import CheckBox from "./fields/CheckBox"
 import {Section} from "./Section"
 import {Form} from "../Form"
-import {Field} from "./fields/Field";
+import {Field} from "./fields/Field"
 
 export class CustomSection extends Section{
     constructor(public core: HTMLElement,

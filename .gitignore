@@ -4,8 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-src/main/typescript/node_modules
-src/main/resources/static/js/build
+/node_modules/
+/src/main/resources/static/js/build/
+/src/main/resources/static/js/third-party/
+/src/main/resources/static/css/third-party/
 
 ### STS ###
 .apt_generated

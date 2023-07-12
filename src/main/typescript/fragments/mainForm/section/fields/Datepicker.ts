@@ -26,9 +26,9 @@ export default class Datepicker extends Field{
     }
 }
 
-function applyPicker(pickerElement: HTMLElement, onSelect: (startDate, endDate) => void){
+function applyPicker(core: HTMLElement, onSelect: (startDate, endDate) => void){
     new easepick.create({
-        element: pickerElement,
+        element: core,
         format: "DD.MM.YYYY",
         calendars: 2,
         grid: 2,
@@ -54,7 +54,7 @@ function applyPicker(pickerElement: HTMLElement, onSelect: (startDate, endDate) 
         },
         LockPlugin: {
             minDays: 1,
-            maxDays: numberOf(pickerElement.getAttribute("max-days"))
+            maxDays: numberOf(core.getAttribute("max-days"))
         },
         css: [
             "css/third-party/easepick.css"
