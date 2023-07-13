@@ -48,18 +48,51 @@ class AppForgeController(private val request: HttpServletRequest) {
             appName = "debug",
             titleName = "AppForgeDebug",
             mainForm = MainFormConfig(
-                mapOf("period" to FormSectionConfig(
-                    title = "Период",
-                    fieldsMap = mapOf(
-                        "range" to FormSectionConfig.Datepicker(maxDays = 10),
-                        "list" to FormSectionConfig.Select(
-                            title = "Some list",
-                            content = FormSectionConfig.Select.Content(
-                                staticMap = mapOf("1" to "214dd", "31" to "frfrfrf rfrgtrg", "12" to "dsfefffrfr44rr4")
+                mapOf(
+                    "period" to FormSectionConfig(
+                        title = "Период",
+                        fieldsMap = mapOf(
+                            "range" to FormSectionConfig.Datepicker(
+                                maxDays = 10
                             )
                         )
+                    ),
+                    "waypoint" to FormSectionConfig(
+                        title = "Назначения",
+                        fieldsMap = mapOf(
+                            "countries" to FormSectionConfig.Select(
+                                title = "Государства",
+                                content = FormSectionConfig.Select.Content(
+                                    serviceBankCountries = FormSectionConfig.Select.Content.ServiceBankCountries(
+                                        subscribeToDate = "period.range"
+                                    ),
+                                    showCodes = true
+                                )
+                            ),
+                            "roads" to FormSectionConfig.Select(
+                                title = "Дороги",
+                                content = FormSectionConfig.Select.Content(
+                                    serviceBankRoads = FormSectionConfig.Select.Content.ServiceBankRoads(
+                                        subscribeToDate = "period.range",
+                                        subscribeToCountries = "waypoint.countries"
+                                    ),
+                                    showCodes = true
+                                )
+                            ),
+                            "stations" to FormSectionConfig.Select(
+                                title = "Станции",
+                                content = FormSectionConfig.Select.Content(
+                                    serviceBankStations = FormSectionConfig.Select.Content.ServiceBankStations(
+                                        subscribeToDate = "period.range",
+                                        subscribeToRoads = "waypoint.roads",
+                                        extraProperties = mapOf("prpop" to "1")
+                                    ),
+                                    showCodes = true
+                                )
+                            ),
+                        )
                     )
-                ))
+                )
             ),
             reportSlots = mapOf(
                 "debug" to ReportSlotConfig(title = "Debug")

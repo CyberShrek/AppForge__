@@ -8,10 +8,12 @@
         <th:block th:each="fieldEntry : ${section.fieldsMap}"
                   th:with="key = ${fieldEntry.key}, field = ${fieldEntry.value}">
           <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Field"*/-->
+          <p th:if="${field.title}" th:text="${field.title}"></p>
           <div th:class="${field.type}+' field'" th:key="${key}">
             <th:block th:if="${field.type} == 'select'">
               <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Select"*/-->
-              <th:block th:with="content = ${field.content}">
+              <config th:with="content = ${field.content}"
+                      th:attr="show-codes = ${content.showCodes}">
                 <static th:if="${content.staticMap}" th:text="${content.staticMap}">
                 </static>
 
@@ -23,7 +25,7 @@
                 <carriers th:if="${content.serviceBankCarriers}"
                           th:with="carriers = ${content.serviceBankCarriers}">
                   <subscribes>
-                    <date th:text="${carriers.subscribeOnDate}"></date>
+                    <date th:text="${carriers.subscribeToDate}"></date>
                   </subscribes>
                   <extra th:text="${carriers.extraProperties}"></extra>
                 </carriers>
@@ -31,7 +33,7 @@
                 <countries th:if="${content.serviceBankCountries}"
                            th:with="countries = ${content.serviceBankCountries}">
                   <subscribes>
-                    <date th:text="${countries.subscribeOnDate}"></date>
+                    <date th:text="${countries.subscribeToDate}"></date>
                   </subscribes>
                   <extra th:text="${countries.extraProperties}"></extra>
                 </countries>
@@ -39,8 +41,8 @@
                 <roads th:if="${content.serviceBankRoads}"
                        th:with="roads = ${content.serviceBankRoads}">
                   <subscribes>
-                    <date th:text="${roads.subscribeOnDate}"></date>
-                    <countries th:text="${roads.subscribeOnCountries}"></countries>
+                    <date th:text="${roads.subscribeToDate}"></date>
+                    <countries th:text="${roads.subscribeToCountries}"></countries>
                   </subscribes>
                   <extra th:text="${roads.extraProperties}"></extra>
                 </roads>
@@ -48,13 +50,13 @@
                 <stations th:if="${content.serviceBankStations}"
                           th:with="stations = ${content.serviceBankStations}">
                   <subscribes>
-                    <date th:text="${stations.subscribeOnDate}"></date>
-                    <roads th:text="${stations.subscribeOnRoads}"></roads>
+                    <date th:text="${stations.subscribeToDate}"></date>
+                    <roads th:text="${stations.subscribeToRoads}"></roads>
                   </subscribes>
                   <extra th:text="${stations.extraProperties}"></extra>
                 </stations>
 
-              </th:block>
+              </config>
             </th:block>
           </div>
         </th:block>

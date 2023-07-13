@@ -36,9 +36,9 @@ export function popupError(title?: string, text?: string){
     popupSweetModal({title, text, icon: "error"})
 }
 
-export function popupHttpResourceError(html?: string, footer?: string){
+export function popupHttpDataError(html?: string, footer?: string){
     popupSweetModal({
-        title: "Ошибка получения ресурса",
+        title: "Ошибка получения данных",
         icon: "error", html, footer
     })
 }

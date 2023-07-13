@@ -45,28 +45,29 @@ data class FormSectionConfig(
             val serviceBankCarriers: ServiceBankCarriers? = null,
             val serviceBankCountries: ServiceBankCountries? = null,
             val serviceBankRoads: ServiceBankRoads? = null,
-            val serviceBankStations: ServiceBankStations? = null
+            val serviceBankStations: ServiceBankStations? = null,
+            val showCodes: Boolean = false
         ){
             data class DynamicMap(
-                val subscribeOnFields: Set<String>,
+                val subscribeToFields: Set<String>,
                 val sourceUrl: String
             )
             data class ServiceBankCarriers(
-                val subscribeOnDate: String,
+                val subscribeToDate: String,
                 val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankCountries(
-                val subscribeOnDate: String,
+                val subscribeToDate: String,
                 val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankRoads(
-                val subscribeOnDate: String,
-                val subscribeOnCountries: String,
+                val subscribeToDate: String,
+                val subscribeToCountries: String,
                 val extraProperties: Map<String, String>? = null
             )
             data class ServiceBankStations(
-                val subscribeOnDate: String,
-                val subscribeOnRoads: String,
+                val subscribeToDate: String,
+                val subscribeToRoads: String,
                 val extraProperties: Map<String, String>? = null
             )
         }
