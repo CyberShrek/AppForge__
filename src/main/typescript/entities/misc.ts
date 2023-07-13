@@ -7,3 +7,10 @@ interface DateRange{
     start: Date|string
     end: Date|string
 }
+
+interface Option{
+    label: string,
+    value?: string,
+    alias?: string,
+    description?: string
+}

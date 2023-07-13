@@ -4,18 +4,18 @@ import {updateEvent} from "../../../../entities/events"
 
 export abstract class Field implements Fragment{
 
-    abstract value: any
+    abstract readonly value: any
 
     protected constructor(public core: HTMLElement,
                           public section: Section){}
 
     protected dispatchUpdate = () => this.core.dispatchEvent(updateEvent)
 
-    subscribeOnFields(keys: Set<Pair<SectionKey, FieldKey>>, onUpdate: (value) => void){
-        keys.forEach(pair => this.subscribeOnField(pair.first, pair.second, onUpdate))
+    subscribeToFields(keys: Set<Pair<SectionKey, FieldKey>>, onUpdate: (value) => void){
+        keys.forEach(pair => this.subscribeToField(pair.first, pair.second, onUpdate))
     }
 
-    subscribeOnField(sectionKey: SectionKey, fieldKey: FieldKey, onUpdate: (value) => void){
+    subscribeToField(sectionKey: SectionKey, fieldKey: FieldKey, onUpdate: (value) => void){
 
         const field = this.findFieldOrThrowError(sectionKey, fieldKey)
         field.core.addEventListener(updateEvent.type, () => onUpdate(field.value))

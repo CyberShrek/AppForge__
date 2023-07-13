@@ -14,6 +14,12 @@ export function numberOf(word: string): number {
     return isNaN(Number(word)) ? 0 : Number(word)
 }
 
+export function concatMaps(...maps: Map<any, any>[]): Map<any, any>{
+    const buffer = []
+    maps.forEach(map => buffer.push(...map.entries()))
+    return new Map(buffer)
+}
+
 export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,
@@ -33,6 +39,19 @@ export function javaMapToMap(javaMap: string): Map<string, string>{
     )
 }
 
-export function mapToArray(map: Map<string, string>, includeKeys: boolean = false): string[]{
-    return [...map.entries()].map(entry => entry[1])
+export function mapToOptions(map: Map<string, string>, showKeys: boolean = false): Option[]{
+    return [...map.entries()].map(entry => {
+        return {
+            label: entry[1],
+            value: entry[0],
+            alias: entry[0],
+            description: showKeys === true ? entry[0] : null
+        }
+    })
+}
+
+export function optionsToMap(options: Option[]): Map<string, string>{
+    const map: Map<string, string> = new Map()
+    options.forEach(option => map.set(option.value, option.label))
+    return map
 }

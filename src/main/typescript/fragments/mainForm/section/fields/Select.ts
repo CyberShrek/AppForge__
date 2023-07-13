@@ -1,36 +1,52 @@
 import {Field} from "./Field"
 import {Section} from "../Section"
-import {javaMapToMap} from "../../../../utils/misc"
+import {javaMapToMap, mapToOptions} from "../../../../utils/misc"
 import {resolveCSS} from "../../../../utils/resolver"
+import {updateEvent} from "../../../../entities/events";
 
 resolveCSS("third-party/virtual-select")
 
 export default class Select extends Field{
 
-    value: Map<string, string>
+    value: string[]
 
     private staticMap: Map<string, string>
 
-    private mappedListIDK: Map<string, string>
-
     constructor(public core: HTMLElement,
-                public section: Section) { super(core, section)
+                public section: Section) {super(core, section)
 
         this.initStaticMap()
+        applyMultiselect(core)
+        this.setMap(this.staticMap)
+        this.overloadChangeEvents()
 
-        section.form.onMount(() => {})
-
-        applyMultiselect(document.getElementById("select"))
+        section.form.onMount(() => {
+            this.subscribeToAllDependOnFields()
+        })
     }
 
-    setOptions(options: Map<string, string>){
-
+    setMap(map: Map<string, string>){
+        // @ts-ignore !!! Resolved by html import !!!
+        this.core.setOptions(mapToOptions(map))
     }
 
     private initStaticMap(){
         const staticElement = this.core.querySelector("static")
         if(staticElement !== null)
             this.staticMap = javaMapToMap(staticElement.textContent)
+    }
+
+    private overloadChangeEvents(){
+        let values: string[]
+        this.core.addEventListener(updateEvent.type, function() {
+            values = this.value
+        })
+        this.value = values
+        this.dispatchUpdate()
+    }
+
+    private subscribeToAllDependOnFields(){
+
     }
 }
 
@@ -40,14 +56,6 @@ function applyMultiselect(core: HTMLElement){
         ele: core,
         multiple: true,
         additionalClasses: "multiselect",
-        valueKey: "1",
-        options: [
-            { label: 'Option 1', value: '1' },
-            { label: 'Option 2', value: '2' },
-            { label: 'Option 3', value: '3' },
-            { label: 'Option 3', value: '3' },
-            { label: 'Option 3', value: '5' }
-        ],
         search: true,
         showSelectedOptionsFirst:true,
 
