@@ -3,7 +3,10 @@ import resolveNodeJs from '@rollup/plugin-node-resolve'
 import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
 
+let crap
+
 export default  {
+
     input: `./src/main/typescript/index.ts`,
     output: [
         {

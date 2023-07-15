@@ -2,7 +2,7 @@
 // The code also defines several interfaces for different types of objects.
 import wretch from "wretch"
 import {popupError, popupHttpDataError} from "../modal";
-import {pairOf} from "../misc";
+import {pairOf, setCursorToDefault, setCursorToLoading} from "../misc";
 const serviceBankURL = `${document.location.origin}/servicebank/getdata`
 
 export const fetchCarriersByDate = (date: Date|string): Promise<Option[]> =>
@@ -10,15 +10,16 @@ export const fetchCarriersByDate = (date: Date|string): Promise<Option[]> =>
         label: item["nazvp"],
         // Each value consists of countryValue.carrierValue
         value: `${item["gos"]}.${item["skp"]}`
-    }), null,
+    }), null,null,
         "Не удалось загрузить список перевозчиков")
 
-export const fetchCountriesByDate = (date: Date|string, postUssrOnly: boolean): Promise<Option[]> =>
+export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Option[]> =>
     fetchOptions("gosList", date, (item) => ({
         label: item["g_name"],
         value: item["g_kod"]
-    }), null,
-        "Не удалось загрузить список стран")
+    }), {"g_prsng": "1"},
+        (item) => postSovietOnly ? item["g_prsng"] == "1" : true,
+        "Не удалось загрузить список государств")
 
 export const fetchRoadsByCountriesAndDate = async (countryValues: Option["value"][],
                                                    date: Date|string): Promise<Option[]> =>
@@ -30,7 +31,7 @@ export const fetchRoadsByCountriesAndDate = async (countryValues: Option["value"
                 value: `${countryValue}.${item["d_kod"]}`
             }), {
                 "gos": countryValue
-            },
+            },null,
                 "Не удалось загрузить список дорог")
         ))).flat()
 
@@ -48,7 +49,7 @@ export const fetchStationsByRoadsAndDate = async (roadValues: Option["value"][],
                 // [extraProperty.first]: extraProperty.second,
                     // [transferType === TransferType.BAGGAGE ? "pr_bo" : "prpop"]: "1"
                 "pr_bo" :"1"
-            },
+            },null,
                 "Не удалось загрузить список станций")
         )
     )).flat()
@@ -58,24 +59,30 @@ const fetchOptions = (listName: string,
                       date: Date|string,
                       parseItemFn: (item: any) => Option,
                       extraProperties = {},
-                      errorFooter?: string): Promise<Option[]> =>
-    wretch(serviceBankURL)
+                      filter?: (item: any) => boolean,
+                      errorFooter?: string): Promise<Option[]> => {
+    setCursorToLoading()
+    return wretch(serviceBankURL)
         .post({
             [listName]: [{"data": date, ...extraProperties}]
         })
         .json(json => {
             const firstChildKey = Object.keys(json)[0]
-            return (json[firstChildKey] as Array<any>).map((item) => {
-                const option = parseItemFn(item)
-                option.description = option.value
-                option.alias = option.value
-                return option
-            })
+            return (json[firstChildKey] as Array<any>)
+                .filter((item) => filter ? filter(item) : true)
+                .map((item) => {
+                    const option = parseItemFn(item)
+                    option.description = option.value
+                    option.alias = option.value
+                    return option
+                })
         })
         .catch(error => {
             popupHttpDataError(error, errorFooter)
-            throw error
+            return []
         })
+        .finally(() => setCursorToDefault())
+}
 
 
 const mapRoadsByCountryCodeAndRoadCodes = (roads: Option["value"][]) => {

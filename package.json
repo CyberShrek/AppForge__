@@ -5,6 +5,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
+    "build debug": "rollup -c    --input=./src/main/typescript/debug.ts",
+    "watch debug": "rollup -c -w --input=./src/main/typescript/debug.ts",
     "test": "jest"
   },
   "dependencies": {

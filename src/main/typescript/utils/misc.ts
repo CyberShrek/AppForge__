@@ -27,11 +27,13 @@ export function stringifyDate(date: Date): string {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`
 }
 
+export function javaSetToSet(javaSet: string): Set<string>{
+    return setOf(...splitJavaCollection(javaSet))
+}
+
 export function javaMapToMap(javaMap: string): Map<string, string>{
     return mapOf(
-        ...javaMap
-        .slice(1, -1) // Removing '{' and '}' in the both sides of the string
-        .split(", ")
+        ...splitJavaCollection(javaMap)
         .map(pair => {
             const entry = pair.split("=")
             return pairOf(entry[0], entry[1])
@@ -39,19 +41,39 @@ export function javaMapToMap(javaMap: string): Map<string, string>{
     )
 }
 
-export function mapToOptions(map: Map<string, string>, showKeys: boolean = false): Option[]{
-    return [...map.entries()].map(entry => {
-        return {
-            label: entry[1],
-            value: entry[0],
-            alias: entry[0],
-            description: showKeys === true ? entry[0] : null
-        }
-    })
+export function splitJavaCollection(javaCollection: string): string[]{
+    return javaCollection
+        .slice(1, -1) // Removing '{' and '}' in the both sides of the string
+        .split(", ")
+}
+
+export function mapToOptions(map: Map<string, string>): Option[]{
+    return [...map.entries()].map(entry => entryToOption(entry))
+}
+
+export function jsonToOptions(json: object): Option[]{
+    return Object.entries(json).map(entry => entryToOption(entry))
+}
+
+export function entryToOption(entry: [string, string]): Option  {
+   return  {
+       label: entry[1],
+       value: entry[0],
+       alias: entry[0],
+       description: entry[0]
+    }
 }
 
 export function optionsToMap(options: Option[]): Map<string, string>{
     const map: Map<string, string> = new Map()
     options.forEach(option => map.set(option.value, option.label))
     return map
+}
+
+export function setCursorToLoading() {
+    document.documentElement.style.cursor = 'wait'
+}
+
+export function setCursorToDefault() {
+    document.documentElement.style.cursor = 'default'
 }

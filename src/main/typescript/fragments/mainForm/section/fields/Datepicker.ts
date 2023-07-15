@@ -12,28 +12,26 @@ resolveCSS("third-party/easepick")
 
 export default class Datepicker extends Field{
 
-    value: DateRange
-    constructor(public core: HTMLElement,
+    value: DateRange = [
+        stringifyDate(new Date()),
+        stringifyDate(new Date())]
+    constructor(core: HTMLElement,
                 public section: Section) { super(core, section)
 
-        applyPicker(core, (startDate, endDate) => {
-            this.value = {
-                start: stringifyDate(startDate),
-                end: stringifyDate(endDate)
-            }
+        applyPicker(core, this.value, (startDate, endDate) => {
             this.dispatchUpdate()
         })
     }
 }
 
-function applyPicker(core: HTMLElement, onSelect: (startDate, endDate) => void){
+function applyPicker(core: HTMLElement, defaultValue: DateRange, onSelect: (startDate, endDate) => void){
     new easepick.create({
         element: core,
         format: "DD.MM.YYYY",
         calendars: 2,
         grid: 2,
         zIndex: 100,
-        plugins: [RangePlugin, LockPlugin, AmpPlugin],
+        plugins: [AmpPlugin, RangePlugin, LockPlugin],
         lang: 'ru',
         AmpPlugin: {
             darkMode: false,
@@ -43,8 +41,8 @@ function applyPicker(core: HTMLElement, onSelect: (startDate, endDate) => void){
             }
         },
         RangePlugin: {
-            startDate: new DateTime(),
-            endDate: new DateTime(),
+            startDate: new DateTime(defaultValue[0]),
+            endDate: new DateTime(defaultValue[1]),
             locale: {
                 one: 'день',
                 few: 'дня',
@@ -57,7 +55,7 @@ function applyPicker(core: HTMLElement, onSelect: (startDate, endDate) => void){
             maxDays: numberOf(core.getAttribute("max-days"))
         },
         css: [
-            "css/third-party/easepick.css"
+            "app-forge/css/third-party/easepick.css"
         ],
         setup(picker) {
             picker.on("select", (e) => {

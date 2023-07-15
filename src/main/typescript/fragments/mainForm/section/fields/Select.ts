@@ -1,12 +1,13 @@
 import {Field} from "./Field"
 import {Section} from "../Section"
-import {javaMapToMap, mapToOptions} from "../../../../utils/misc"
+import {javaMapToMap, javaSetToSet, mapToOptions, splitJavaCollection} from "../../../../utils/misc"
 import {resolveCSS} from "../../../../utils/resolver"
 import {
     fetchCarriersByDate,
     fetchCountriesByDate,
     fetchRoadsByCountriesAndDate, fetchStationsByRoadsAndDate
-} from "../../../../utils/api/serviceBank";
+} from "../../../../utils/api/serviceBank"
+import {fetchOptions} from "../../../../utils/api/misc"
 resolveCSS("third-party/virtual-select.min")
 
 export default class Select extends Field{
@@ -15,17 +16,23 @@ export default class Select extends Field{
 
     private staticMap: Map<string, string>
 
-    constructor(public core: HTMLElement,
+    // TODO Should be inherited from abstract Field
+    private defaultValue: Option["value"][]
+
+    constructor(core: HTMLElement,
                 public section: Section) {super(core, section)
 
         this.initStaticMap()
+        this.initDefaultValues()
 
         section.form.onMount(() => {
             this.subscribeToAllNecessaryFields()
             applyVirtualSelectToElement(core)
             this.interceptChangeEvents()
-            if(this.staticMap)
-                this.setMap(this.staticMap)
+
+            if(this.staticMap) this.setMap(this.staticMap)
+            if(this.defaultValue) this.selectOptions(this.defaultValue)
+
         })
     }
 
@@ -62,6 +69,12 @@ export default class Select extends Field{
             this.staticMap = javaMapToMap(staticElement.textContent)
     }
 
+    private initDefaultValues(){
+        const staticElement = this.core.querySelector("default")
+        if(staticElement !== null)
+            this.defaultValue = splitJavaCollection(staticElement.textContent)
+    }
+
     private interceptChangeEvents(){
         const updateValues=(values: typeof this.value) => {
             this.value = values
@@ -74,12 +87,15 @@ export default class Select extends Field{
         })
     }
 
+    // TODO Refactor this crap
     private subscribeToAllNecessaryFields(){
         this.tryToSetCarriers()
         this.tryToSetCountries()
         this.tryToSetRoads()
         this.tryToSetStations()
+        this.tryToSetDynamic()
     }
+
 
     private tryToSetCarriers(){
         const carriersElement = this.core.querySelector("config > carriers")
@@ -88,7 +104,7 @@ export default class Select extends Field{
             this.subscribeToField(
                 dateFieldLocation[0],
                 dateFieldLocation[1],
-                (range: DateRange)  => this.updateCarriers(range.start)
+                (range: DateRange)  => this.updateCarriers(range[0])
             )
         }
     }
@@ -96,11 +112,28 @@ export default class Select extends Field{
     private tryToSetCountries(){
         const countriesElement = this.core.querySelector("config > countries")
         if(countriesElement !== null){
+            let subscribedDateValue: DateRange[0],
+                subscribedPostSovietValue: boolean
+
             const dateFieldLocation: string[] = countriesElement.querySelector("subscribes date").textContent.split(".")
             this.subscribeToField(
                 dateFieldLocation[0],
                 dateFieldLocation[1],
-                (range: DateRange)  => this.updateCountries(range.start)
+                (range: DateRange)  => {
+                    subscribedDateValue = range[0]
+                    if(subscribedPostSovietValue !== undefined)
+                        this.updateCountries(subscribedDateValue, subscribedPostSovietValue)
+                }
+            )
+            const postSovietCheckboxFieldLocation: string[] = countriesElement.querySelector("subscribes postsoviet").textContent.split(".")
+            this.subscribeToField(
+                postSovietCheckboxFieldLocation[0],
+                postSovietCheckboxFieldLocation[1],
+                (postSoviet: boolean)  => {
+                    subscribedPostSovietValue = postSoviet
+                    if(subscribedDateValue !== undefined)
+                        this.updateCountries(subscribedDateValue, subscribedPostSovietValue)
+                }
             )
         }
     }
@@ -108,7 +141,7 @@ export default class Select extends Field{
     private tryToSetRoads(){
         const roadsElement = this.core.querySelector("config > roads")
         if(roadsElement !== null){
-            let subscribedDateValue: DateRange["start"],
+            let subscribedDateValue: DateRange[0],
                 subscribedCountriesValue: typeof this.value
 
             const dateFieldLocation: string[] = roadsElement.querySelector("subscribes date").textContent.split(".")
@@ -116,7 +149,7 @@ export default class Select extends Field{
                 dateFieldLocation[0],
                 dateFieldLocation[1],
                 (range: DateRange)  => {
-                    subscribedDateValue = range.start
+                    subscribedDateValue = range[0]
                 }
             )
             const countriesLocation: string[] = roadsElement.querySelector("subscribes countries").textContent.split(".")
@@ -125,7 +158,7 @@ export default class Select extends Field{
                 countriesLocation[1],
                 (values: typeof this.value)  => {
                     subscribedCountriesValue = values
-                    if(subscribedDateValue !== undefined){
+                    if(subscribedDateValue && subscribedCountriesValue){
                         this.updateRoads(subscribedCountriesValue, subscribedDateValue)
                     }
                 }
@@ -136,24 +169,16 @@ export default class Select extends Field{
     private tryToSetStations(){
         const stationsElement = this.core.querySelector("config > stations")
         if(stationsElement !== null){
-            let subscribedDateValue: DateRange["start"],
+            let subscribedDateValue: DateRange[0],
                 subscribedRoadsValue: typeof this.value
 
-            const dateFieldLocation: string[] = stationsElement.querySelector("subscribes date").textContent.split(".")
-            this.subscribeToField(
-                dateFieldLocation[0],
-                dateFieldLocation[1],
-                (range: DateRange)  => {
-                    subscribedDateValue = range.start
-                }
-            )
-            const countriesLocation: string[] = stationsElement.querySelector("subscribes roads").textContent.split(".")
-            this.subscribeToField(
-                countriesLocation[0],
-                countriesLocation[1],
+            this.setupSubscribe(stationsElement, "subscribes date",
+                (range: DateRange) => subscribedDateValue = range[0])
+
+            this.setupSubscribe(stationsElement, "subscribes roads",
                 (values: typeof this.value)  => {
                     subscribedRoadsValue = values
-                    if(subscribedDateValue !== undefined){
+                    if(subscribedDateValue && subscribedRoadsValue) {
                         this.updateStations(subscribedRoadsValue, subscribedDateValue)
                     }
                 }
@@ -161,19 +186,60 @@ export default class Select extends Field{
         }
     }
 
-    private updateCarriers(date: DateRange["start"]){
+    private setupSubscribe(relativeElement: Element = this.core,
+                           fieldLocationTextSelector: string,
+                           callback: (value) => void){
+
+        const locationEntry = relativeElement
+            .querySelector(fieldLocationTextSelector)
+            .textContent
+            .split(".")
+
+        this.subscribeToField(
+            locationEntry[0],
+            locationEntry[1],
+            callback)
+    }
+
+    private tryToSetDynamic(){
+        const dynamicElement = this.core.querySelector("config > dynamic")
+        if(dynamicElement !== null) {
+            const url: string = dynamicElement.querySelector("url").textContent
+            const subscribes: Set<string> = javaSetToSet(dynamicElement.querySelector("subscribes").textContent),
+                subscribeKeyAndValues: Map<string, string> = new Map()
+
+            subscribes.forEach(subscribeText => {
+                const subscribeLocation = subscribeText.split(".")
+                this.subscribeToField(
+                    subscribeLocation[0],
+                    subscribeLocation[1],
+                    (value) => {
+                        subscribeKeyAndValues.set(subscribeText, value)
+                        if(subscribes.size === subscribeKeyAndValues.size)
+                            this.updateDynamic(url, subscribeKeyAndValues)
+                    }
+                )
+            })
+        }
+    }
+
+    private updateDynamic(url: string, subscribeKeyAndValues: Map<string, string>){
+        fetchOptions(url, subscribeKeyAndValues).then(options => this.setOptions(options))
+    }
+
+    private updateCarriers(date: DateRange[0]){
         fetchCarriersByDate(date).then(carriers => this.setOptions(carriers))
     }
 
-    private updateCountries(date: DateRange["start"]){
-        fetchCountriesByDate(date, false).then(countries => this.setOptions(countries))
+    private updateCountries(date: DateRange[0], postSoviet: boolean){
+        fetchCountriesByDate(date, postSoviet).then(countries => this.setOptions(countries))
     }
 
-    private updateRoads(countries: typeof this.value, date: DateRange["start"]){
+    private updateRoads(countries: typeof this.value, date: DateRange[0]){
         fetchRoadsByCountriesAndDate(countries, date).then(countries => this.setOptions(countries))
     }
 
-    private updateStations(roads: typeof this.value, date: DateRange["start"]){
+    private updateStations(roads: typeof this.value, date: DateRange[0]){
         fetchStationsByRoadsAndDate(roads, date).then(countries => this.setOptions(countries))
     }
 }
@@ -183,15 +249,18 @@ function applyVirtualSelectToElement(core: HTMLElement){
     // @ts-ignore !!! Resolved by html import !!!
     VirtualSelect.init({
         ele: core,
-        multiple: true,
+        multiple: configElement.getAttribute("multiselect"),
         additionalClasses: "multiselect",
-        search: true,
+        search: configElement.getAttribute("search"),
         disabled: true,
         autofocus: false,
         markSearchResults: true,
         optionsCount: 6,
         showSelectedOptionsFirst:true,
         hasOptionDescription: configElement.getAttribute("show-codes"),
+        disableSelectAll: configElement.getAttribute("disable-select-all"),
+        maxValues: configElement.getAttribute("max-values"),
+        required: configElement.getAttribute("require"),
 
         placeholder: "Выберите",
         noOptionsText: "Варианты не найдены",

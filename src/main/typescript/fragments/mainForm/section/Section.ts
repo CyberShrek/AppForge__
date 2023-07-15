@@ -1,10 +1,11 @@
 import {Field} from "./fields/Field"
 import {Form} from "../Form"
+import {Fragment} from "../../Fragment"
 
-export abstract class Section implements Fragment{
+export abstract class Section extends Fragment{
 
     fields: Map<FieldKey, Field> = new Map()
 
-    protected constructor(public core: HTMLElement,
-                          public form: Form) {}
+    protected constructor(core: HTMLElement,
+                          public form: Form) {super(core)}
 }

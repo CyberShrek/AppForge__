@@ -1,13 +1,14 @@
 import {Section} from "../Section"
 import {updateEvent} from "../../../../entities/events"
+import {Fragment} from "../../../Fragment"
 
 
-export abstract class Field implements Fragment{
+export abstract class Field extends Fragment{
 
     abstract readonly value: any
 
-    protected constructor(public core: HTMLElement,
-                          public section: Section){}
+    protected constructor(core: HTMLElement,
+                          public section: Section){super(core)}
 
     protected dispatchUpdate = () => this.core.dispatchEvent(updateEvent)
 
@@ -16,9 +17,9 @@ export abstract class Field implements Fragment{
     }
 
     subscribeToField(sectionKey: SectionKey, fieldKey: FieldKey, onUpdate: (value) => void){
-
         const field = this.findFieldOrThrowError(sectionKey, fieldKey)
         field.core.addEventListener(updateEvent.type, () => onUpdate(field.value))
+        onUpdate(field.value)
     }
 
     private findFieldOrThrowError(sectionKey: SectionKey, fieldKey: FieldKey): Field{

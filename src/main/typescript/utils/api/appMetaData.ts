@@ -2,9 +2,9 @@ import wretch from "wretch"
 import {popupHttpDataError} from "../modal"
 
 export const fetchAppMetaData=(): Promise<AppMetaData|null> =>
-    wretch("../info")
+    wretch("baggages/info")
         .get()
-        .res(response => response.body as AppMetaData)
+        .json(json => json as AppMetaData)
         .catch(errorBody => {
             popupHttpDataError(errorBody, "Не удалось загрузить информацию о приложении")
             return null

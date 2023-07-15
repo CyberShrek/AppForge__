@@ -1,19 +1,31 @@
 import {Section} from "./section/Section"
+import {Fragment} from "../Fragment"
 
-export class Form implements Fragment{
+export abstract class Form extends Fragment{
 
     sections: Map<SectionKey, Section> = new Map()
 
-    private onMountExecutesList: (() => void)[] = []
+    private onMountExecutionList: (() => void)[] = []
 
-    protected constructor(public core: HTMLFormElement) {}
+    protected constructor(core: HTMLFormElement) {super(core)}
 
     onMount(execute: () => void){
-        this.onMountExecutesList.push(execute)
+        this.onMountExecutionList.push(execute)
     }
 
-    protected mount = () => {
-        this.onMountExecutesList.forEach(execute => execute())
-        this.onMountExecutesList = null
+    getValues(): object {
+        const values = {}
+        this.sections.forEach((section, sectionKey) => {
+            section.fields.forEach((field, fieldKey) => {
+                if(field.value)
+                    values[`${sectionKey}.${fieldKey}`] = field.value
+            })
+        })
+        return values
+    }
+
+    protected mount(){
+        this.onMountExecutionList.forEach(execute => execute())
+        this.onMountExecutionList = null
     }
 }

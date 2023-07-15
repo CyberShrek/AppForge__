@@ -1,16 +1,17 @@
-import {resolveCSS} from "../utils/resolver"
-import {downloadUserManual, fetchAppMetaData} from "../utils/api/appMetaData"
-import {popupList, popupTimeoutAction} from "../utils/modal"
+import {resolveCSS} from "../../utils/resolver"
+import {downloadUserManual, fetchAppMetaData} from "../../utils/api/appMetaData"
+import {popupList, popupTimeoutAction} from "../../utils/modal"
+import {Fragment} from "../Fragment";
 
-export default class Header implements Fragment{
+export default class Header extends Fragment{
 
     private appMetaData: AppMetaData
 
-    constructor(
-        public core: HTMLElement
-    ) {
+    constructor(core: HTMLElement) {super(core)
         resolveCSS("header")
-        fetchAppMetaData().then(appInfo => this.appMetaData = appInfo)
+        fetchAppMetaData().then(data => {
+            this.appMetaData = data
+        })
         this.activateResetButton()
         this.activateInfoButton()
         this.activateHelpButton()

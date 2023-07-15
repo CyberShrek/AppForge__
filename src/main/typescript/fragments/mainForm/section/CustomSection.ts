@@ -6,7 +6,7 @@ import {Form} from "../Form"
 import {Field} from "./fields/Field"
 
 export class CustomSection extends Section{
-    constructor(public core: HTMLElement,
+    constructor(core: HTMLElement,
                 public form: Form) { super(core, form)
         core.querySelectorAll<HTMLElement>(".field").forEach(fieldElement =>
             this.fields.set(
