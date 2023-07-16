@@ -5,7 +5,6 @@ export function createElement<T extends HTMLElement>(tagName: string, classes?: 
     return element
 }
 
-
 export function createButton(classes?: string, attributes?: Map<string, string>): HTMLButtonElement{
     return createElement("button", classes, attributes) as HTMLButtonElement
 }

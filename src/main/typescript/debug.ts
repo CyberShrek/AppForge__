@@ -1,17 +1,22 @@
 import {TableFragment} from "./fragments/report/content/TableFragment";
+import {setOf} from "./utils/misc";
 
-const debugElement: HTMLElement = document.querySelector("debug")
+const debugElement: HTMLElement = document.querySelector("debug"),
+    tableFragment = new TableFragment({
+        target: debugElement
+    })
 
-new TableFragment({
-    target: debugElement
-}).setBody(createContentMap(2, 5, 100))
-
+tableFragment.setHead(setOf(
+    [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
+    [{content: "1"}, {content: "2"}, {content: "1"}, {content: "2"}, {content: "3"}, {content: "4"}, {content: "5"}]
+))
+tableFragment.setBody(createContentMap(2, 5, 1000))
 
 
 
 // создание и заполнение MAP
-function createContentMap(primaryCellsSize: number, valueCellsSize: number, tableSize: number): TableBodyMap {
-    const contentMap: TableBodyMap = new Map(); //создание MAP
+function createContentMap(primaryCellsSize: number, valueCellsSize: number, tableSize: number): TableBody {
+    const contentMap: TableBody = new Map(); //создание MAP
     for(let i : number = 0; i < tableSize; i++){
         const primaryCells: string[] = []; //создание массива для значений ключа
         for(let j : number = 0; j < primaryCellsSize; j++)

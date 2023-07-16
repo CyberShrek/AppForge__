@@ -41,6 +41,12 @@ export function javaMapToMap(javaMap: string): Map<string, string>{
     )
 }
 
+export function sortMap<K, V>(contentMap: Map<K, V>): Map<K, V>{
+    return new Map([...contentMap.entries()].sort(
+        (a : [K, V], b : [K, V]) : number => a[0] > b[0] ? 1 : a[0] < b[0] ? -1 : 0
+    ))
+}
+
 export function splitJavaCollection(javaCollection: string): string[]{
     return javaCollection
         .slice(1, -1) // Removing '{' and '}' in the both sides of the string
