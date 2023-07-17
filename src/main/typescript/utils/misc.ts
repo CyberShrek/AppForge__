@@ -10,7 +10,7 @@ export function pairOf<F, S>(first: F, second: S): Pair<F, S>{
     return {first, second}
 }
 
-export function numberOf(word: string): number {
+export function numberOf(word: string|number): number {
     return isNaN(Number(word)) ? 0 : Number(word)
 }
 
