@@ -22,11 +22,18 @@ export class TableFragment extends Fragment{
 
     setHead(head: TableHead){
         emptyElement(this.thead)
-        head.forEach(headRow => this.thead.appendChild(
-            this.createHTMLRow(headRow.map(
-                headCell => this.createHeadHTMLCell(headCell.content, headCell.rowSpan, headCell.colSpan)
-            ))
-        ))
+        head.forEach(headRow => {
+            let columnId = 0
+                this.thead.appendChild(
+                    this.createHTMLRow(headRow.map(
+                        (headCell, index) => {
+                            const htmlHeadCell = this.createHeadHTMLCell(headCell.content, headCell.rowSpan, headCell.colSpan)
+                            if (headCell.hasFiler) htmlHeadCell.setAttribute("filter", String(headCell.hasFiler))
+                            return htmlHeadCell
+                        })
+                    ))
+            }
+        )
     }
 
     setBody(bodyContent: TableBody){
@@ -89,6 +96,10 @@ export class TableFragment extends Fragment{
         const td: HTMLTableCellElement = createElement(isHead === true ? "th" : "td")
         td.textContent = String(cellContent)
         return td
+    }
+
+    private setFilter(targetHtmlHeaderCell: HTMLTableCellElement, columnId: number){
+
     }
 
     private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
