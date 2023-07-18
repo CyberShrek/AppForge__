@@ -16,10 +16,10 @@ const debugElement: HTMLElement = document.querySelector("debug"),
 debugElement.className = "report"
 
 tableFragment.setHead(setOf(
-    [{content: "Primary", colSpan: 3}, {content: "Values", colSpan: 5}],
-    [{content: "1"}, {content: "2"}, {content: "3"}, {content: "1"}, {content: "2"}, {content: "3"}, {content: "4"}, {content: "5"}]
+    [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
+    [{content: "1"}, {content: "2"}, {content: "1"}, {content: "2"}, {content: "3"}, {content: "4"}, {content: "5"}]
 ))
-tableFragment.setBody(createContentMap(3, 5, 30))
+tableFragment.setBody(createContentMap(2, 5, 30))
 tableFragment.setTotal()
 
 

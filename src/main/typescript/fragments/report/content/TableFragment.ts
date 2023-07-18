@@ -1,7 +1,6 @@
 import {Fragment} from "../../Fragment"
-import {FragmentLocation} from "../../../entities/Fragment"
-import {emptyElement, createElement} from "../../../utils/domWizard"
-import {concatMaps, mapOf, numberOf, sortMap} from "../../../utils/misc"
+import {emptyElement, createElement} from "../../../utils/DOMWizard"
+import {concatMaps, numberOf, sortMap} from "../../../utils/misc"
 
 export class TableFragment extends Fragment{
 
@@ -9,36 +8,27 @@ export class TableFragment extends Fragment{
     protected tbody: HTMLTableSectionElement = createElement("tbody")
     protected tfoot: HTMLTableSectionElement = createElement("tfoot")
 
-    private bodyContent: TableBody = mapOf()
-
-    // Allows to filter the bodyContent. Key is column id
-    private filters: Map<number, HTMLInputElement>
+    protected bodyContent: TableBody = new Map()
 
     constructor(location: FragmentLocation) {
         super(createElement("table"), location)
         this.core.append(this.thead, this.tfoot, this.tbody)
-        this.slot = this.tfoot
     }
 
     setHead(head: TableHead){
         emptyElement(this.thead)
-        head.forEach(headRow => {
-            let columnId = 0
-                this.thead.appendChild(
-                    this.createHTMLRow(headRow.map(
-                        (headCell, index) => {
-                            const htmlHeadCell = this.createHeadHTMLCell(headCell.content, headCell.rowSpan, headCell.colSpan)
-                            if (headCell.hasFiler) htmlHeadCell.setAttribute("filter", String(headCell.hasFiler))
-                            return htmlHeadCell
-                        })
-                    ))
-            }
+        head.forEach(headRow =>
+            this.thead.appendChild(
+                this.createHTMLRow(headRow.map(
+                    headCell => this.createHTMLHeadCell(headCell.content, headCell.rowSpan, headCell.colSpan))
+                )
+            )
         )
     }
 
     setBody(bodyContent: TableBody){
         emptyElement(this.tbody)
-        this.bodyContent = mapOf()
+        this.bodyContent = new Map()
         this.addBody(bodyContent)
     }
 
@@ -46,7 +36,7 @@ export class TableFragment extends Fragment{
         this.bodyContent = sortMap(concatMaps(this.bodyContent, bodyContent))
         this.bodyContent.forEach((valueCells, primaryCells) =>
             this.tbody.append(this.createHTMLRow(
-                primaryCells.map(cell => this.createHTMLPrimaryCell(cell)).concat(
+                primaryCells.map(cell => this.createHTMLCell(cell, "primary")).concat(
                     valueCells.map(cell => this.createHTMLCell(String(cell))))))
         )
         this.groupPrimaryCells()
@@ -60,46 +50,27 @@ export class TableFragment extends Fragment{
             }))
         }
         this.tfoot.querySelector(".total")?.remove()
-        this.tfoot.appendChild(this.createTotalHTMLRow(total.map(value => this.createHTMLCell(value))))
+        this.tfoot.appendChild(this.createHTMLTotalRow(total.map(value => this.createHTMLCell(value))))
     }
 
-    private createHTMLRow(htmlCells?: HTMLTableCellElement[]): HTMLTableRowElement{
-        const tr: HTMLTableRowElement = createElement("tr")
-        if(htmlCells)
-            tr.append(...htmlCells)
+    private createHTMLTotalRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
+        const primaryTotalCell = this.createHTMLCell("Всего")
+        primaryTotalCell.colSpan = this.tbody.querySelector("tr").querySelectorAll(".primary").length
+        return this.createHTMLRow([primaryTotalCell, ...htmlCells], "total")
+    }
 
+    private createHTMLRow(htmlCells: HTMLTableCellElement[], cssClass?: string): HTMLTableRowElement{
+        const tr: HTMLTableRowElement = createElement("tr", "", {class: cssClass})
+        tr.append(...htmlCells)
         return tr
     }
 
-    private createTotalHTMLRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
-        const primaryTotalCell = this.createHTMLCell("Всего")
-        primaryTotalCell.colSpan = this.tbody.querySelector("tr").querySelectorAll(".primary").length
-        const totalHtmlRow = this.createHTMLRow([primaryTotalCell, ...htmlCells])
-        totalHtmlRow.className = "total"
-        return totalHtmlRow
+    private createHTMLHeadCell(cellContent: string, rowSpan: number = 1, colSpan: number = 1): HTMLTableCellElement{
+        return createElement("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
     }
 
-    private createHeadHTMLCell(cellContent: string, rowSpan?: number, colSpan?: number){
-        const th: HTMLTableCellElement = this.createHTMLCell(cellContent, true)
-        if(rowSpan) th.rowSpan = rowSpan
-        if(colSpan) th.colSpan = colSpan
-        return th
-    }
-
-    private createHTMLPrimaryCell(cellContent: string): HTMLTableCellElement{
-        const td: HTMLTableCellElement = this.createHTMLCell(cellContent)
-        td.className = "primary"
-        return td
-    }
-
-    private createHTMLCell(cellContent: string|number, isHead: boolean = false): HTMLTableCellElement{
-        const td: HTMLTableCellElement = createElement(isHead === true ? "th" : "td")
-        td.textContent = String(cellContent)
-        return td
-    }
-
-    private setFilter(targetHtmlHeaderCell: HTMLTableCellElement, columnId: number){
-
+    private createHTMLCell(cellContent: string|number, cssClass?: string): HTMLTableCellElement {
+        return createElement("td", String(cellContent), {class: cssClass})
     }
 
     private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
@@ -107,7 +78,6 @@ export class TableFragment extends Fragment{
                               nesting: number = 0){
         if(startHtmlRow === endHtmlRow) return
         const primaryHtmlCell = startHtmlRow.cells[nesting]
-
         if(!primaryHtmlCell?.classList?.contains("primary")) return
         let nextHtmlRow = startHtmlRow
         do {

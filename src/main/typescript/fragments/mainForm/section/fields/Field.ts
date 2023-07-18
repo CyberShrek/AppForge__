@@ -2,7 +2,6 @@ import {Section} from "../Section"
 import {updateEvent} from "../../../../entities/events"
 import {Fragment} from "../../../Fragment"
 
-
 export abstract class Field extends Fragment{
 
     abstract readonly value: any

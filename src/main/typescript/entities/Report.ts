@@ -3,15 +3,14 @@ interface Report {
     add
 }
 
-interface HeadCell {
+type TableHead = Set<HeadCell[]>
+type HeadCell = {
     content: string,
     rowSpan?: number,
     colSpan?: number,
     hasFiler?: boolean
 }
 
-type TableHead = Set<HeadCell[]>
-
+type TableBody   = Map<PrimaryCell[], ValueCell[]>
 type PrimaryCell = string
 type ValueCell   = number|string
-type TableBody   = Map<PrimaryCell[], ValueCell[]>

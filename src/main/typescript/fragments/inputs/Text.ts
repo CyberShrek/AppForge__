@@ -1,11 +1,11 @@
 import {Fragment} from "../Fragment"
-import {createElement} from "../../utils/domWizard"
-import {FragmentLocation} from "../../entities/Fragment"
-import {mapOf} from "../../utils/misc";
+import {createElement} from "../../utils/DOMWizard"
 
 export class Text extends Fragment{
-    constructor(location: FragmentLocation) {
-        super(createElement("input", mapOf("": "")), location)
-        this.core.setAttribute("type", "text")
+    constructor(location: FragmentLocation, placeholder: string = "") {
+        super(createElement("input", "",{type: "text"}, {placeholder}), location)
+
     }
+
+
 }

@@ -1,14 +1,11 @@
-import {FragmentLocation} from "../entities/Fragment"
-
 export abstract class Fragment {
     protected constructor(
-        protected core: HTMLElement,
-        protected location?: FragmentLocation,
-        protected slot?: HTMLElement
+        protected readonly core: HTMLElement,
+        protected readonly location?: FragmentLocation
     ) {
         if(location)
             (location.target instanceof Fragment
-                ? location.target.slot!
+                ? location.target.core!
                 : location.target)
                 .insertAdjacentElement(location.position ? location.position : "beforeend", core)
     }
