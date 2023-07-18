@@ -1,6 +1,7 @@
-import {Fragment} from "../../Fragment"
+import {Fragment} from "../../core/Fragment"
 import {emptyElement, createElement} from "../../../utils/DOMWizard"
-import {concatMaps, numberOf, sortMap} from "../../../utils/misc"
+import {concatMaps, filterMap, numberOf, sortMap} from "../../../utils/misc"
+import {TextInput} from "../../inputs/TextInput";
 
 export class TableFragment extends Fragment{
 
@@ -10,6 +11,9 @@ export class TableFragment extends Fragment{
 
     protected bodyContent: TableBody = new Map()
 
+    // Key is filtrated column, value is filter text value
+    protected filtersMap: Map<number, string> = new Map()
+
     constructor(location: FragmentLocation) {
         super(createElement("table"), location)
         this.core.append(this.thead, this.tfoot, this.tbody)
@@ -17,13 +21,22 @@ export class TableFragment extends Fragment{
 
     setHead(head: TableHead){
         emptyElement(this.thead)
-        head.forEach(headRow =>
+        head.forEach(headRow => {
+            let columnId: number = 0
             this.thead.appendChild(
                 this.createHTMLRow(headRow.map(
-                    headCell => this.createHTMLHeadCell(headCell.content, headCell.rowSpan, headCell.colSpan))
+                    headCell => {
+                        const htmlHeadCell = this.createHTMLHeadCell(headCell.content, headCell.rowSpan, headCell.colSpan)
+                        if (headCell.hasFilter === true) {
+                            console.log("has")
+                            this.setFilter(htmlHeadCell, columnId)
+                        }
+                        columnId = columnId + htmlHeadCell.colSpan
+                        return htmlHeadCell
+                    })
                 )
             )
-        )
+        })
     }
 
     setBody(bodyContent: TableBody){
@@ -33,8 +46,8 @@ export class TableFragment extends Fragment{
     }
 
     addBody(bodyContent: TableBody){
-        this.bodyContent = sortMap(concatMaps(this.bodyContent, bodyContent))
-        this.bodyContent.forEach((valueCells, primaryCells) =>
+        this.bodyContent = concatMaps(this.bodyContent, bodyContent)
+        sortMap(this.filterBodyContent(this.bodyContent)).forEach((valueCells, primaryCells) =>
             this.tbody.append(this.createHTMLRow(
                 primaryCells.map(cell => this.createHTMLCell(cell, "primary")).concat(
                     valueCells.map(cell => this.createHTMLCell(String(cell))))))
@@ -71,6 +84,26 @@ export class TableFragment extends Fragment{
 
     private createHTMLCell(cellContent: string|number, cssClass?: string): HTMLTableCellElement {
         return createElement("td", String(cellContent), {class: cssClass})
+    }
+
+    private setFilter(htmlHeadCell: HTMLTableCellElement, targetColumnId: number){
+        const filterFragment = new TextInput({target: htmlHeadCell})
+        filterFragment.subscribe(value => {
+            this.filtersMap.set(targetColumnId, value)
+            this.setBody(this.bodyContent)
+        })
+    }
+
+    private filterBodyContent(bodyContent: TableBody): TableBody{
+        return filterMap(bodyContent, (valueCells, primaryCells) => {
+            const cellTexts = primaryCells.concat(valueCells.map(v => String(v)))
+            for (let i = 0; i < cellTexts.length; i++) {
+                const filterText = this.filtersMap.get(i)
+                if(!cellTexts[i].toLowerCase().includes(filterText ? filterText.toLowerCase() : ""))
+                    return false
+            }
+            return true
+        })
     }
 
     private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,

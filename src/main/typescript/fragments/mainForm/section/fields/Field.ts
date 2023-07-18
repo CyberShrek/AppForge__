@@ -1,7 +1,8 @@
 import {Section} from "../Section"
 import {updateEvent} from "../../../../entities/events"
-import {Fragment} from "../../../Fragment"
+import {Fragment} from "../../../core/Fragment"
 
+// TODO extend from InputFragment
 export abstract class Field extends Fragment{
 
     abstract readonly value: any

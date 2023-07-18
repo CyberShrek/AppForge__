@@ -1,6 +1,7 @@
 import {TableFragment} from "./fragments/report/content/TableFragment";
 import {setOf} from "./utils/misc"
 import {resolveCSS} from "./utils/resolver"
+import {TextInput} from "./fragments/inputs/TextInput";
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -8,16 +9,19 @@ resolveCSS("states")
 resolveCSS("third-party/animate")
 resolveCSS("report/table")
 
-const debugElement: HTMLElement = document.querySelector("debug"),
-    tableFragment = new TableFragment({
-        target: debugElement
-    })
-
+const debugElement: HTMLElement = document.querySelector("debug")
 debugElement.className = "report"
+
+// const textInput = new TextInput({target: debugElement})
+// textInput.subscribe(value => console.log(value))
+
+const tableFragment = new TableFragment({
+    target: debugElement
+})
 
 tableFragment.setHead(setOf(
     [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
-    [{content: "1"}, {content: "2"}, {content: "1"}, {content: "2"}, {content: "3"}, {content: "4"}, {content: "5"}]
+    [{content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "3", hasFilter: true}, {content: "4", hasFilter: true}, {content: "5", hasFilter: true}]
 ))
 tableFragment.setBody(createContentMap(2, 5, 30))
 tableFragment.setTotal()

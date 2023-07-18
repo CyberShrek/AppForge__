@@ -32,6 +32,9 @@ export function sortMap<K, V>(contentMap: Map<K, V>): Map<K, V>{
     ))
 }
 
+export function filterMap<K, V>(map: Map<K, V>, filter: (value: V, key: K) => boolean): Map<K, V> {
+    return new Map(Array.from(map).filter(([key, value]) => filter(value, key)))
+}
 
 export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),

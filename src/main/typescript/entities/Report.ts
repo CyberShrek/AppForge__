@@ -8,7 +8,7 @@ type HeadCell = {
     content: string,
     rowSpan?: number,
     colSpan?: number,
-    hasFiler?: boolean
+    hasFilter?: boolean
 }
 
 type TableBody   = Map<PrimaryCell[], ValueCell[]>

@@ -1,5 +1,5 @@
 import {Section} from "./section/Section"
-import {Fragment} from "../Fragment"
+import {Fragment} from "../core/Fragment"
 
 export abstract class Form extends Fragment{
 

@@ -1,7 +1,7 @@
 import {resolveCSS} from "../../utils/resolver"
 import {downloadUserManual, fetchAppMetaData} from "../../utils/api/appMetaData"
 import {popupList, popupTimeoutAction} from "../../utils/modal"
-import {Fragment} from "../Fragment";
+import {Fragment} from "../core/Fragment";
 
 export default class Header extends Fragment{
 

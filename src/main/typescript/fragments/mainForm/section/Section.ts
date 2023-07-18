@@ -1,6 +1,6 @@
 import {Field} from "./fields/Field"
 import {Form} from "../Form"
-import {Fragment} from "../../Fragment"
+import {Fragment} from "../../core/Fragment"
 
 export abstract class Section extends Fragment{
 

@@ -1,5 +1,5 @@
 import {createButton} from "../../utils/DOMWizard"
-import {Fragment} from "../Fragment"
+import {Fragment} from "../core/Fragment"
 
 export class Button extends Fragment {
 
