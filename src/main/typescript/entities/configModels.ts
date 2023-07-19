@@ -1,13 +1,13 @@
 interface SelectInputConfig{
     multiple?: boolean
     search?: boolean
-    showOptionKeys?: boolean
+    showCodes?: boolean
     disableSelectAll?: boolean
-    maxValues?: number
     required?: boolean
+    maxValues?: number
 }
 
-interface DatepickerInputConfig{
+interface DateInputConfig {
     maxDays?: number
     defaultRange?: DateRange
 }

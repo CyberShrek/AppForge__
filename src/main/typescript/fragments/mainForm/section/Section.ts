@@ -19,6 +19,6 @@ export class Section extends Fragment{
     // private defineField(fieldCore: HTMLElement): Field{
     //     if(fieldCore.classList.contains("datepicker")) return new Date(fieldCore, this)
     //     if(fieldCore.classList.contains("select")) return new Select(fieldCore, this)
-    //     if(fieldCore.classList.contains("checkbox")) return new CheckBox(fieldCore, this)
+    //     if(fieldCore.classList.contains("checkbox")) return new Checkbox(fieldCore, this)
     // }
 }

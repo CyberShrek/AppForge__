@@ -12,7 +12,7 @@ resolveCSS("third-party/easepick")
 
 export default class Date extends InputFragment<DateRange>{
 
-    constructor(location: FragmentLocation, config: DatepickerInputConfig) {
+    constructor(location: FragmentLocation, config: DateInputConfig) {
         super(location)
         this.core = createDivElement({class: "datepicker"})
         if(!config.defaultRange)
@@ -25,7 +25,7 @@ export default class Date extends InputFragment<DateRange>{
     }
 }
 
-function applyPicker(core: HTMLElement, config: DatepickerInputConfig, onSelect: (dateRange: DateRange) => void){
+function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (dateRange: DateRange) => void){
     new easepick.create({
         element: core,
         format: "DD.MM.YYYY",

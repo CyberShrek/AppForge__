@@ -11,6 +11,11 @@
           <div th:class="${field.type}+' field'" th:key="${key}">
 
             <th:block th:switch="${field.type}">
+              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.CheckBox"*/-->
+              <config th:case="'checkbox'"
+                      th:attr="label = ${field.label}">
+              </config>
+
               <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Date"*/-->
               <config th:case="'date'"
                       th:attr="max-days = ${field.maxDays}">

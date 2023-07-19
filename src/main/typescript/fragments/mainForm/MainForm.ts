@@ -1,17 +1,17 @@
 import {resolveCSS} from "../../utils/resolver"
 import {Button} from "../inputs/Button"
 import {InputFragment} from "../abstract/InputFragment"
-import Date from "../inputs/Date"
-import CheckBox from "../inputs/CheckBox"
-import Select from "../inputs/Select"
 import {Text} from "../inputs/Text"
 import {numberOf} from "../../utils/misc";
+import {DateField} from "./section/fields/DateField";
+import {CheckboxField} from "./section/fields/CheckboxField";
+import {SelectField} from "./section/fields/SelectField";
 
 resolveCSS("main-form")
 
 export default class MainForm extends InputFragment<MainFormValues>{
 
-    confirmButton: Button
+    readonly confirmButton: Button
 
     constructor(location: FragmentLocation) {
         super(location)
@@ -37,31 +37,10 @@ export default class MainForm extends InputFragment<MainFormValues>{
     private resolveField(fieldElement: HTMLElement): InputFragment<any>{
         const containsClass = (className: string) => fieldElement.classList.contains(className)
         const location: FragmentLocation = {target: fieldElement}
-        return containsClass("datepicker") ? new Date(location, resolveDatepickerConfig(fieldElement))
-            : containsClass("checkbox") ? new CheckBox(location)
-                : containsClass("select") ? new Select(location, resolveSelectConfig(fieldElement))
+        const configElement: HTMLElement = fieldElement.querySelector("config")
+        return containsClass("datepicker") ? new DateField(location, configElement)
+            : containsClass("checkbox") ? new CheckboxField(location, configElement)
+                : containsClass("select") ? new SelectField(location, configElement)
                     : new Text(location)
     }
-
-
-    // getValues(): MainFormValues {
-    //     const values = {}
-    //     this.sections.forEach((section, sectionKey) => {
-    //         section.fields.forEach((field, fieldKey) => {
-    //             if(!!field.value)
-    //                 values[`${sectionKey}.${fieldKey}`] = field.value
-    //         })
-    //     })
-    //     return values
-    // }
-}
-
-function resolveDatepickerConfig(fieldElement: HTMLElement): DatepickerInputConfig{
-    return {
-        maxDays: numberOf(fieldElement.querySelector("config").getAttribute("max-days"))
-    }
-}
-
-function resolveSelectConfig(fieldElement: HTMLElement): SelectInputConfig{
-    const config = fieldElement.querySelector("config")
 }

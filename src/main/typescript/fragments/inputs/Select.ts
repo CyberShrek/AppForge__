@@ -61,7 +61,7 @@ function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
         markSearchResults: true,
         optionsCount: 6,
         showSelectedOptionsFirst:true,
-        hasOptionDescription: config.showOptionKeys,
+        hasOptionDescription: config.showCodes,
         disableSelectAll: !!config.disableSelectAll,
         maxValues: config.maxValues,
         required: !!config.required,
