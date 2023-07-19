@@ -1,4 +1,4 @@
-interface Report {
+interface ReportConfig {
     title?: string,
     add
 }

@@ -1,4 +1,4 @@
-import {Field} from "./Field"
+import {Field} from "../../Field"
 import {Section} from "../Section"
 import {javaMapToMap, javaSetToSet, mapToOptions, splitJavaCollection} from "../../../../utils/misc"
 import {resolveCSS} from "../../../../utils/resolver"
@@ -44,33 +44,33 @@ export default class Select extends Field{
         const enabledOptionsCache = this.value
         if(options && options.length > 0) {
             // @ts-ignore !!! Resolved by html import !!!
-            this.core.setOptions(options)
+            this.coreElement.setOptions(options)
             this.selectOptions(enabledOptionsCache)
             // @ts-ignore !!! Resolved by html import !!!
-            this.core.enable()
+            this.coreElement.enable()
         }
         else {
             // @ts-ignore !!! Resolved by html import !!!
-            this.core.disable()
+            this.coreElement.disable()
             // @ts-ignore !!! Resolved by html import !!!
-            this.core.reset()
-            this.core.blur()
+            this.coreElement.reset()
+            this.coreElement.blur()
         }
     }
 
     selectOptions(values: Option["value"][]){
         // @ts-ignore !!! Resolved by html import !!!
-        this.core.setValue(values)
+        this.coreElement.setValue(values)
     }
 
     private initStaticMap(){
-        const staticElement = this.core.querySelector("static")
+        const staticElement = this.coreElement.querySelector("static")
         if(staticElement !== null)
             this.staticMap = javaMapToMap(staticElement.textContent)
     }
 
     private initDefaultValues(){
-        const staticElement = this.core.querySelector("default")
+        const staticElement = this.coreElement.querySelector("default")
         if(staticElement !== null)
             this.defaultValue = splitJavaCollection(staticElement.textContent)
     }
@@ -81,7 +81,7 @@ export default class Select extends Field{
             this.dispatchUpdate()
         }
 
-        this.core.addEventListener("change", function() {
+        this.coreElement.addEventListener("change", function() {
             // @ts-ignore !!! Resolved by html import !!!
             updateValues(this.value)
         })
@@ -98,7 +98,7 @@ export default class Select extends Field{
 
 
     private tryToSetCarriers(){
-        const carriersElement = this.core.querySelector("config > carriers")
+        const carriersElement = this.coreElement.querySelector("config > carriers")
         if(carriersElement !== null){
             const dateFieldLocation: string[] = carriersElement.querySelector("subscribes date").textContent.split(".")
             this.subscribeToField(
@@ -110,7 +110,7 @@ export default class Select extends Field{
     }
 
     private tryToSetCountries(){
-        const countriesElement = this.core.querySelector("config > countries")
+        const countriesElement = this.coreElement.querySelector("config > countries")
         if(countriesElement !== null){
             let subscribedDateValue: DateRange[0],
                 subscribedPostSovietValue: boolean
@@ -139,7 +139,7 @@ export default class Select extends Field{
     }
 
     private tryToSetRoads(){
-        const roadsElement = this.core.querySelector("config > roads")
+        const roadsElement = this.coreElement.querySelector("config > roads")
         if(roadsElement !== null){
             let subscribedDateValue: DateRange[0],
                 subscribedCountriesValue: typeof this.value
@@ -167,7 +167,7 @@ export default class Select extends Field{
     }
 
     private tryToSetStations(){
-        const stationsElement = this.core.querySelector("config > stations")
+        const stationsElement = this.coreElement.querySelector("config > stations")
         if(stationsElement !== null){
             let subscribedDateValue: DateRange[0],
                 subscribedRoadsValue: typeof this.value
@@ -186,7 +186,7 @@ export default class Select extends Field{
         }
     }
 
-    private setupSubscribe(relativeElement: Element = this.core,
+    private setupSubscribe(relativeElement: Element = this.coreElement,
                            fieldLocationTextSelector: string,
                            callback: (value) => void){
 
@@ -202,7 +202,7 @@ export default class Select extends Field{
     }
 
     private tryToSetDynamic(){
-        const dynamicElement = this.core.querySelector("config > dynamic")
+        const dynamicElement = this.coreElement.querySelector("config > dynamic")
         if(dynamicElement !== null) {
             const url: string = dynamicElement.querySelector("url").textContent
             const subscribes: Set<string> = javaSetToSet(dynamicElement.querySelector("subscribes").textContent),

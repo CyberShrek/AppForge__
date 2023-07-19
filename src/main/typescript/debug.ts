@@ -1,7 +1,7 @@
 import {TableFragment} from "./fragments/report/content/TableFragment";
 import {setOf} from "./utils/misc"
 import {resolveCSS} from "./utils/resolver"
-import {TextInput} from "./fragments/inputs/TextInput";
+import {Text} from "./fragments/inputs/Text";
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -12,7 +12,7 @@ resolveCSS("report/table")
 const debugElement: HTMLElement = document.querySelector("debug")
 debugElement.className = "report"
 
-// const textInput = new TextInput({target: debugElement})
+// const textInput = new Text({target: debugElement})
 // textInput.subscribe(value => console.log(value))
 
 const tableFragment = new TableFragment({

@@ -1,11 +1,10 @@
 
 interface FragmentLocation{
-    // @ts-ignore
-    target: HTMLElement|Fragment,
+    target: HTMLElement,
     position?: InsertPosition
 }
 
-type Attribute  =
+type Attribute =
     { id: string } |
     { class: string } |
     { name: string } |

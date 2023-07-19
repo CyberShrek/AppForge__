@@ -3,22 +3,21 @@ import {Fragment} from "./Fragment"
 export abstract class InputFragment<V> extends Fragment{
 
     private _value: V
-    private valueChangeCallbacks: ((value: V) => void)[] = []
+    private valueEventCallbacks: ((value?: V) => void)[] = []
     get value(): V {
         return this._value
     }
     protected set value(value: V){
         this._value = value
-        this.valueChangeCallbacks.forEach(callback => callback(value))
+        this.valueEventCallbacks.forEach(callback => callback(value))
     }
 
-    protected constructor(protected readonly core: HTMLInputElement,
-                          protected readonly location?: FragmentLocation) { super(core, location) }
+    protected constructor(protected readonly location: FragmentLocation) { super(location) }
 
-    subscribe(onValueChange: (value: V) => void){
-        this.valueChangeCallbacks.push(onValueChange)
+    subscribe(onValueEvent: (value: V) => void){
+        this.valueEventCallbacks.push(onValueEvent)
         if(this.value)
-            onValueChange(this.value)
+            onValueEvent(this.value)
     }
 
     protected debounce(callback: () => void, delay: number = 100): () => void {

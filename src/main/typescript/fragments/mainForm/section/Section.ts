@@ -1,11 +1,24 @@
+import {Fragment} from "../../abstract/Fragment"
 import {Field} from "./fields/Field"
-import {Form} from "../Form"
-import {Fragment} from "../../core/Fragment"
 
-export abstract class Section extends Fragment{
+export class Section extends Fragment{
 
-    fields: Map<FieldKey, Field> = new Map()
+    fields: Map<string, Field>
 
-    protected constructor(core: HTMLElement,
-                          public form: Form) {super(core)}
+    constructor(location: FragmentLocation) {
+        super(location)
+        this.core = location.target
+        // core.querySelectorAll<HTMLElement>(".field").forEach(fieldElement =>
+        //     this.fields.set(
+        //         fieldElement.getAttribute("key"),
+        //         this.defineField(fieldElement)
+        //     )
+        // )
+    }
+
+    // private defineField(fieldCore: HTMLElement): Field{
+    //     if(fieldCore.classList.contains("datepicker")) return new Date(fieldCore, this)
+    //     if(fieldCore.classList.contains("select")) return new Select(fieldCore, this)
+    //     if(fieldCore.classList.contains("checkbox")) return new CheckBox(fieldCore, this)
+    // }
 }

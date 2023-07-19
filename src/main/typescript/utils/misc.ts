@@ -63,29 +63,6 @@ export function splitJavaCollection(javaCollection: string): string[]{
         .split(", ")
 }
 
-export function mapToOptions(map: Map<string, string>): Option[]{
-    return [...map.entries()].map(entry => entryToOption(entry))
-}
-
-export function jsonToOptions(json: object): Option[]{
-    return Object.entries(json).map(entry => entryToOption(entry))
-}
-
-export function entryToOption(entry: [string, string]): Option  {
-   return  {
-       label: entry[1],
-       value: entry[0],
-       alias: entry[0],
-       description: entry[0]
-    }
-}
-
-export function optionsToMap(options: Option[]): Map<string, string>{
-    const map: Map<string, string> = new Map()
-    options.forEach(option => map.set(option.value, option.label))
-    return map
-}
-
 export function setCursorToLoading() {
     document.documentElement.style.cursor = 'wait'
 }

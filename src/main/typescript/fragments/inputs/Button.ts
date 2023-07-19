@@ -1,23 +1,31 @@
-import {createButton} from "../../utils/DOMWizard"
-import {Fragment} from "../core/Fragment"
+import {createButtonElement, createImageElement} from "../../utils/DOMWizard"
+import {InputFragment} from "../abstract/InputFragment"
 
-export class Button extends Fragment {
+export class Button extends InputFragment<void> {
 
-    constructor(location: FragmentLocation, text?: string, image?: string) {
-        super(createButton())
+    private imageElement: HTMLImageElement
+
+    constructor(location: FragmentLocation) {
+        super(location)
+        this.core = createButtonElement()
+        this.core.addEventListener("click", () => this.value = this.value)
+    }
+
+    set text(text: string){
         this.core.textContent = text
-        location.target.insertAdjacentElement(location.position, this.core)
-        this.interceptStandardClick()
+    }
+    get text(): string{
+        return this.core.textContent
     }
 
-    private onClickExecutionList: (() => void)[] = []
-    onClick(execute: () => void){
-        this.onClickExecutionList.push(execute)
+    set image(src: string|null){
+        this.imageElement.remove()
+        if(!!src) {
+            this.imageElement = createImageElement(src)
+            this.core.appendChild(this.imageElement)
+        }
     }
-
-    private interceptStandardClick(){
-        this.core.addEventListener("click", () => {
-            this.onClickExecutionList?.forEach(execute => execute())
-        })
+    get image(): string{
+        return this.imageElement?.src
     }
 }

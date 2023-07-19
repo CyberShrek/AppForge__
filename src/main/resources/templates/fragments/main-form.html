@@ -8,17 +8,28 @@
         <th:block th:each="fieldEntry : ${section.fieldsMap}"
                   th:with="key = ${fieldEntry.key}, field = ${fieldEntry.value}">
           <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Field"*/-->
-          <p th:if="${field.title}" th:text="${field.title}"></p>
           <div th:class="${field.type}+' field'" th:key="${key}">
-            <th:block th:if="${field.type} == 'select'">
+
+            <th:block th:switch="${field.type}">
+              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Date"*/-->
+              <config th:case="'date'"
+                      th:attr="max-days = ${field.maxDays}">
+                <default th:text="${field.default}"></default>
+              </config>
+
               <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Select"*/-->
-              <config th:with="content = ${field.content}"
-                      th:attr="show-codes = ${content.showCodes}">
-                <static th:if="${content.staticMap}" th:text="${content.staticMap}">
-                </static>
+              <config th:case="'select'"
+                      th:with="content = ${field.content}"
+                      th:attr="
+                      show-codes = ${field.showCodes},
+                      search = ${field.search},
+                      multiselect = ${field.multiple},
+                      disable-select-all = ${field.disableSelectAll},
+                      max-values = ${field.maxValues},
+                      require = ${field.required}">
 
                 <dynamic th:if="${content.dynamicMap}">
-                  <subscribes th:text="${content.dynamicMap.subscribeOnFields}"></subscribes>
+                  <subscribes th:text="${content.dynamicMap.subscribeToFields}"></subscribes>
                   <url th:text="${content.dynamicMap.sourceUrl}"></url>
                 </dynamic>
 
@@ -34,6 +45,7 @@
                            th:with="countries = ${content.serviceBankCountries}">
                   <subscribes>
                     <date th:text="${countries.subscribeToDate}"></date>
+                    <postsoviet th:text="${countries.subscribeToPostSovietCheckbox}"></postsoviet>
                   </subscribes>
                   <extra th:text="${countries.extraProperties}"></extra>
                 </countries>
@@ -56,6 +68,7 @@
                   <extra th:text="${stations.extraProperties}"></extra>
                 </stations>
 
+                <default th:text="${field.defaultValues}"></default>
               </config>
             </th:block>
           </div>
@@ -63,5 +76,5 @@
       </div>
     </div>
   </th:block>
-  <script type="module" src="./js/third-party/virtual-select.min.js"></script>
+  <script type="module" src="./app-forge/js/third-party/virtual-select.min.js"></script>
 </form>

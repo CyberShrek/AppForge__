@@ -1,7 +1,7 @@
 import {resolveCSS} from "../../utils/resolver"
 import {downloadUserManual, fetchAppMetaData} from "../../utils/api/appMetaData"
 import {popupList, popupTimeoutAction} from "../../utils/modal"
-import {Fragment} from "../core/Fragment";
+import {Fragment} from "../abstract/Fragment";
 
 export default class Header extends Fragment{
 
@@ -43,6 +43,6 @@ export default class Header extends Fragment{
     }
 
     private activateButton(buttonClassName: string, onClick: () => void){
-        this.core.querySelector("button."+buttonClassName).addEventListener("click", onClick)
+        this.coreElement.querySelector("button."+buttonClassName).addEventListener("click", onClick)
     }
 }

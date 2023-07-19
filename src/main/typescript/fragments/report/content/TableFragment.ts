@@ -1,7 +1,7 @@
-import {Fragment} from "../../core/Fragment"
+import {Fragment} from "../../abstract/Fragment"
 import {emptyElement, createElement} from "../../../utils/DOMWizard"
 import {concatMaps, filterMap, numberOf, sortMap} from "../../../utils/misc"
-import {TextInput} from "../../inputs/TextInput";
+import {Text} from "../../inputs/Text";
 
 export class TableFragment extends Fragment{
 
@@ -16,7 +16,7 @@ export class TableFragment extends Fragment{
 
     constructor(location: FragmentLocation) {
         super(createElement("table"), location)
-        this.core.append(this.thead, this.tfoot, this.tbody)
+        this.coreElement.append(this.thead, this.tfoot, this.tbody)
     }
 
     setHead(head: TableHead){
@@ -27,10 +27,7 @@ export class TableFragment extends Fragment{
                 this.createHTMLRow(headRow.map(
                     headCell => {
                         const htmlHeadCell = this.createHTMLHeadCell(headCell.content, headCell.rowSpan, headCell.colSpan)
-                        if (headCell.hasFilter === true) {
-                            console.log("has")
-                            this.setFilter(htmlHeadCell, columnId)
-                        }
+                        if (headCell.hasFilter === true) this.setFilter(htmlHeadCell, columnId)
                         columnId = columnId + htmlHeadCell.colSpan
                         return htmlHeadCell
                     })
@@ -87,7 +84,7 @@ export class TableFragment extends Fragment{
     }
 
     private setFilter(htmlHeadCell: HTMLTableCellElement, targetColumnId: number){
-        const filterFragment = new TextInput({target: htmlHeadCell})
+        const filterFragment = new Text({target: htmlHeadCell})
         filterFragment.subscribe(value => {
             this.filtersMap.set(targetColumnId, value)
             this.setBody(this.bodyContent)

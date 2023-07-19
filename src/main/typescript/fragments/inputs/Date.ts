@@ -1,30 +1,31 @@
-import {resolveCSS} from "../../../../utils/resolver"
+import {resolveCSS} from "../../utils/resolver"
+import {numberOf, stringifyDate} from "../../utils/misc"
 import {easepick} from "@easepick/core"
+import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
-import {AmpPlugin} from "@easepick/amp-plugin"
 import {DateTime} from "@easepick/datetime"
-import {stringifyDate, numberOf} from "../../../../utils/misc"
-import {Field} from "./Field"
-import {Section} from "../Section"
+import {InputFragment} from "../abstract/InputFragment"
+import {createDivElement} from "../../utils/DOMWizard"
 
 resolveCSS("third-party/easepick")
 
-export default class Datepicker extends Field{
+export default class Date extends InputFragment<DateRange>{
 
-    value: DateRange = [
-        stringifyDate(new Date()),
-        stringifyDate(new Date())]
-    constructor(core: HTMLElement,
-                public section: Section) { super(core, section)
+    constructor(location: FragmentLocation, config: DatepickerInputConfig) {
+        super(location)
+        this.core = createDivElement({class: "datepicker"})
+        if(!config.defaultRange)
+            config.defaultRange = [stringifyDate(new Date()), stringifyDate(new Date())]
 
-        applyPicker(core, this.value, (startDate, endDate) => {
-            this.dispatchUpdate()
+        this.value = config.defaultRange
+        applyPicker(this.core, config, dateRange => {
+            this.value = dateRange
         })
     }
 }
 
-function applyPicker(core: HTMLElement, defaultValue: DateRange, onSelect: (startDate, endDate) => void){
+function applyPicker(core: HTMLElement, config: DatepickerInputConfig, onSelect: (dateRange: DateRange) => void){
     new easepick.create({
         element: core,
         format: "DD.MM.YYYY",
@@ -41,8 +42,8 @@ function applyPicker(core: HTMLElement, defaultValue: DateRange, onSelect: (star
             }
         },
         RangePlugin: {
-            startDate: new DateTime(defaultValue[0]),
-            endDate: new DateTime(defaultValue[1]),
+            startDate: new DateTime(config.defaultRange[0]),
+            endDate: new DateTime(config.defaultRange[1]),
             locale: {
                 one: 'день',
                 few: 'дня',
@@ -52,14 +53,14 @@ function applyPicker(core: HTMLElement, defaultValue: DateRange, onSelect: (star
         },
         LockPlugin: {
             minDays: 1,
-            maxDays: numberOf(core.getAttribute("max-days"))
+            maxDays: config.maxDays
         },
         css: [
             "app-forge/css/third-party/easepick.css"
         ],
         setup(picker) {
             picker.on("select", (e) => {
-                onSelect(e.detail.start, e.detail.end)
+                onSelect([e.detail.start, e.detail.end])
                 setTimeout(() => picker.hide(), 10)
             })
         }
