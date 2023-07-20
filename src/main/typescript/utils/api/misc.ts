@@ -1,16 +1,16 @@
 import wretch from "wretch"
 import {popupHttpDataError} from "../modal"
-import {jsonToOptions, mapToOptions, setCursorToDefault, setCursorToLoading} from "../misc";
+import {setCursorToDefault, setCursorToLoading} from "../misc";
 
-export const fetchOptions = (url: string, headers: Map<string, string>): Promise<Option[]> => {
+export const fetchEndpointOptions = (url: string, headers: Map<string, string>): Promise<Options> => {
     setCursorToLoading()
     return wretch(url)
         .headers(Object.fromEntries(headers))
         .get()
-        .json(json => jsonToOptions(json))
+        .json(json => new Map<OptionKey, OptionLabel>(Object.entries(json)))
         .catch(error => {
             popupHttpDataError(error, "Не удалось загрузить список опций")
-            return []
+            return new Map()
         })
         .finally(() => setCursorToDefault())
 }

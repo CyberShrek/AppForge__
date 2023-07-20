@@ -17,15 +17,9 @@ export default class Select extends InputFragment<Set<OptionKey>>{
         )
     }
 
-    retrieveOptions(...retrievalCallbacks: (() => Promise<Map<OptionKey, OptionLabel>>)[]){
-        const optionsBuffer: Map<OptionKey, OptionLabel> = new Map()
-        retrievalCallbacks.forEach(callback => callback()
-            .then(options => concatMaps(optionsBuffer, options)))
+    protected optionsRetrievalCallbacks: Set<() => Promise<Options>> = new Set()
 
-        this.setOptions(optionsBuffer)
-    }
-
-    setOptions(options: Map<OptionKey, OptionLabel>){
+    setOptions(options: Options){
         const enabledOptionsCache = this.value
         if(!!options && options.size > 0) {
             // @ts-ignore !!! Resolved by html import !!!

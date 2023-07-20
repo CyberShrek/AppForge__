@@ -1,6 +1,7 @@
 import Select from "../../../../inputs/Select"
-import {numberOf} from "../../../../../utils/misc"
+import {concatMaps, numberOf} from "../../../../../utils/misc"
 import {InputFragment} from "../../../../abstract/InputFragment"
+import {fetchEndpointOptions} from "../../../../../utils/api/misc";
 
 export class SelectField extends Select{
     constructor(location: FragmentLocation,
@@ -17,19 +18,27 @@ export class SelectField extends Select{
         super(location, config)
     }
 
-    private  optionsEndpointUrl: string = this.configElement.querySelector("endpoint subscriptions url").textContent
-    readonly subscribedFields: Map<string, InputFragment<any>|null> = new Map(
-        [...this.configElement.querySelectorAll<HTMLElement>("endpoint subscriptions field")]
+    private  endpointConfigElement: HTMLElement = this.configElement.querySelector("endpoint")
+    private  endpointUrl: string = this.endpointConfigElement.querySelector("url").textContent
+    readonly endpointSubscribedFields: Map<string, InputFragment<any>|null> = new Map(
+        [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
             .map(fieldElement => [fieldElement.textContent, null]))
 
-    listenSubscribes(){
-        const fieldValues: {[filedKey: string]: string} = {}
-        this.subscribedFields.forEach((field, key) =>
-            field.subscribe(value => ))
+    protected optionsBuffer: Map<string, Options> = new Map()
+    protected applyOptionsBuffer(){
+        this.setOptions(concatMaps(...this.optionsBuffer.values()))
     }
 
-    subscribeToField(fieldKey: string, field: InputFragment<any>){
-        field.subscribe(value => {})
+    startOptionsRetrieving(){
+        let isStarted = false
 
+        this.endpointSubscribedFields.forEach((field, key) =>
+            field.subscribe(value => {
+                if(isStarted)
+                    fetchEndpointOptions(this.endpointUrl, null)
+                        .then(options => this.endpointOptions = options)
+            }))
+
+        isStarted = true
     }
 }

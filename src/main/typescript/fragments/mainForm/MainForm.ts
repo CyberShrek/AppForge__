@@ -47,8 +47,8 @@ export default class MainForm extends InputFragment<MainFormValues>{
     }
 
     private resolveSelectFieldSubscriptions(field: SelectField){
-        field.subscribedFields.forEach((_, key) =>
-            field.subscribedFields.set(key, this.fields.get(key))
+        field.endpointSubscribedFields.forEach((_, key) =>
+            field.endpointSubscribedFields.set(key, this.fields.get(key))
         )
 
         if(field instanceof CarriersSelectField){
@@ -63,7 +63,7 @@ export default class MainForm extends InputFragment<MainFormValues>{
 
         }
 
-        field.listenSubscribes()
+        field.startOptionsRetrieving()
     }
 }
 

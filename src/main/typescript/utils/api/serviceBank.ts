@@ -15,7 +15,7 @@ export const fetchCarriersByDate = (date: Date|string): Promise<Map<OptionKey, O
         null,null,
         "Не удалось загрузить список перевозчиков")
 
-export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Map<OptionKey, OptionLabel>> =>
+export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Options> =>
     fetchOptions("gosList", date,
         (item) => [item["g_name"], item["g_kod"]],
         {"g_prsng": "1"},
@@ -23,7 +23,7 @@ export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean)
         "Не удалось загрузить список государств")
 
 export const fetchRoadsByCountriesAndDate = async (countryValues: string[],
-                                                   date: Date|string): Promise<Map<OptionKey, OptionLabel>> =>
+                                                   date: Date|string): Promise<Options> =>
     mergePromises(countryValues.map((countryValue) =>
         fetchOptions("dorList", date,
             item => [
@@ -41,7 +41,7 @@ export const fetchRoadsByCountriesAndDate = async (countryValues: string[],
 
 export const fetchStationsByRoadsAndDate = async (roadValues: string[],
                                                   date: Date|string,
-                                                  extraProperty?: Pair<string, string>): Promise<Map<OptionKey, OptionLabel>> =>
+                                                  extraProperty?: Pair<string, string>): Promise<Options> =>
     mergePromises(
         Array.from(mapRoadsByCountryCodeAndRoadCodes(roadValues)).map(([countryValue, roadValues]) =>
             fetchOptions("stanList", date,
@@ -64,7 +64,7 @@ const fetchOptions = (listName: string,
                           , OptionLabel],
                       extraProperties = {},
                       filter?: (item: any) => boolean,
-                      errorFooter?: string): Promise<Map<OptionKey, OptionLabel>> => {
+                      errorFooter?: string): Promise<Options> => {
     setCursorToLoading()
     return wretch(serviceBankURL)
         .post({
@@ -83,7 +83,7 @@ const fetchOptions = (listName: string,
         .finally(() => setCursorToDefault())
 }
 
-function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promise<Map<OptionKey, OptionLabel>> {
+function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promise<Options> {
     return Promise.all(promises)
         .then((results) => {
             const mergedResult = new Map<OptionKey, OptionLabel>();
@@ -96,12 +96,12 @@ function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promis
         })
         .catch((error) => {
             // Обработка ошибок
-        }) as Promise<Map<OptionKey, OptionLabel>>
+        }) as Promise<Options>
 }
 
 
-const mapRoadsByCountryCodeAndRoadCodes = (roads: Option["value"][]) => {
-    const codesMap = new Map<Option["value"], string[]>()
+const mapRoadsByCountryCodeAndRoadCodes = (roads: OptionKey[]) => {
+    const codesMap = new Map<OptionKey, string[]>()
     for (const road of roads) {
         const roadValueEntries = road.split("."),
             countryValue = roadValueEntries[0],

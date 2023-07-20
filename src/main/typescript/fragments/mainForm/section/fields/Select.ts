@@ -7,7 +7,7 @@ import {
     fetchCountriesByDate,
     fetchRoadsByCountriesAndDate, fetchStationsByRoadsAndDate
 } from "../../../../utils/api/serviceBank"
-import {fetchOptions} from "../../../../utils/api/misc"
+import {fetchEndpointOptions} from "../../../../utils/api/misc"
 resolveCSS("third-party/virtual-select.min")
 
 export default class Select extends Field{
@@ -224,7 +224,7 @@ export default class Select extends Field{
     }
 
     private updateDynamic(url: string, subscribeKeyAndValues: Map<string, string>){
-        fetchOptions(url, subscribeKeyAndValues).then(options => this.setOptions(options))
+        fetchEndpointOptions(url, subscribeKeyAndValues).then(options => this.setOptions(options))
     }
 
     private updateCarriers(date: DateRange[0]){
