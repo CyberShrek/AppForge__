@@ -1,4 +1,3 @@
-
 interface FragmentLocation{
     target: HTMLElement,
     position?: InsertPosition

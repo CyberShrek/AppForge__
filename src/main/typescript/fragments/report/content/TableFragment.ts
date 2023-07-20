@@ -1,7 +1,7 @@
 import {Fragment} from "../../abstract/Fragment"
 import {emptyElement, createElement} from "../../../utils/DOMWizard"
 import {concatMaps, filterMap, numberOf, sortMap} from "../../../utils/misc"
-import {Text} from "../../inputs/Text";
+import {Text} from "../../inputs/Text"
 
 export class TableFragment extends Fragment{
 
@@ -15,8 +15,9 @@ export class TableFragment extends Fragment{
     protected filtersMap: Map<number, string> = new Map()
 
     constructor(location: FragmentLocation) {
-        super(createElement("table"), location)
-        this.coreElement.append(this.thead, this.tfoot, this.tbody)
+        super(location)
+        this.core = createElement("table")
+        this.core.append(this.thead, this.tfoot, this.tbody)
     }
 
     setHead(head: TableHead){

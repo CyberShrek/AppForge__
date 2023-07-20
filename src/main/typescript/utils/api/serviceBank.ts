@@ -1,66 +1,70 @@
 // This code exports four functions that can be used to fetch carriers, countries, roads, and stations from a service bank API.
 // The code also defines several interfaces for different types of objects.
 import wretch from "wretch"
-import {popupError, popupHttpDataError} from "../modal";
-import {pairOf, setCursorToDefault, setCursorToLoading} from "../misc";
+import {popupHttpDataError} from "../modal";
+import {setCursorToDefault, setCursorToLoading} from "../misc";
 const serviceBankURL = `${document.location.origin}/servicebank/getdata`
 
-export const fetchCarriersByDate = (date: Date|string): Promise<Option[]> =>
-    fetchOptions("perList", date, (item) => ({
-        label: item["nazvp"],
+export const fetchCarriersByDate = (date: Date|string): Promise<Map<OptionKey, OptionLabel>> =>
+    fetchOptions("perList", date,
+        (item) => [
+        item["nazvp"],
         // Each value consists of countryValue.carrierValue
-        value: `${item["gos"]}.${item["skp"]}`
-    }), null,null,
+        `${item["gos"]}.${item["skp"]}`
+        ],
+        null,null,
         "Не удалось загрузить список перевозчиков")
 
-export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Option[]> =>
-    fetchOptions("gosList", date, (item) => ({
-        label: item["g_name"],
-        value: item["g_kod"]
-    }), {"g_prsng": "1"},
+export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Map<OptionKey, OptionLabel>> =>
+    fetchOptions("gosList", date,
+        (item) => [item["g_name"], item["g_kod"]],
+        {"g_prsng": "1"},
         (item) => postSovietOnly ? item["g_prsng"] == "1" : true,
         "Не удалось загрузить список государств")
 
-export const fetchRoadsByCountriesAndDate = async (countryValues: Option["value"][],
-                                                   date: Date|string): Promise<Option[]> =>
-    (await Promise.all(
-        countryValues.map( (countryValue) =>
-            fetchOptions("dorList", date, item => ({
-                label: item["d_name"],
+export const fetchRoadsByCountriesAndDate = async (countryValues: string[],
+                                                   date: Date|string): Promise<Map<OptionKey, OptionLabel>> =>
+    mergePromises(countryValues.map((countryValue) =>
+        fetchOptions("dorList", date,
+            item => [
+                item["d_name"],
                 // Each value consists of countryValue.roadValue
-                value: `${countryValue}.${item["d_kod"]}`
-            }), {
+                `${countryValue}.${item["d_kod"]}`
+            ],
+            {
                 "gos": countryValue
-            },null,
-                "Не удалось загрузить список дорог")
-        ))).flat()
+            }, null,
+            "Не удалось загрузить список дорог"
+        )
+    ))
 
-export const fetchStationsByRoadsAndDate = async (roadValues: Option["value"][],
+
+export const fetchStationsByRoadsAndDate = async (roadValues: string[],
                                                   date: Date|string,
-                                                  extraProperty?: Pair<string, string>): Promise<Option[]> =>
-    (await Promise.all(
+                                                  extraProperty?: Pair<string, string>): Promise<Map<OptionKey, OptionLabel>> =>
+    mergePromises(
         Array.from(mapRoadsByCountryCodeAndRoadCodes(roadValues)).map(([countryValue, roadValues]) =>
-            fetchOptions("stanList", date, (item) => ({
-                label: item["pnazv"],
-                value: item["stan"]
-            }), {
-                "gos": countryValue,
-                "dor": roadValues.join(","),
-                // [extraProperty.first]: extraProperty.second,
-                    // [transferType === TransferType.BAGGAGE ? "pr_bo" : "prpop"]: "1"
-                "pr_bo" :"1"
-            },null,
+            fetchOptions("stanList", date,
+                (item) => [item["pnazv"], item["stan"]],
+                {
+                    "gos": countryValue,
+                    "dor": roadValues.join(","),
+                    // [extraProperty.first]: extraProperty.second,
+                        // [transferType === TransferType.BAGGAGE ? "pr_bo" : "prpop"]: "1"
+                    "pr_bo" :"1"
+                },null,
                 "Не удалось загрузить список станций")
         )
-    )).flat()
+    )
 
 
 const fetchOptions = (listName: string,
                       date: Date|string,
-                      parseItemFn: (item: any) => Option,
+                      parseItemFn: (item: any) => [OptionKey
+                          , OptionLabel],
                       extraProperties = {},
                       filter?: (item: any) => boolean,
-                      errorFooter?: string): Promise<Option[]> => {
+                      errorFooter?: string): Promise<Map<OptionKey, OptionLabel>> => {
     setCursorToLoading()
     return wretch(serviceBankURL)
         .post({
@@ -68,20 +72,31 @@ const fetchOptions = (listName: string,
         })
         .json(json => {
             const firstChildKey = Object.keys(json)[0]
-            return (json[firstChildKey] as Array<any>)
+            return new Map((json[firstChildKey] as Array<any>)
                 .filter((item) => filter ? filter(item) : true)
-                .map((item) => {
-                    const option = parseItemFn(item)
-                    option.description = option.value
-                    option.alias = option.value
-                    return option
-                })
+                .map((item) => parseItemFn(item)))
         })
         .catch(error => {
             popupHttpDataError(error, errorFooter)
-            return []
+            return new Map()
         })
         .finally(() => setCursorToDefault())
+}
+
+function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promise<Map<OptionKey, OptionLabel>> {
+    return Promise.all(promises)
+        .then((results) => {
+            const mergedResult = new Map<OptionKey, OptionLabel>();
+            results.forEach((result) => {
+                result.forEach((value, key) => {
+                    mergedResult.set(key, value);
+                });
+            });
+            return mergedResult;
+        })
+        .catch((error) => {
+            // Обработка ошибок
+        }) as Promise<Map<OptionKey, OptionLabel>>
 }
 
 

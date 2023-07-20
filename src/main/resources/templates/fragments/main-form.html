@@ -33,45 +33,37 @@
                       max-values = ${field.maxValues},
                       require = ${field.required}">
 
-                <dynamic th:if="${content.dynamicMap}">
-                  <subscribes th:text="${content.dynamicMap.subscribeToFields}"></subscribes>
-                  <url th:text="${content.dynamicMap.sourceUrl}"></url>
-                </dynamic>
+                <endpoint th:if="${TODO}">
+                  <url th:if="${TODO}" th:text="${content.dynamicMap.sourceUrl}"></url>
+                  <subscriptions th:each="fieldSource : ${content.endpointMap.subscribeToFields}">
+                    <field th:text="${fieldSource}"></field>
+                  </subscriptions>
+                </endpoint>
 
-                <carriers th:if="${content.serviceBankCarriers}"
-                          th:with="carriers = ${content.serviceBankCarriers}">
-                  <subscribes>
-                    <date th:text="${carriers.subscribeToDate}"></date>
-                  </subscribes>
-                  <extra th:text="${carriers.extraProperties}"></extra>
-                </carriers>
+                <bank th:if="${TODO}" th:type="${TODO}">
+                  <subscriptions th:each="fieldSource : ${content.endpointMap.subscribeToFields}"
+                                 th:switch="${type}">
+                    <th:block th:case="'carriers'">
+                      <date th:text="${carriers.subscribeToDate}"></date>
+                    </th:block>
 
-                <countries th:if="${content.serviceBankCountries}"
-                           th:with="countries = ${content.serviceBankCountries}">
-                  <subscribes>
-                    <date th:text="${countries.subscribeToDate}"></date>
-                    <postsoviet th:text="${countries.subscribeToPostSovietCheckbox}"></postsoviet>
-                  </subscribes>
-                  <extra th:text="${countries.extraProperties}"></extra>
-                </countries>
+                    <th:block th:case="'countries'">
+                      <date th:text="${countries.subscribeToDate}"></date>
+                      <postsoviet th:text="${countries.subscribeToPostSovietCheckbox}"></postsoviet>
+                    </th:block>
 
-                <roads th:if="${content.serviceBankRoads}"
-                       th:with="roads = ${content.serviceBankRoads}">
-                  <subscribes>
-                    <date th:text="${roads.subscribeToDate}"></date>
-                    <countries th:text="${roads.subscribeToCountries}"></countries>
-                  </subscribes>
-                  <extra th:text="${roads.extraProperties}"></extra>
-                </roads>
+                    <th:block th:case="'roads'">
+                      <date th:text="${roads.subscribeToDate}"></date>
+                      <countries th:text="${roads.subscribeToCountries}"></countries>
+                    </th:block>
 
-                <stations th:if="${content.serviceBankStations}"
-                          th:with="stations = ${content.serviceBankStations}">
-                  <subscribes>
-                    <date th:text="${stations.subscribeToDate}"></date>
-                    <roads th:text="${stations.subscribeToRoads}"></roads>
-                  </subscribes>
-                  <extra th:text="${stations.extraProperties}"></extra>
-                </stations>
+                    <th:block th:case="'stations'">
+                      <date th:text="${stations.subscribeToDate}"></date>
+                      <roads th:text="${stations.subscribeToRoads}"></roads>
+                    </th:block>
+                  </subscriptions>
+                  <extra th:text="${bank.extraProperties}"></extra>
+                </bank>
 
                 <default th:text="${field.defaultValues}"></default>
               </config>

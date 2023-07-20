@@ -5,7 +5,7 @@ import {concatMaps} from "../../utils/misc"
 
 resolveCSS("third-party/virtual-select.min")
 
-export default class Select extends InputFragment<Set<OptionValue>>{
+export default class Select extends InputFragment<Set<OptionKey>>{
 
     constructor(location: FragmentLocation, config: SelectInputConfig) {
         super(location)
@@ -17,15 +17,15 @@ export default class Select extends InputFragment<Set<OptionValue>>{
         )
     }
 
-    retrieveOptions(...retrievalCallbacks: (() => Promise<Map<OptionKey, OptionValue>>)[]){
-        const optionsBuffer: Map<OptionKey, OptionValue> = new Map()
+    retrieveOptions(...retrievalCallbacks: (() => Promise<Map<OptionKey, OptionLabel>>)[]){
+        const optionsBuffer: Map<OptionKey, OptionLabel> = new Map()
         retrievalCallbacks.forEach(callback => callback()
             .then(options => concatMaps(optionsBuffer, options)))
 
         this.setOptions(optionsBuffer)
     }
 
-    setOptions(options: Map<OptionKey, OptionValue>){
+    setOptions(options: Map<OptionKey, OptionLabel>){
         const enabledOptionsCache = this.value
         if(!!options && options.size > 0) {
             // @ts-ignore !!! Resolved by html import !!!
@@ -43,7 +43,7 @@ export default class Select extends InputFragment<Set<OptionValue>>{
         }
     }
 
-    selectOptions(values: Set<OptionValue>){
+    selectOptions(values: Set<OptionLabel>){
         // @ts-ignore !!! Resolved by html import !!!
         this.core.setValue(Array.from(values))
     }
