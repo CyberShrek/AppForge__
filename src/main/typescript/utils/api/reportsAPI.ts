@@ -1,7 +1,6 @@
 import wretch from "wretch"
-import {setCursorToDefault, setCursorToLoading} from "../misc";
-import error from "svelte/types/compiler/utils/error";
-import {popupHttpDataError} from "../modal";
+import {setCursorToDefault, setCursorToLoading} from "../misc"
+import {popupHttpDataError} from "../modal"
 
 export const fetchReport = (reportId: any, params: object): Promise<any> => {
     setCursorToLoading()

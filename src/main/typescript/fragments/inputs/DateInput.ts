@@ -10,7 +10,7 @@ import {createDivElement} from "../../utils/DOMWizard"
 
 resolveCSS("third-party/easepick")
 
-export default class Date extends InputFragment<DateRange>{
+export default class DateInput extends InputFragment<DateRange>{
 
     constructor(location: FragmentLocation, config: DateInputConfig) {
         super(location)
@@ -56,7 +56,7 @@ function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (date
             maxDays: config.maxDays
         },
         css: [
-            "app-forge/css/third-party/easepick.css"
+            "css/third-party/easepick.css"
         ],
         setup(picker) {
             picker.on("select", (e) => {

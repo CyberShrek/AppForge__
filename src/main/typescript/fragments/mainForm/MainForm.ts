@@ -2,13 +2,13 @@ import {resolveCSS} from "../../utils/resolver"
 import {Button} from "../inputs/Button"
 import {InputFragment} from "../abstract/InputFragment"
 import {Text} from "../inputs/Text"
-import {DateField} from "./section/fields/DateField"
-import {CheckboxField} from "./section/fields/CheckboxField"
-import {SelectField} from "./section/fields/select/SelectField"
-import {CarriersSelectField} from "./section/fields/select/CarriersSelectField"
-import {CountriesSelectField} from "./section/fields/select/CountriesSelectField"
-import {RoadsSelectField} from "./section/fields/select/RoadsSelectField"
-import {StationsSelectField} from "./section/fields/select/StationsSelectField"
+import {DateField} from "./fields/DateField"
+import {CheckboxField} from "./fields/CheckboxField"
+import {SelectField} from "./fields/select/SelectField"
+import {CarriersField} from "./fields/select/CarriersField"
+import {CountriesField} from "./fields/select/CountriesField"
+import {RoadsField} from "./fields/select/RoadsField"
+import {StationsField} from "./fields/select/StationsField"
 
 resolveCSS("main-form")
 
@@ -40,30 +40,12 @@ export default class MainForm extends InputFragment<MainFormValues>{
 
     private resolveFieldsSubscriptions(){
         this.fields.forEach((field, key) => {
-            if(field instanceof SelectField){
-                this.resolveSelectFieldSubscriptions(field)
+            if(field instanceof SelectField) {
+                field.resolveSubscribedFields(key => this.fields.get(key))
+                field.listenSubscribedFields()
+                field.optionsRetrieving = true
             }
         })
-    }
-
-    private resolveSelectFieldSubscriptions(field: SelectField){
-        field.endpointSubscribedFields.forEach((_, key) =>
-            field.endpointSubscribedFields.set(key, this.fields.get(key))
-        )
-
-        if(field instanceof CarriersSelectField){
-        }
-        else if(field instanceof CountriesSelectField){
-
-        }
-        else if(field instanceof RoadsSelectField){
-
-        }
-        else if(field instanceof StationsSelectField){
-
-        }
-
-        field.startOptionsRetrieving()
     }
 }
 
@@ -71,12 +53,18 @@ function resolveField(fieldElement: HTMLElement): InputFragment<any>{
     const containsClass = (className: string) => fieldElement.classList.contains(className)
     const location: FragmentLocation = {target: fieldElement}
     const configElement: HTMLElement = fieldElement.querySelector("config")
-    return containsClass("datepicker") ? new DateField(location, configElement)
+    return containsClass("date") ? new DateField(location, configElement)
         : containsClass("checkbox") ? new CheckboxField(location, configElement)
             : containsClass("select") ? resolveSelectField(location, configElement)
                 : new Text(location)
 }
 
 function resolveSelectField(location: FragmentLocation, configElement: HTMLElement): SelectField{
+    switch (configElement.querySelector("bank")?.getAttribute("type")){
+        case "carriers":  return new CarriersField(location, configElement)
+        case "countries": return new CountriesField(location, configElement)
+        case "roads":     return new RoadsField(location, configElement)
+        case "stations":  return new StationsField(location, configElement)
+    }
     return new SelectField(location, configElement)
 }

@@ -1,7 +1,6 @@
 import {resolveCSS} from "../../utils/resolver"
 import {InputFragment} from "../abstract/InputFragment"
 import {createDivElement} from "../../utils/DOMWizard"
-import {concatMaps} from "../../utils/misc"
 
 resolveCSS("third-party/virtual-select.min")
 

@@ -1,23 +1,8 @@
-// @ts-ignore
-import BaggageReport from "../../../../src/applications/baggage/components/Report1.svelte"
+import {Fragment} from "../abstract/Fragment"
 
-export default class ReportSlot implements Fragment{
-    constructor(public core: HTMLElement) {
-         new BaggageReport({
-            target: core
-            })
-    }
-
-    setReport(report: object){
-        this.core.querySelector("report").remove()
-        new BaggageReport({
-            target: this.core,
-            props: {
-                params: {},
-                xlsxExtras: {},
-                report: new Report(report, (cell) => cell.destination)
-            }
-        })
+export default class ReportSlot extends Fragment{
+    constructor(public location: FragmentLocation) {
+        super(location)
     }
 }
 

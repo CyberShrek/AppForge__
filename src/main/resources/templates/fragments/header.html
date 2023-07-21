@@ -1,7 +1,6 @@
 <header th:fragment="header(appGroup, appName)" id="header">
     <th:block th:if="${appGroup} != null">
         <!--/*@thymesVar id="appGroup" type="org.vniizht.appforge.entities.AppConfig.AppGroup"*/-->
-        <href th:text=""></href>
         <a th:href="${appGroup.url}"
            th:text="${appGroup.name}"></a>
         |

@@ -5,7 +5,7 @@ import {popupHttpDataError} from "../modal";
 import {setCursorToDefault, setCursorToLoading} from "../misc";
 const serviceBankURL = `${document.location.origin}/servicebank/getdata`
 
-export const fetchCarriersByDate = (date: Date|string): Promise<Map<OptionKey, OptionLabel>> =>
+export const fetchCarriersByDate = (date: DateRange): Promise<Map<OptionKey, OptionLabel>> =>
     fetchOptions("perList", date,
         (item) => [
         item["nazvp"],
@@ -15,15 +15,15 @@ export const fetchCarriersByDate = (date: Date|string): Promise<Map<OptionKey, O
         null,null,
         "Не удалось загрузить список перевозчиков")
 
-export const fetchCountriesByDate = (date: Date|string, postSovietOnly: boolean): Promise<Options> =>
+export const fetchCountriesByDate = (date: DateRange, postSovietOnly: boolean): Promise<Options> =>
     fetchOptions("gosList", date,
         (item) => [item["g_name"], item["g_kod"]],
         {"g_prsng": "1"},
         (item) => postSovietOnly ? item["g_prsng"] == "1" : true,
         "Не удалось загрузить список государств")
 
-export const fetchRoadsByCountriesAndDate = async (countryValues: string[],
-                                                   date: Date|string): Promise<Options> =>
+export const fetchRoadsByDateAndCountries = async (date: DateRange,
+                                                   countryValues: string[]): Promise<Options> =>
     mergePromises(countryValues.map((countryValue) =>
         fetchOptions("dorList", date,
             item => [
@@ -39,8 +39,8 @@ export const fetchRoadsByCountriesAndDate = async (countryValues: string[],
     ))
 
 
-export const fetchStationsByRoadsAndDate = async (roadValues: string[],
-                                                  date: Date|string,
+export const fetchStationsByDateAndRoads = async (date: DateRange,
+                                                  roadValues: string[],
                                                   extraProperty?: Pair<string, string>): Promise<Options> =>
     mergePromises(
         Array.from(mapRoadsByCountryCodeAndRoadCodes(roadValues)).map(([countryValue, roadValues]) =>
@@ -59,7 +59,7 @@ export const fetchStationsByRoadsAndDate = async (roadValues: string[],
 
 
 const fetchOptions = (listName: string,
-                      date: Date|string,
+                      date: DateRange,
                       parseItemFn: (item: any) => [OptionKey
                           , OptionLabel],
                       extraProperties = {},
@@ -68,7 +68,7 @@ const fetchOptions = (listName: string,
     setCursorToLoading()
     return wretch(serviceBankURL)
         .post({
-            [listName]: [{"data": date, ...extraProperties}]
+            [listName]: [{"data": date[0], ...extraProperties}]
         })
         .json(json => {
             const firstChildKey = Object.keys(json)[0]

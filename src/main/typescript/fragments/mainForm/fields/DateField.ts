@@ -1,10 +1,9 @@
-import Date from "../../../inputs/Date"
-import {numberOf} from "../../../../utils/misc"
+import DateInput from "../../inputs/DateInput"
+import {numberOf} from "../../../utils/misc"
 
-export class DateField extends Date{
+export class DateField extends DateInput{
 
     constructor(location: FragmentLocation, configElement: HTMLElement) {
-        const config: DateInputConfig = {}
         super(location, {maxDays: numberOf(configElement.getAttribute("max-days"))})
     }
 }

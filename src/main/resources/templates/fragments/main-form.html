@@ -1,30 +1,31 @@
 <form th:fragment="main-form(config)" id="main-form">
-  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.MainFormConfig"*/-->
-  <th:block th:each="sectionEntry : ${config.sectionsMap}"
+  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig"*/-->
+  <th:block th:each="sectionEntry : ${config.sections}"
             th:with="key = ${sectionEntry.key}, section = ${sectionEntry.value}">
+    <!--/*@thymesVar id="section" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig"*/-->
     <div class="section" th:key="${key}">
       <p th:text="${section.title}"></p>
       <div>
-        <th:block th:each="fieldEntry : ${section.fieldsMap}"
+        <th:block th:each="fieldEntry : ${section.fields}"
                   th:with="key = ${fieldEntry.key}, field = ${fieldEntry.value}">
-          <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Field"*/-->
+          <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Field"*/-->
+          <p th:if="${field.type} != 'checkbox'" th:text="${field.title}"></p>
           <div th:class="${field.type}+' field'" th:key="${key}">
 
             <th:block th:switch="${field.type}">
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.CheckBox"*/-->
+              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.CheckBox"*/-->
               <config th:case="'checkbox'"
-                      th:attr="label = ${field.label}">
+                      th:attr="label = ${field.title}">
               </config>
 
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Date"*/-->
+              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Date"*/-->
               <config th:case="'date'"
                       th:attr="max-days = ${field.maxDays}">
-                <default th:text="${field.default}"></default>
               </config>
 
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.FormSectionConfig.Select"*/-->
+              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select"*/-->
               <config th:case="'select'"
-                      th:with="content = ${field.content}"
+                      th:with="content = ${field.optionsSources}"
                       th:attr="
                       show-codes = ${field.showCodes},
                       search = ${field.search},
@@ -33,39 +34,44 @@
                       max-values = ${field.maxValues},
                       require = ${field.required}">
 
-                <endpoint th:if="${TODO}">
-                  <url th:if="${TODO}" th:text="${content.dynamicMap.sourceUrl}"></url>
-                  <subscriptions th:each="fieldSource : ${content.endpointMap.subscribeToFields}">
+                <endpoint th:if="${content.endpoint}">
+                  <url th:text="${content.endpoint.url}"></url>
+                  <subscriptions th:each="fieldSource : ${content.endpoint.subscribeToFields}">
                     <field th:text="${fieldSource}"></field>
                   </subscriptions>
                 </endpoint>
 
-                <bank th:if="${TODO}" th:type="${TODO}">
-                  <subscriptions th:each="fieldSource : ${content.endpointMap.subscribeToFields}"
-                                 th:switch="${type}">
+                <bank th:with="bank = ${content.serviceBank}"
+                      th:if="${bank}"
+                      th:type="${bank.type}">
+                  <subscriptions th:switch="${bank.type}">
                     <th:block th:case="'carriers'">
-                      <date th:text="${carriers.subscribeToDate}"></date>
+                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.Content.ServiceBankCarriers"*/-->
+                      <date th:text="${bank.subscribeToDate}"></date>
                     </th:block>
 
                     <th:block th:case="'countries'">
-                      <date th:text="${countries.subscribeToDate}"></date>
-                      <postsoviet th:text="${countries.subscribeToPostSovietCheckbox}"></postsoviet>
+                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.Content.ServiceBankCountries"*/-->
+                      <date th:text="${bank.subscribeToDate}"></date>
+                      <postsoviet th:text="${bank.subscribeToPostSovietCheckbox}"></postsoviet>
                     </th:block>
 
                     <th:block th:case="'roads'">
-                      <date th:text="${roads.subscribeToDate}"></date>
-                      <countries th:text="${roads.subscribeToCountries}"></countries>
+                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.Content.ServiceBankRoads"*/-->
+                      <date th:text="${bank.subscribeToDate}"></date>
+                      <countries th:text="${bank.subscribeToCountries}"></countries>
                     </th:block>
 
                     <th:block th:case="'stations'">
-                      <date th:text="${stations.subscribeToDate}"></date>
-                      <roads th:text="${stations.subscribeToRoads}"></roads>
+                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.Content.ServiceBankStations"*/-->
+                      <date th:text="${bank.subscribeToDate}"></date>
+                      <roads th:text="${bank.subscribeToRoads}"></roads>
                     </th:block>
                   </subscriptions>
                   <extra th:text="${bank.extraProperties}"></extra>
                 </bank>
 
-                <default th:text="${field.defaultValues}"></default>
+                <default th:text="${content.default}"></default>
               </config>
             </th:block>
           </div>
@@ -73,5 +79,5 @@
       </div>
     </div>
   </th:block>
-  <script type="module" src="./app-forge/js/third-party/virtual-select.min.js"></script>
+  <script type="module" src="./js/third-party/virtual-select.min.js"></script>
 </form>

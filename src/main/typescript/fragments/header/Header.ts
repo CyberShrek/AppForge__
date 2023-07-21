@@ -1,13 +1,15 @@
 import {resolveCSS} from "../../utils/resolver"
 import {downloadUserManual, fetchAppMetaData} from "../../utils/api/appMetaData"
 import {popupList, popupTimeoutAction} from "../../utils/modal"
-import {Fragment} from "../abstract/Fragment";
+import {Fragment} from "../abstract/Fragment"
 
 export default class Header extends Fragment{
 
     private appMetaData: AppMetaData
 
-    constructor(core: HTMLElement) {super(core)
+    constructor(location: FragmentLocation) {
+        super(location)
+        this.core = location.target
         resolveCSS("header")
         fetchAppMetaData().then(data => {
             this.appMetaData = data
@@ -43,6 +45,6 @@ export default class Header extends Fragment{
     }
 
     private activateButton(buttonClassName: string, onClick: () => void){
-        this.coreElement.querySelector("button."+buttonClassName).addEventListener("click", onClick)
+        this.core.querySelector("button."+buttonClassName).addEventListener("click", onClick)
     }
 }

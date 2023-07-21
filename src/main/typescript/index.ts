@@ -1,6 +1,4 @@
 import {resolveCSS} from "./utils/resolver"
-import {confirmEvent} from "./entities/events"
-import {fetchReport} from "./utils/api/reportsAPI"
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -19,19 +17,14 @@ let reportSlotFragment
 // Defining main fragments corresponding to main elements
 
 if(headerElement !== null)
-    import("./fragments/Header").then(fragment => new fragment.default(headerElement))
+    import("./fragments/header/Header").then(fragment => new fragment.default({target: headerElement}))
 
 if(mainFormElement !== null)
     import("./fragments/mainForm/MainForm").then(fragment => {
-        const mainForm = new fragment.default(mainFormElement)
-        mainFormElement.addEventListener(confirmEvent.type, () => {
-            // TODO temporary piece of shit
-            fetchReport("forged", mainForm.getValues()).then(
-                report => reportSlotFragment.setReport(report)
-            )
-        })
+        const mainFormFragment = new fragment.default({target: mainFormElement})
+        mainFormFragment.subscribe(value => console.log(value))
     })
 
-if(reportSlotElements !== null)
-    import("./fragments/report/ReportSlot").then(fragment => reportSlotElements
-        .forEach(reportSlotElement => reportSlotFragment = new fragment.default(reportSlotElement)))
+// if(reportSlotElements !== null)
+//     import("./fragments/report/ReportSlot").then(fragment => reportSlotElements
+//         .forEach(reportSlotElement => reportSlotFragment = new fragment.default(reportSlotElement)))
