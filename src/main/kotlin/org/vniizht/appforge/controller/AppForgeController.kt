@@ -2,6 +2,7 @@ package org.vniizht.appforge.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
@@ -17,7 +18,6 @@ class AppForgeController(private val request: HttpServletRequest) {
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody config: AppConfig): ModelAndView {
         val forgedApp = ModelAndView("forge")
-//        forgedApp.addObject("forgeUrl", with(request){ "$scheme://$serverName:$serverPort$contextPath" })
         forgedApp.addObject("config", config)
         forgedAppsCache[config.appName] = forgedApp
         return forgedApp
@@ -55,17 +55,18 @@ class AppForgeController(private val request: HttpServletRequest) {
                     name = "Багажные работы"
                 ),
                 appName = "Корреспонденции",
-                mainForm = AppConfig.MainFormConfig(
-                    mapOf(
-                        "period" to AppConfig.MainFormConfig.FormSectionConfig(
+                mainForm = MainFormConfig(
+                    validationUrl = "baggages/validate",
+                    sections = mapOf(
+                        "period" to FormSectionConfig(
                             title = "Период",
                             fields = mapOf(
                                 "range" to FormSectionConfig.Date(),
-                                "compare" to MainFormConfig.FormSectionConfig.CheckBox("Сравнить с прошлым годом"),
+                                "compare" to FormSectionConfig.CheckBox("Сравнить с прошлым годом"),
                                 "separate" to FormSectionConfig.Select(
                                     "Сепарировать",
-                                    optionsSources = FormSectionConfig.Select.Content(
-                                        endpoint = FormSectionConfig.Select.Content.Endpoint(
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
                                             url = "baggages/main-form-options/period/separation"
                                         )
                                     )
@@ -78,31 +79,30 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                "carrier" to AppConfig.MainFormConfig.FormSectionConfig.Select(
 //                                    search = true,
 //                                    required = true,
-//                                    optionsSources = AppConfig.MainFormConfig.FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankCarriers(
+//                                    optionSources = AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCarriers(
 //                                            subscribeToDate = "period.range"
 //                                        )
 //                                    )
 //                                )
 //                            )
 //                        ),
-                        "shipment" to AppConfig.MainFormConfig.FormSectionConfig(
+                        "shipment" to FormSectionConfig(
                             title = "Тип отправки",
                             fields = mapOf(
                                 "type" to FormSectionConfig.Select(
                                     title = "Тип",
                                     required = true,
-                                    optionsSources = FormSectionConfig.Select.Content(
-                                        endpoint = FormSectionConfig.Select.Content.Endpoint(
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
                                             url = "baggages/main-form-options/shipment/type"
-                                        ),
-                                        default = setOf("1")
+                                        )
                                     )
                                 ),
                                 "kind" to FormSectionConfig.Select(
                                     title = "Виды",
-                                    optionsSources = FormSectionConfig.Select.Content(
-                                        endpoint = FormSectionConfig.Select.Content.Endpoint(
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
                                             url = "baggages/main-form-options/shipment/kind",
                                             subscribeToFields = setOf("shipment.type")
                                         )
@@ -110,8 +110,8 @@ class AppForgeController(private val request: HttpServletRequest) {
                                 ),
                                 "extra" to FormSectionConfig.Select(
                                     title = "Дополнительно",
-                                    optionsSources = FormSectionConfig.Select.Content(
-                                        endpoint = FormSectionConfig.Select.Content.Endpoint(
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
                                             url = "baggages/main-form-options/shipment/extra",
                                             subscribeToFields = setOf("shipment.type", "shipment.kind")
                                         )
@@ -130,8 +130,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    multiple = true,
 //                                    search = true,
 //                                    required = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankCountries(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToPostSovietCheckbox = "departure.postSoviet"
 //                                        )
@@ -141,8 +141,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    title = "Дороги",
 //                                    multiple = true,
 //                                    search = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankRoads(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToCountries = "departure.countries"
 //                                        )
@@ -152,8 +152,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    title = "Станции",
 //                                    multiple = true,
 //                                    search = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankStations(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToRoads = "departure.roads",
 //                                            extraProperties = mapOf("prpop" to "1")
@@ -172,8 +172,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    title = "Государства",
 //                                    multiple = true,
 //                                    search = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankCountries(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToPostSovietCheckbox = "destination.postSoviet"
 //                                        )
@@ -183,8 +183,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    title = "Дороги",
 //                                    multiple = true,
 //                                    search = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankRoads(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToCountries = "destination.countries"
 //                                        )
@@ -194,8 +194,8 @@ class AppForgeController(private val request: HttpServletRequest) {
 //                                    title = "Станции",
 //                                    multiple = true,
 //                                    search = true,
-//                                    optionsSources = FormSectionConfig.Select.Content(
-//                                        serviceBank = FormSectionConfig.Select.Content.ServiceBankStations(
+//                                    optionSources = FormSectionConfig.Select.OptionSources(
+//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
 //                                            subscribeToDate = "period.range",
 //                                            subscribeToRoads = "destination.roads",
 //                                            extraProperties = mapOf("prpop" to "1")
@@ -218,7 +218,8 @@ class AppForgeController(private val request: HttpServletRequest) {
     fun getPeriodSeparationOptions(): Map<String, String> = mapOf(
         "DAYS" to "По дням",
         "MONTHS" to "По месяцам",
-        "YEARS" to "По годам"
+        "YEARS" to "По годам",
+        "default" to "DAYS"
     )
 
     @GetMapping("/baggages/main-form-options/shipment/type")
@@ -226,7 +227,8 @@ class AppForgeController(private val request: HttpServletRequest) {
         "1" to "Багаж",
         "2" to "Гр/баг (мелкие)",
         "3" to "Гр/баг (повагонные)",
-        "4" to "Почта"
+        "4" to "Почта",
+        "default" to "1"
     )
 
     @GetMapping("/baggages/main-form-options/shipment/kind")
@@ -278,5 +280,12 @@ class AppForgeController(private val request: HttpServletRequest) {
             )
             else -> emptyMap()
         }
+    }
+
+    @PostMapping("/baggages/validate")
+    fun validate(@RequestBody body: Map<String, Any>): ResponseEntity<Map<String, String>>{
+        if(body["period.separate"] as String != "YEARS")
+            return ResponseEntity(mapOf("period.separate" to "Выберите годы"), HttpStatus.FORBIDDEN)
+        return ResponseEntity(HttpStatus.OK)
     }
 }

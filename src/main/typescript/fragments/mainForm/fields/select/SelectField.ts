@@ -25,8 +25,6 @@ export class SelectField extends Select{
         [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
             .map(fieldElement => [fieldElement.textContent, null]) : null)
 
-    private defaultKeys: Set<OptionKey> = javaSetToSet(this.configElement.querySelector("default")?.textContent)
-
     resolveSubscribedFields(getFieldFn: (key: string) => InputFragment<any>){
         this.endpointSubscribedFields.forEach((_, key) => {
             this.endpointSubscribedFields.set(key, getFieldFn(key))
@@ -34,29 +32,25 @@ export class SelectField extends Select{
     }
 
     listenSubscribedFields(){
-        if(this.endpointSubscribedFields.size > 0) {
-            const headers: Map<string, string> = new Map()
-            this.endpointSubscribedFields.forEach(<T>(field: InputFragment<T>, key) =>
-                field.subscribe(value => {
-                    headers.set(key, stringify(value))
-                    if (this.optionsRetrieving === true)
-                        this.retrieveOptionsPromise(
-                            "endpoint", fetchEndpointOptions(this.endpointUrl, headers))
-                }))
+        if(!!this.endpointUrl) {
+            if (this.endpointSubscribedFields.size > 0) {
+                const headers: Map<string, string> = new Map()
+                this.endpointSubscribedFields.forEach(<T>(field: InputFragment<T>, key) =>
+                    field.subscribe(value => {
+                        headers.set(key, stringify(value))
+                        if (this.optionsRetrieving === true)
+                            this.retrieveOptionsPromise(
+                                "endpoint", fetchEndpointOptions(this.endpointUrl, headers))
+                    }))
+            } else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointUrl))
         }
-        else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointUrl))
     }
-
 
     private optionsBuffer: Map<string, Options> = new Map()
     protected retrieveOptionsPromise(optionsGroupName: string, promise: Promise<Options>){
         promise.then(options => {
             this.optionsBuffer.set(optionsGroupName, options)
             this.setOptions(concatMaps(...this.optionsBuffer.values()))
-            if(!!this.defaultKeys) {
-                this.selectOptions(this.defaultKeys)
-                this.defaultKeys = undefined
-            }
         })
     }
 }

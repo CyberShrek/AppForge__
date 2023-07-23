@@ -37,7 +37,6 @@ export function filterMap<K, V>(map: Map<K, V>, filter: (value: V, key: K) => bo
 }
 
 export function stringify<T>(value: T): string{
-    console.log(typeof value)
     if(typeof value !== "object")
         return String(value)
     if(value instanceof Set)

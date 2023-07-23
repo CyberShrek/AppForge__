@@ -60,8 +60,7 @@ export const fetchStationsByDateAndRoads = async (date: DateRange,
 
 const fetchOptions = (listName: string,
                       date: DateRange,
-                      parseItemFn: (item: any) => [OptionKey
-                          , OptionLabel],
+                      parseItemFn: (item: any) => [OptionKey, OptionLabel],
                       extraProperties = {},
                       filter?: (item: any) => boolean,
                       errorFooter?: string): Promise<Options> => {

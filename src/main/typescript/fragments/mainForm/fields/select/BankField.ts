@@ -1,6 +1,7 @@
 import {SelectField} from "./SelectField"
 import {DateField} from "../DateField"
 import {InputFragment} from "../../../abstract/InputFragment"
+import {stringify} from "../../../../utils/misc";
 
 export abstract class BankField extends SelectField{
     protected constructor(location: FragmentLocation, configElement: HTMLElement) {
@@ -21,8 +22,18 @@ export abstract class BankField extends SelectField{
                                      ...subscriptions: InputFragment<any>[]){
 
         subscriptions.forEach(field =>
-            field.subscribe(value =>
-                this.retrieveOptionsPromise("bank",
-                    fetchOptionsFn(...subscriptions.map(subscription => subscription.value)))))
+            field.subscribe(() => {
+                let hasEmptyFieldValue = false
+                for (const subscription of subscriptions) {
+                    if (stringify(subscription.value).length <= 0) {
+                        hasEmptyFieldValue = true
+                        return
+                    }
+                }
+                if(!hasEmptyFieldValue) {
+                    this.retrieveOptionsPromise("bank",
+                        fetchOptionsFn(...subscriptions.map(subscription => subscription.value)))
+                }
+            }))
     }
 }

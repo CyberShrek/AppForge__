@@ -18,15 +18,14 @@ data class AppConfig(
 
     data class MainFormConfig(
         // Key is the section id
-        val sections: Map<String, FormSectionConfig>
+        val sections: Map<String, FormSectionConfig>,
+        val validationUrl: String? = null
     ) {
-
         data class FormSectionConfig(
             val title: String? = null,
             // Key is the field id
             val fields: Map<String, Field>? = null
         ) {
-
             @JsonTypeInfo(
                 use = JsonTypeInfo.Id.NAME,
                 include = JsonTypeInfo.As.PROPERTY,
@@ -59,13 +58,12 @@ data class AppConfig(
                 val disableSelectAll: Boolean = false,
                 val required: Boolean = false,
                 val maxValues: Int = 0,
-                val optionsSources: Content? = null
+                val optionSources: OptionSources? = null
             ) : Field("select", title) {
 
-                data class Content(
+                data class OptionSources(
                     val endpoint: Endpoint? = null,
-                    val serviceBank: ServiceBank? = null,
-                    val default: Set<String>? = setOf()
+                    val serviceBank: ServiceBank? = null
                 ) {
                     data class Endpoint(
                         val url: String,

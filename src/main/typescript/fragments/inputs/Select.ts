@@ -5,7 +5,8 @@ import {stringify} from "../../utils/misc"
 
 resolveCSS("third-party/virtual-select")
 
-export default class Select extends InputFragment<Set<OptionKey>>{
+// When multiselect turned on then value is OptionKey else value is Set<OptionKey>
+export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
 
     constructor(location: FragmentLocation, config: SelectInputConfig) {
         super(location)
@@ -15,9 +16,7 @@ export default class Select extends InputFragment<Set<OptionKey>>{
         this.core.addEventListener("change", event => {
             // @ts-ignore !!! Resolved by html import !!!
             const newValue: Set<OptionKey> = new Set(typeof event.currentTarget.value === "object" ? event.currentTarget.value : [event.currentTarget.value])
-
             // Need to check real changes to prevent doubling
-            console.log(`this.value[${stringify(this.value)}] !== newValue[${stringify(newValue)}]: ${stringify(this.value) !== stringify(newValue)}`)
             if(stringify(this.value) !== stringify(newValue))
                 this.value = newValue
         })
@@ -26,11 +25,13 @@ export default class Select extends InputFragment<Set<OptionKey>>{
     protected optionsRetrievalCallbacks: Set<() => Promise<Options>> = new Set()
 
     setOptions(options: Options){
-        const enabledOptionsCache = this.value
+        const enabledOptionsCache: Set<OptionKey> = this.value
         if(!!options && options.size > 0) {
+            const defaultOptions: Set<OptionKey> = new Set(options.get("default")?.split(","))
+            options.delete("default")
             // @ts-ignore !!! Resolved by html import !!!
             this.core.setOptions(mapToVirtualSelectOptions(options))
-            this.selectOptions(enabledOptionsCache)
+            this.setSelected(enabledOptionsCache.size > 0 ? enabledOptionsCache : defaultOptions)
             // @ts-ignore !!! Resolved by html import !!!
             this.core.enable()
         }
@@ -43,7 +44,7 @@ export default class Select extends InputFragment<Set<OptionKey>>{
         }
     }
 
-    selectOptions(values: Set<OptionKey> = new Set()){
+    setSelected(values: Set<OptionKey> = new Set()){
         // @ts-ignore !!! Resolved by html import !!!
         this.core.setValue(Array.from(values))
     }

@@ -10,8 +10,9 @@ export default class Checkbox extends InputFragment<boolean>{
         super(location)
         this.core = createDivElement({class: "checkbox"})
         this.core.append(this.checkBoxElement, this.labelElement)
-        this.checkBoxElement.addEventListener("change",
-            (ev) => this.value = this.checkBoxElement.checked)
+        const updateValue=() => this.value = this.checkBoxElement.checked
+        updateValue()
+        this.checkBoxElement.addEventListener("change", updateValue)
     }
 
     set label(name: string){

@@ -5,4 +5,6 @@ type OptionLabel = string
 
 type Options = Map<OptionKey, OptionLabel>
 
-type MainFormValues = {[fieldLocation: string]: object}
+type FieldKey = string
+
+type MainFormValues = Map<FieldKey, any>

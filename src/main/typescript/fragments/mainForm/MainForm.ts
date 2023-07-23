@@ -9,6 +9,7 @@ import {CarriersField} from "./fields/select/CarriersField"
 import {CountriesField} from "./fields/select/CountriesField"
 import {RoadsField} from "./fields/select/RoadsField"
 import {StationsField} from "./fields/select/StationsField"
+import {validate} from "../../utils/api/validation";
 
 resolveCSS("main-form")
 
@@ -16,14 +17,17 @@ export default class MainForm extends InputFragment<MainFormValues>{
 
     readonly confirmButton: Button
 
+    private readonly validationUrl: string
+
     constructor(location: FragmentLocation) {
         super(location)
         this.core = location.target
-        this.value = {}
+        this.value = new Map()
         this.resolveFields()
         this.resolveFieldsSubscriptions()
         this.confirmButton = new Button({target: this.core, position: "afterend"})
         this.confirmButton.addClass("confirm")
+        this.validationUrl = this.core.getAttribute("validation-url")
     }
 
     private fields: Map<string, InputFragment<any>> = new Map()
@@ -45,7 +49,21 @@ export default class MainForm extends InputFragment<MainFormValues>{
                 field.listenSubscribedFields()
                 field.optionsRetrieving = true
             }
+            field.subscribe(value => {
+                this.value.set(key, value)
+                this.validateFields()
+            })
         })
+    }
+
+    private validateFields(){
+        console.log("validateFields")
+        console.log("validationUrl = "+this.validationUrl)
+        console.log("value.size = "+this.value.size)
+        console.log("fields.size = "+this.fields.size)
+        if(!!this.validationUrl){
+            console.log(validate(this.validationUrl, Object.fromEntries(this.value)))
+        }
     }
 }
 
