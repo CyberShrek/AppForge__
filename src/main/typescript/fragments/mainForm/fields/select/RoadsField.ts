@@ -1,6 +1,6 @@
 import {BankField} from "./BankField"
 import {InputFragment} from "../../../abstract/InputFragment"
-import {fetchCountriesByDate} from "../../../../utils/api/serviceBank"
+import {fetchCountriesByDate} from "../../../../utils/api/options/serviceBank"
 
 export class RoadsField extends BankField {
 

@@ -1,5 +1,5 @@
 import {BankField} from "./BankField"
-import {fetchCarriersByDate} from "../../../../utils/api/serviceBank"
+import {fetchCarriersByDate} from "../../../../utils/api/options/serviceBank"
 
 export class CarriersField extends BankField{
     constructor(location: FragmentLocation, configElement: HTMLElement) {

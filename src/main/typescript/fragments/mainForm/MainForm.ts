@@ -20,7 +20,7 @@ export default class MainForm extends InputFragment<MainFormValues>{
         super(location)
         this.core = location.target
         this.value = {}
-        this.activateFields()
+        this.resolveFields()
         this.resolveFieldsSubscriptions()
         this.confirmButton = new Button({target: this.core, position: "afterend"})
         this.confirmButton.addClass("confirm")
@@ -28,7 +28,7 @@ export default class MainForm extends InputFragment<MainFormValues>{
 
     private fields: Map<string, InputFragment<any>> = new Map()
 
-    private activateFields(){
+    private resolveFields(){
         this.core.querySelectorAll(".section").forEach(sectionElement => {
             const sectionKey = sectionElement.getAttribute("key")
             sectionElement.querySelectorAll(".field").forEach(fieldElement => {

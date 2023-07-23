@@ -1,8 +1,8 @@
 // This code exports four functions that can be used to fetch carriers, countries, roads, and stations from a service bank API.
 // The code also defines several interfaces for different types of objects.
 import wretch from "wretch"
-import {popupHttpDataError} from "../modal";
-import {setCursorToDefault, setCursorToLoading} from "../misc";
+import {popupHttpDataError} from "../../modal";
+import {setCursorToDefault, setCursorToLoading} from "../../misc";
 const serviceBankURL = `${document.location.origin}/servicebank/getdata`
 
 export const fetchCarriersByDate = (date: DateRange): Promise<Map<OptionKey, OptionLabel>> =>

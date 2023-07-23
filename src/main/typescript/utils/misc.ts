@@ -36,6 +36,18 @@ export function filterMap<K, V>(map: Map<K, V>, filter: (value: V, key: K) => bo
     return new Map(Array.from(map).filter(([key, value]) => filter(value, key)))
 }
 
+export function stringify<T>(value: T): string{
+    console.log(typeof value)
+    if(typeof value !== "object")
+        return String(value)
+    if(value instanceof Set)
+        return Array.from(value).join(", ")
+    if (value instanceof Date)
+        return stringifyDate(value)
+
+    return value.toString()
+}
+
 export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,

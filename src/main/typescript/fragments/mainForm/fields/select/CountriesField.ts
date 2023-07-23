@@ -1,5 +1,5 @@
 import {BankField} from "./BankField"
-import {fetchCountriesByDate} from "../../../../utils/api/serviceBank"
+import {fetchCountriesByDate} from "../../../../utils/api/options/serviceBank"
 import {InputFragment} from "../../../abstract/InputFragment"
 
 export class CountriesField extends BankField {

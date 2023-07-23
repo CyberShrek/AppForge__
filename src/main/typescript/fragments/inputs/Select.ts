@@ -1,19 +1,26 @@
 import {resolveCSS} from "../../utils/resolver"
 import {InputFragment} from "../abstract/InputFragment"
 import {createDivElement} from "../../utils/DOMWizard"
+import {stringify} from "../../utils/misc"
 
-resolveCSS("third-party/virtual-select.min")
+resolveCSS("third-party/virtual-select")
 
 export default class Select extends InputFragment<Set<OptionKey>>{
 
     constructor(location: FragmentLocation, config: SelectInputConfig) {
         super(location)
         this.core = createDivElement({class: "select"})
+        this.value = new Set()
         applyVirtualSelect(this.core, config)
-        this.core.addEventListener("change", event =>
+        this.core.addEventListener("change", event => {
             // @ts-ignore !!! Resolved by html import !!!
-            this.value = event.currentTarget.value
-        )
+            const newValue: Set<OptionKey> = new Set(typeof event.currentTarget.value === "object" ? event.currentTarget.value : [event.currentTarget.value])
+
+            // Need to check real changes to prevent doubling
+            console.log(`this.value[${stringify(this.value)}] !== newValue[${stringify(newValue)}]: ${stringify(this.value) !== stringify(newValue)}`)
+            if(stringify(this.value) !== stringify(newValue))
+                this.value = newValue
+        })
     }
 
     protected optionsRetrievalCallbacks: Set<() => Promise<Options>> = new Set()
@@ -36,7 +43,7 @@ export default class Select extends InputFragment<Set<OptionKey>>{
         }
     }
 
-    selectOptions(values: Set<OptionLabel>){
+    selectOptions(values: Set<OptionKey> = new Set()){
         // @ts-ignore !!! Resolved by html import !!!
         this.core.setValue(Array.from(values))
     }
@@ -46,18 +53,17 @@ function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
     // @ts-ignore !!! Resolved by html import !!!
     VirtualSelect.init({
         ele: core,
-        multiple: !!config.multiple,
         additionalClasses: "multiselect",
-        search: !!config.search,
         disabled: true,
         autofocus: false,
         markSearchResults: true,
         optionsCount: 6,
-        showSelectedOptionsFirst:true,
+        multiple: config.multiple,
+        search: config.search,
         hasOptionDescription: config.showCodes,
-        disableSelectAll: !!config.disableSelectAll,
+        disableSelectAll: config.disableSelectAll,
         maxValues: config.maxValues,
-        required: !!config.required,
+        required: config.required,
 
         placeholder: "Выберите",
         noOptionsText: "Варианты не найдены",
