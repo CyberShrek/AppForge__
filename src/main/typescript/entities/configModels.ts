@@ -1,13 +1,21 @@
-interface SelectInputConfig{
+interface InputConfig{
+
+}
+
+interface CheckboxInputConfig  extends InputConfig{
+    label: string
+}
+
+interface SelectInputConfig extends InputConfig{
     multiple?: boolean
     search?: boolean
     showCodes?: boolean
     disableSelectAll?: boolean
-    required?: boolean
     maxValues?: number
 }
 
-interface DateInputConfig {
+
+interface DateInputConfig extends InputConfig {
     maxDays?: number
     defaultRange?: DateRange
 }

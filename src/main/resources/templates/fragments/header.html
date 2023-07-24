@@ -1,21 +1,27 @@
-<header th:fragment="header(appGroup, appName)" id="header">
-    <th:block th:if="${appGroup} != null">
-        <!--/*@thymesVar id="appGroup" type="org.vniizht.appforge.entities.AppConfig.AppGroup"*/-->
-        <a th:href="${appGroup.url}"
-           th:text="${appGroup.name}"></a>
+<header th:fragment="header(appInfo, group, name)" id="header">
+    <!--/*@thymesVar id="appInfo" type="org.vniizht.appforge.entities.AppInfo"*/-->
+    <!--/*@thymesVar id="group" type="org.vniizht.appforge.entities.AppConfig.AppGroup"*/-->
+    <th:block th:if="${group} != null">
+        <a th:href="${group.url}"
+           th:text="${group.name}"></a>
         |
     </th:block>
-    <p th:text="${appName}"></p>
+    <p th:text="${name}"></p>
     <button title="Сброс"
             class="frameless reset">
       <img src="./img/reset.svg" alt="">
     </button>
     <button title="Информация о приложении"
-            class="frameless info">
+            class="frameless info"
+            th:attr="
+            version = ${appInfo.version},
+            update-date = ${appInfo.updateDate},
+            technologist-name = ${appInfo.technologistName}">
       <img src="./img/info.svg" alt="">
     </button>
     <button title="Руководство пользователя"
-            class="frameless help">
+            class="frameless help"
+            th:attr="instruction-path = ${appInfo.instructionPath}">
       <img src="./img/help.svg" alt="">
     </button>
 

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${config.titleName}"></title>
+    <title th:text="${config.title}"></title>
 </head>
 <body>
     <th:block th:insert="fragments/header :: header(
-                appGroup = ${config.appGroup},
-                appName = ${config.appName}
+                appInfo = ${appInfo},
+                group = ${config.group},
+                name = ${config.name}
                 )">
     </th:block>
 

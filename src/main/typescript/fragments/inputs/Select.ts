@@ -11,11 +11,15 @@ export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
     constructor(location: FragmentLocation, config: SelectInputConfig) {
         super(location)
         this.core = createDivElement({class: "select"})
-        this.value = new Set()
+        this.value = null
+        // this.value = config.multiple === true ? new Set() : ""
         applyVirtualSelect(this.core, config)
         this.core.addEventListener("change", event => {
-            // @ts-ignore !!! Resolved by html import !!!
-            const newValue: Set<OptionKey> = new Set(typeof event.currentTarget.value === "object" ? event.currentTarget.value : [event.currentTarget.value])
+            const newValue: OptionKey|Set<OptionKey> = config.multiple === true
+                // @ts-ignore !!! Resolved by html import !!!
+                ? new Set(typeof event.currentTarget.value === "object" ? event.currentTarget.value : [event.currentTarget.value])
+                // @ts-ignore !!! Resolved by html import !!!
+                : event.currentTarget.value
             // Need to check real changes to prevent doubling
             if(stringify(this.value) !== stringify(newValue))
                 this.value = newValue
@@ -25,7 +29,7 @@ export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
     protected optionsRetrievalCallbacks: Set<() => Promise<Options>> = new Set()
 
     setOptions(options: Options){
-        const enabledOptionsCache: Set<OptionKey> = this.value
+        const enabledOptionsCache: Set<OptionKey> = this.value === null ? new Set() : this.value instanceof Set ? this.value : new Set([this.value])
         if(!!options && options.size > 0) {
             const defaultOptions: Set<OptionKey> = new Set(options.get("default")?.split(","))
             options.delete("default")
@@ -64,7 +68,6 @@ function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
         hasOptionDescription: config.showCodes,
         disableSelectAll: config.disableSelectAll,
         maxValues: config.maxValues,
-        required: config.required,
 
         placeholder: "Выберите",
         noOptionsText: "Варианты не найдены",

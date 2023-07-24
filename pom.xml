@@ -64,6 +64,19 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- VNIIZHT -->
+        <dependency>
+            <groupId>com.vniizht</groupId>
+            <artifactId>UCheckRemote</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.vniizht</groupId>
+            <artifactId>PrilInfoRemote</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

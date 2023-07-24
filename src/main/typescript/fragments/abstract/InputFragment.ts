@@ -7,6 +7,7 @@ export abstract class InputFragment<V> extends Fragment{
     get value(): V {
         return this._value
     }
+
     protected set value(value: V){
         this._value = value
         this.valueEventCallbacks.forEach(callback => callback(value))

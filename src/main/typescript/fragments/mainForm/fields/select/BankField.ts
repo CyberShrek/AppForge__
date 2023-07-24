@@ -2,6 +2,7 @@ import {SelectField} from "./SelectField"
 import {DateField} from "../DateField"
 import {InputFragment} from "../../../abstract/InputFragment"
 import {stringify} from "../../../../utils/misc";
+import {Field} from "../Field";
 
 export abstract class BankField extends SelectField{
     protected constructor(location: FragmentLocation, configElement: HTMLElement) {
@@ -13,27 +14,24 @@ export abstract class BankField extends SelectField{
     private dateFieldKey = this.bankConfigElement.querySelector("subscriptions date")?.textContent
     protected dateFieldSubscription: DateField = null
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => InputFragment<any>) {
+    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
         super.resolveSubscribedFields(getFieldFn)
         this.dateFieldSubscription = getFieldFn(this.dateFieldKey)
     }
 
     protected resolveBankSubscribing(fetchOptionsFn: (...subscriptionValues: any[]) => Promise<Options>,
-                                     ...subscriptions: InputFragment<any>[]){
+                                     ...subscriptionFields: Field<InputFragment<any>>[]){
 
-        subscriptions.forEach(field =>
-            field.subscribe(() => {
-                let hasEmptyFieldValue = false
-                for (const subscription of subscriptions) {
-                    if (stringify(subscription.value).length <= 0) {
-                        hasEmptyFieldValue = true
+        subscriptionFields.forEach(field =>
+            field.input.subscribe(value => {
+                for (const subscription of subscriptionFields) {
+                    if (subscription.input.value === null || stringify(subscription.input.value).length <= 0) {
+                        this.input.setOptions(null)
                         return
                     }
                 }
-                if(!hasEmptyFieldValue) {
-                    this.retrieveOptionsPromise("bank",
-                        fetchOptionsFn(...subscriptions.map(subscription => subscription.value)))
-                }
+                this.retrieveOptionsPromise("bank",
+                    fetchOptionsFn(...subscriptionFields.map(subscription => subscription.input.value)))
             }))
     }
 }

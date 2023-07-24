@@ -8,7 +8,20 @@ export class Button extends InputFragment<void> {
     constructor(location: FragmentLocation) {
         super(location)
         this.core = createButtonElement()
-        this.core.addEventListener("click", () => this.value = this.value)
+        this.core.addEventListener("click", () => {
+            if(this.isAvailable)
+                this.value = this.value
+        })
+    }
+
+    set isAvailable(available: boolean){
+        if(available)
+            this.core.classList.remove("unavailable")
+        else this.core.classList.add("unavailable")
+    }
+
+    get isAvailable(): boolean{
+        return !this.core.classList.contains("unavailable")
     }
 
     set text(text: string){

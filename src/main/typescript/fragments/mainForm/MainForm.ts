@@ -9,7 +9,9 @@ import {CarriersField} from "./fields/select/CarriersField"
 import {CountriesField} from "./fields/select/CountriesField"
 import {RoadsField} from "./fields/select/RoadsField"
 import {StationsField} from "./fields/select/StationsField"
-import {validate} from "../../utils/api/validation";
+import {validateFieldValues} from "../../utils/api/validation";
+import {stringify} from "../../utils/misc";
+import {Field} from "./fields/Field";
 
 resolveCSS("main-form")
 
@@ -23,14 +25,15 @@ export default class MainForm extends InputFragment<MainFormValues>{
         super(location)
         this.core = location.target
         this.value = new Map()
-        this.resolveFields()
-        this.resolveFieldsSubscriptions()
         this.confirmButton = new Button({target: this.core, position: "afterend"})
         this.confirmButton.addClass("confirm")
+        this.confirmButton.text = this.core.getAttribute("confirm-button-text")
+        this.resolveFields()
+        this.resolveFieldsSubscriptions()
         this.validationUrl = this.core.getAttribute("validation-url")
     }
 
-    private fields: Map<string, InputFragment<any>> = new Map()
+    private fields: Map<string, Field<InputFragment<any>>> = new Map()
 
     private resolveFields(){
         this.core.querySelectorAll(".section").forEach(sectionElement => {
@@ -49,7 +52,7 @@ export default class MainForm extends InputFragment<MainFormValues>{
                 field.listenSubscribedFields()
                 field.optionsRetrieving = true
             }
-            field.subscribe(value => {
+            field.input.subscribe(value => {
                 this.value.set(key, value)
                 this.validateFields()
             })
@@ -57,24 +60,26 @@ export default class MainForm extends InputFragment<MainFormValues>{
     }
 
     private validateFields(){
-        console.log("validateFields")
-        console.log("validationUrl = "+this.validationUrl)
-        console.log("value.size = "+this.value.size)
-        console.log("fields.size = "+this.fields.size)
+        this.confirmButton.isAvailable = false
         if(!!this.validationUrl){
-            console.log(validate(this.validationUrl, Object.fromEntries(this.value)))
+            validateFieldValues(this.validationUrl, this.value).then(result => {
+                this.fields.forEach(field => field.makeValid())
+                if(result instanceof Map)
+                    result.forEach((message, fieldKey) => this.fields.get(fieldKey).makeInvalid(message))
+                else if(result === true)
+                    this.confirmButton.isAvailable = true
+            })
         }
     }
 }
 
-function resolveField(fieldElement: HTMLElement): InputFragment<any>{
+function resolveField(fieldElement: HTMLElement): Field<InputFragment<any>>{
     const containsClass = (className: string) => fieldElement.classList.contains(className)
     const location: FragmentLocation = {target: fieldElement}
     const configElement: HTMLElement = fieldElement.querySelector("config")
     return containsClass("date") ? new DateField(location, configElement)
         : containsClass("checkbox") ? new CheckboxField(location, configElement)
-            : containsClass("select") ? resolveSelectField(location, configElement)
-                : new Text(location)
+            : resolveSelectField(location, configElement)
 }
 
 function resolveSelectField(location: FragmentLocation, configElement: HTMLElement): SelectField{

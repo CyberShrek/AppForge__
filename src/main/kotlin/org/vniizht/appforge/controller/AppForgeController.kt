@@ -10,16 +10,19 @@ import org.vniizht.appforge.data.forgedAppsCache
 import org.vniizht.appforge.entities.AppConfig
 import org.vniizht.appforge.entities.AppConfig.MainFormConfig
 import org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig
+import org.vniizht.appforge.service.AppForgeService
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-class AppForgeController(private val request: HttpServletRequest) {
+class AppForgeController(private val request: HttpServletRequest,
+                         private val service: AppForgeService) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody config: AppConfig): ModelAndView {
         val forgedApp = ModelAndView("forge")
         forgedApp.addObject("config", config)
-        forgedAppsCache[config.appName] = forgedApp
+        forgedApp.addObject("appInfo", service.getInfoByCode(config.code))
+        forgedAppsCache[config.name] = forgedApp
         return forgedApp
     }
 
@@ -49,12 +52,13 @@ class AppForgeController(private val request: HttpServletRequest) {
     fun baggage(request: HttpServletRequest): ModelAndView {
         return createApp(
             AppConfig(
-                titleName = "Анализ корреспонденции по багажным перевозкам",
-                appGroup = AppConfig.AppGroup(
+                code = "ESUBR02",
+                title = "Анализ корреспонденции по багажным перевозкам",
+                group = AppConfig.AppGroup(
                     url = "/pril-web/faces/pril/List.xhtml?init=true&namepril=ESUBR",
                     name = "Багажные работы"
                 ),
-                appName = "Корреспонденции",
+                name = "Корреспонденции",
                 mainForm = MainFormConfig(
                     validationUrl = "baggages/validate",
                     sections = mapOf(
@@ -73,26 +77,24 @@ class AppForgeController(private val request: HttpServletRequest) {
                                 )
                             )
                         ),
-//                        "carriers" to AppConfig.MainFormConfig.FormSectionConfig(
-//                            title = "Перевозчики",
-//                            fields = mapOf(
-//                                "carrier" to AppConfig.MainFormConfig.FormSectionConfig.Select(
-//                                    search = true,
-//                                    required = true,
-//                                    optionSources = AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCarriers(
-//                                            subscribeToDate = "period.range"
-//                                        )
-//                                    )
-//                                )
-//                            )
-//                        ),
+                        "carriers" to AppConfig.MainFormConfig.FormSectionConfig(
+                            title = "Перевозчики",
+                            fields = mapOf(
+                                "carrier" to AppConfig.MainFormConfig.FormSectionConfig.Select(
+                                    search = true,
+                                    optionSources = AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCarriers(
+                                            subscribeToDate = "period.range"
+                                        )
+                                    )
+                                )
+                            )
+                        ),
                         "shipment" to FormSectionConfig(
                             title = "Тип отправки",
                             fields = mapOf(
                                 "type" to FormSectionConfig.Select(
                                     title = "Тип",
-                                    required = true,
                                     optionSources = FormSectionConfig.Select.OptionSources(
                                         endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
                                             url = "baggages/main-form-options/shipment/type"
@@ -119,95 +121,94 @@ class AppForgeController(private val request: HttpServletRequest) {
                                 )
                             )
                         ),
-//                        "departure" to FormSectionConfig(
-//                            title = "Объекты отправления",
-//                            fields = mapOf(
-//                                "postSoviet" to FormSectionConfig.CheckBox(
-//                                    title = "Только СНГ и страны Балтии"
-//                                ),
-//                                "countries" to FormSectionConfig.Select(
-//                                    title = "Государства",
-//                                    multiple = true,
-//                                    search = true,
-//                                    required = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToPostSovietCheckbox = "departure.postSoviet"
-//                                        )
-//                                    )
-//                                ),
-//                                "roads" to FormSectionConfig.Select(
-//                                    title = "Дороги",
-//                                    multiple = true,
-//                                    search = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToCountries = "departure.countries"
-//                                        )
-//                                    )
-//                                ),
-//                                "stations" to FormSectionConfig.Select(
-//                                    title = "Станции",
-//                                    multiple = true,
-//                                    search = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToRoads = "departure.roads",
-//                                            extraProperties = mapOf("prpop" to "1")
-//                                        )
-//                                    )
-//                                ),
-//                            )
-//                        ),
-//                        "destination" to FormSectionConfig(
-//                            title = "Объекты назначения",
-//                            fields = mapOf(
-//                                "postSoviet" to FormSectionConfig.CheckBox(
-//                                    title = "Только СНГ и страны Балтии"
-//                                ),
-//                                "countries" to FormSectionConfig.Select(
-//                                    title = "Государства",
-//                                    multiple = true,
-//                                    search = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToPostSovietCheckbox = "destination.postSoviet"
-//                                        )
-//                                    )
-//                                ),
-//                                "roads" to FormSectionConfig.Select(
-//                                    title = "Дороги",
-//                                    multiple = true,
-//                                    search = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToCountries = "destination.countries"
-//                                        )
-//                                    )
-//                                ),
-//                                "stations" to FormSectionConfig.Select(
-//                                    title = "Станции",
-//                                    multiple = true,
-//                                    search = true,
-//                                    optionSources = FormSectionConfig.Select.OptionSources(
-//                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
-//                                            subscribeToDate = "period.range",
-//                                            subscribeToRoads = "destination.roads",
-//                                            extraProperties = mapOf("prpop" to "1")
-//                                        )
-//                                    )
-//                                ),
-//                            )
-//                        )
+                        "departure" to FormSectionConfig(
+                            title = "Объекты отправления",
+                            fields = mapOf(
+                                "postSoviet" to FormSectionConfig.CheckBox(
+                                    title = "Только СНГ и страны Балтии"
+                                ),
+                                "countries" to FormSectionConfig.Select(
+                                    title = "Государства",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
+                                            subscribeToDate = "period.range",
+                                            subscribeToPostSovietCheckbox = "departure.postSoviet"
+                                        )
+                                    )
+                                ),
+                                "roads" to FormSectionConfig.Select(
+                                    title = "Дороги",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
+                                            subscribeToDate = "period.range",
+                                            subscribeToCountries = "departure.countries"
+                                        )
+                                    )
+                                ),
+                                "stations" to FormSectionConfig.Select(
+                                    title = "Станции",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
+                                            subscribeToDate = "period.range",
+                                            subscribeToRoads = "departure.roads",
+                                            extraProperties = mapOf("prpop" to "1")
+                                        )
+                                    )
+                                ),
+                            )
+                        ),
+                        "destination" to FormSectionConfig(
+                            title = "Объекты назначения",
+                            fields = mapOf(
+                                "postSoviet" to FormSectionConfig.CheckBox(
+                                    title = "Только СНГ и страны Балтии"
+                                ),
+                                "countries" to FormSectionConfig.Select(
+                                    title = "Государства",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankCountries(
+                                            subscribeToDate = "period.range",
+                                            subscribeToPostSovietCheckbox = "destination.postSoviet"
+                                        )
+                                    )
+                                ),
+                                "roads" to FormSectionConfig.Select(
+                                    title = "Дороги",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankRoads(
+                                            subscribeToDate = "period.range",
+                                            subscribeToCountries = "destination.countries"
+                                        )
+                                    )
+                                ),
+                                "stations" to FormSectionConfig.Select(
+                                    title = "Станции",
+                                    multiple = true,
+                                    search = true,
+                                    optionSources = FormSectionConfig.Select.OptionSources(
+                                        serviceBank = FormSectionConfig.Select.OptionSources.ServiceBankStations(
+                                            subscribeToDate = "period.range",
+                                            subscribeToRoads = "destination.roads",
+                                            extraProperties = mapOf("prpop" to "1")
+                                        )
+                                    )
+                                ),
+                            )
+                        )
                     )
                 ),
                 reportSlots = mapOf(
-                    "debug" to AppConfig.ReportSlotConfig(title = "")
+                    "report" to AppConfig.ReportSlotConfig(title = "Отчёт")
                 )
             )
         )
@@ -284,8 +285,18 @@ class AppForgeController(private val request: HttpServletRequest) {
 
     @PostMapping("/baggages/validate")
     fun validate(@RequestBody body: Map<String, Any>): ResponseEntity<Map<String, String>>{
-        if(body["period.separate"] as String != "YEARS")
-            return ResponseEntity(mapOf("period.separate" to "Выберите годы"), HttpStatus.FORBIDDEN)
+        val errorsMap = mutableMapOf<String, String>()
+
+        if((body["period.range"] as List<String>)[0] != "2023-07-24") {
+            errorsMap["period.range"] = "Неправильная дата"
+        }
+
+        if(body["period.separate"] == null || body["period.separate"] as String != "YEARS")
+            errorsMap["period.separate"] = "Выберите годы"
+
+        if(errorsMap.isNotEmpty())
+            return ResponseEntity(errorsMap, HttpStatus.FORBIDDEN)
+
         return ResponseEntity(HttpStatus.OK)
     }
 }

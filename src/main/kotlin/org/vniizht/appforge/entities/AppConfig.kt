@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 data class AppConfig(
-    val appName: String,
-    val appGroup: AppGroup? = null,
-    val titleName: String = appName,
+    val code: String,
+    val name: String,
+    val group: AppGroup? = null,
+    val title: String = name,
     val mainForm: MainFormConfig? = null,
     // Key is the report id
     val reportSlots: Map<String, ReportSlotConfig>? = null
@@ -19,7 +20,8 @@ data class AppConfig(
     data class MainFormConfig(
         // Key is the section id
         val sections: Map<String, FormSectionConfig>,
-        val validationUrl: String? = null
+        val validationUrl: String? = null,
+        val confirmButtonText: String = "Подтвердить"
     ) {
         data class FormSectionConfig(
             val title: String? = null,
@@ -56,7 +58,6 @@ data class AppConfig(
                 val search: Boolean = false,
                 val multiple: Boolean = false,
                 val disableSelectAll: Boolean = false,
-                val required: Boolean = false,
                 val maxValues: Int = 0,
                 val optionSources: OptionSources? = null
             ) : Field("select", title) {

@@ -1,6 +1,7 @@
 import {BankField} from "./BankField"
 import {InputFragment} from "../../../abstract/InputFragment"
-import {fetchCountriesByDate} from "../../../../utils/api/options/serviceBank"
+import {fetchRoadsByDateAndCountries} from "../../../../utils/api/options/serviceBank"
+import {Field} from "../Field"
 
 export class RoadsField extends BankField {
 
@@ -11,13 +12,13 @@ export class RoadsField extends BankField {
     private countriesKey = this.bankConfigElement.querySelector("subscriptions countries")?.textContent
     private countriesSubscription
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => InputFragment<any>) {
+    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
         super.resolveSubscribedFields(getFieldFn)
         this.countriesSubscription = getFieldFn(this.countriesKey)
     }
 
     override listenSubscribedFields() {
         super.listenSubscribedFields()
-        this.resolveBankSubscribing(fetchCountriesByDate, this.dateFieldSubscription, this.countriesSubscription)
+        this.resolveBankSubscribing(fetchRoadsByDateAndCountries, this.dateFieldSubscription, this.countriesSubscription)
     }
 }

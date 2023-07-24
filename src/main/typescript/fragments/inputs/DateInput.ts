@@ -60,7 +60,7 @@ function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (date
         ],
         setup(picker) {
             picker.on("select", (e) => {
-                onSelect([e.detail.start, e.detail.end])
+                onSelect([stringifyDate(e.detail.start), stringifyDate(e.detail.end)])
                 setTimeout(() => picker.hide(), 10)
             })
         }

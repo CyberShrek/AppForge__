@@ -22,9 +22,9 @@ if(headerElement !== null)
 if(mainFormElement !== null)
     import("./fragments/mainForm/MainForm").then(fragment => {
         const mainFormFragment = new fragment.default({target: mainFormElement})
-        mainFormFragment.confirmButton.subscribe(value => console.log(value))
+        mainFormFragment.confirmButton.subscribe(value => console.log(mainFormFragment.value))
     })
 
-// if(reportSlotElements !== null)
-//     import("./fragments/report/ReportSlot").then(fragment => reportSlotElements
-//         .forEach(reportSlotElement => reportSlotFragment = new fragment.default(reportSlotElement)))
+if(reportSlotElements !== null)
+    import("./fragments/report/ReportSlot").then(fragment => reportSlotElements
+        .forEach(reportSlotElement => reportSlotFragment = new fragment.default({target: reportSlotElement})))

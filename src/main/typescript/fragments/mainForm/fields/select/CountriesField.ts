@@ -1,6 +1,7 @@
 import {BankField} from "./BankField"
 import {fetchCountriesByDate} from "../../../../utils/api/options/serviceBank"
 import {InputFragment} from "../../../abstract/InputFragment"
+import {Field} from "../Field"
 
 export class CountriesField extends BankField {
 
@@ -11,7 +12,7 @@ export class CountriesField extends BankField {
     private postSovietKey = this.bankConfigElement.querySelector("subscriptions postsoviet")?.textContent
     private postSovietSubscription
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => InputFragment<any>) {
+    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
         super.resolveSubscribedFields(getFieldFn)
         this.postSovietSubscription = getFieldFn(this.postSovietKey)
     }

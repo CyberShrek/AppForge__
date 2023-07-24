@@ -1,6 +1,8 @@
 <form th:fragment="main-form(config)"
       id="main-form"
-      th:attr="validation-url = ${config.validationUrl}">
+      th:attr="
+      validation-url = ${config.validationUrl},
+      confirm-button-text = ${config.confirmButtonText}">
   <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig"*/-->
   <th:block th:each="sectionEntry : ${config.sections}"
             th:with="key = ${sectionEntry.key}, section = ${sectionEntry.value}">
@@ -11,8 +13,8 @@
         <th:block th:each="fieldEntry : ${section.fields}"
                   th:with="key = ${fieldEntry.key}, field = ${fieldEntry.value}">
           <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Field"*/-->
-          <p th:if="${field.type} != 'checkbox'" th:text="${field.title}"></p>
           <div th:class="${field.type}+' field'" th:key="${key}">
+            <p th:if="${field.type} != 'checkbox'" th:text="${field.title}"></p>
             <th:block th:switch="${field.type}">
               <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.CheckBox"*/-->
               <config th:case="'checkbox'"
@@ -23,15 +25,15 @@
                       th:attr="max-days = ${field.maxDays}">
               </config>
               <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select"*/-->
-              <config th:case="'select'"
+              <config hidden="true"
+                      th:case="'select'"
                       th:with="sources = ${field.optionSources}"
                       th:attr="
                       show-codes = ${field.showCodes},
                       search = ${field.search},
                       multiselect = ${field.multiple},
                       disable-select-all = ${field.disableSelectAll},
-                      max-values = ${field.maxValues},
-                      require = ${!!field.required}">
+                      max-values = ${field.maxValues}">
                 <endpoint th:if="${sources.endpoint}">
                   <url th:text="${sources.endpoint.url}"></url>
                   <subscriptions th:each="fieldSource : ${sources.endpoint.subscribeToFields}">

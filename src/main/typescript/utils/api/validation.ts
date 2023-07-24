@@ -2,12 +2,12 @@ import wretch from "wretch"
 import {setCursorToDefault, setCursorToLoading} from "../misc"
 import {popupHttpDataError} from "../modal"
 
-export function validate(url: string, objectToValidate: object): Promise<boolean|object>{
+export function validateFieldValues(url: string, fieldValues: MainFormValues): Promise<boolean|Map<OptionKey, string>>{
     setCursorToLoading()
     return wretch(url)
-        .json(objectToValidate)
+        .json(Object.fromEntries(fieldValues))
         .post()
-        .forbidden(error => error.json)
+        .forbidden(error => new Map(Object.entries(error.json)))
         .text(() => true)
         .catch(error => {
             popupHttpDataError(error, "Ошибка валидации")
