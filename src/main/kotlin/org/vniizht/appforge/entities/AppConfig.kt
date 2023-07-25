@@ -8,19 +8,20 @@ data class AppConfig(
     val name: String,
     val group: AppGroup? = null,
     val title: String = name,
-    val mainForm: MainFormConfig? = null,
+    val mainForm: MainFormConfig,
     // Key is the report id
-    val reportSlots: Map<String, ReportSlotConfig>? = null
+    val reportSlots: Map<String, ReportSlotConfig>? = null,
+    val reportPath: String,
 ) {
     data class AppGroup(
         val name: String,
-        val url: String
+        val path: String
     )
 
     data class MainFormConfig(
         // Key is the section id
         val sections: Map<String, FormSectionConfig>,
-        val validationUrl: String? = null,
+        val validationPath: String? = null,
         val confirmButtonText: String = "Подтвердить"
     ) {
         data class FormSectionConfig(
@@ -67,7 +68,7 @@ data class AppConfig(
                     val serviceBank: ServiceBank? = null
                 ) {
                     data class Endpoint(
-                        val url: String,
+                        val path: String,
                         val subscribeToFields: Set<String> = setOf()
                     )
 

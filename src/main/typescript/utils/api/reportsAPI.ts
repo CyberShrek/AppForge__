@@ -2,16 +2,17 @@ import wretch from "wretch"
 import {setCursorToDefault, setCursorToLoading} from "../misc"
 import {popupHttpDataError} from "../modal"
 
-export const fetchReport = (reportId: any, params: object): Promise<any> => {
+export const fetchReport = (path: string, mainFormValues: FormValues): Promise<ReportModel> => {
     setCursorToLoading()
-    return wretch("reports/" + reportId)
-        .post(params)
-        .json()
+    return wretch(path)
+        .post(mainFormValues)
+        .json(json => json)
         .catch(error => popupHttpDataError(error, "Не удалось загрузить отчёт"))
         .finally(setCursorToDefault)
 }
 
-export const convertReportToXlsx=(report) =>
+export const convertReportToXlsx=(report) => {
+    setCursorToLoading()
     wretch("converter/xlsx")
         .post(report)
         .blob(blob => {
@@ -23,3 +24,5 @@ export const convertReportToXlsx=(report) =>
             aElement.click()
             URL.revokeObjectURL(href)
         })
+        .finally(setCursorToDefault)
+}

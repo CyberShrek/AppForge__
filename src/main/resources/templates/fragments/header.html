@@ -2,7 +2,7 @@
     <!--/*@thymesVar id="appInfo" type="org.vniizht.appforge.entities.AppInfo"*/-->
     <!--/*@thymesVar id="group" type="org.vniizht.appforge.entities.AppConfig.AppGroup"*/-->
     <th:block th:if="${group} != null">
-        <a th:href="${group.url}"
+        <a th:href="${group.path}"
            th:text="${group.name}"></a>
         |
     </th:block>

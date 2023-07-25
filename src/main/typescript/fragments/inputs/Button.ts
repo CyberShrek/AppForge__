@@ -24,6 +24,10 @@ export class Button extends InputFragment<void> {
         return !this.core.classList.contains("unavailable")
     }
 
+    set hint(hint: string){
+        this.core.setAttribute("title", hint)
+    }
+
     set text(text: string){
         this.core.textContent = text
     }

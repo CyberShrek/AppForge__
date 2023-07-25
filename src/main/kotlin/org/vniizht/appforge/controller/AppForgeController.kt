@@ -55,12 +55,12 @@ class AppForgeController(private val request: HttpServletRequest,
                 code = "ESUBR02",
                 title = "Анализ корреспонденции по багажным перевозкам",
                 group = AppConfig.AppGroup(
-                    url = "/pril-web/faces/pril/List.xhtml?init=true&namepril=ESUBR",
+                    path = "/pril-web/faces/pril/List.xhtml?init=true&namepril=ESUBR",
                     name = "Багажные работы"
                 ),
                 name = "Корреспонденции",
                 mainForm = MainFormConfig(
-                    validationUrl = "baggages/validate",
+                    validationPath = "baggages/validate",
                     sections = mapOf(
                         "period" to FormSectionConfig(
                             title = "Период",
@@ -71,7 +71,7 @@ class AppForgeController(private val request: HttpServletRequest,
                                     "Сепарировать",
                                     optionSources = FormSectionConfig.Select.OptionSources(
                                         endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
-                                            url = "baggages/main-form-options/period/separation"
+                                            path = "baggages/main-form-options/period/separation"
                                         )
                                     )
                                 )
@@ -97,7 +97,7 @@ class AppForgeController(private val request: HttpServletRequest,
                                     title = "Тип",
                                     optionSources = FormSectionConfig.Select.OptionSources(
                                         endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
-                                            url = "baggages/main-form-options/shipment/type"
+                                            path = "baggages/main-form-options/shipment/type"
                                         )
                                     )
                                 ),
@@ -105,7 +105,7 @@ class AppForgeController(private val request: HttpServletRequest,
                                     title = "Виды",
                                     optionSources = FormSectionConfig.Select.OptionSources(
                                         endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
-                                            url = "baggages/main-form-options/shipment/kind",
+                                            path = "baggages/main-form-options/shipment/kind",
                                             subscribeToFields = setOf("shipment.type")
                                         )
                                     )
@@ -114,7 +114,7 @@ class AppForgeController(private val request: HttpServletRequest,
                                     title = "Дополнительно",
                                     optionSources = FormSectionConfig.Select.OptionSources(
                                         endpoint = FormSectionConfig.Select.OptionSources.Endpoint(
-                                            url = "baggages/main-form-options/shipment/extra",
+                                            path = "baggages/main-form-options/shipment/extra",
                                             subscribeToFields = setOf("shipment.type", "shipment.kind")
                                         )
                                     )
@@ -207,8 +207,11 @@ class AppForgeController(private val request: HttpServletRequest,
                         )
                     )
                 ),
+                reportPath = "reports",
                 reportSlots = mapOf(
-                    "report" to AppConfig.ReportSlotConfig(title = "Отчёт")
+                    "main" to AppConfig.ReportSlotConfig(
+                        title = "Отчёт"
+                    )
                 )
             )
         )
@@ -285,17 +288,17 @@ class AppForgeController(private val request: HttpServletRequest,
 
     @PostMapping("/baggages/validate")
     fun validate(@RequestBody body: Map<String, Any>): ResponseEntity<Map<String, String>>{
-        val errorsMap = mutableMapOf<String, String>()
-
-        if((body["period.range"] as List<String>)[0] != "2023-07-24") {
-            errorsMap["period.range"] = "Неправильная дата"
-        }
-
-        if(body["period.separate"] == null || body["period.separate"] as String != "YEARS")
-            errorsMap["period.separate"] = "Выберите годы"
-
-        if(errorsMap.isNotEmpty())
-            return ResponseEntity(errorsMap, HttpStatus.FORBIDDEN)
+//        val errorsMap = mutableMapOf<String, String>()
+//
+//        if((body["period.range"] as List<String>)[0] != "2023-07-24") {
+//            errorsMap["period.range"] = "Неправильная дата"
+//        }
+//
+//        if(body["period.separate"] == null || body["period.separate"] as String != "YEARS")
+//            errorsMap["period.separate"] = "Выберите годы"
+//
+//        if(errorsMap.isNotEmpty())
+//            return ResponseEntity(errorsMap, HttpStatus.FORBIDDEN)
 
         return ResponseEntity(HttpStatus.OK)
     }

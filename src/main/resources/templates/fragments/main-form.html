@@ -1,7 +1,7 @@
 <form th:fragment="main-form(config)"
       id="main-form"
       th:attr="
-      validation-url = ${config.validationUrl},
+      validation-path = ${config.validationPath},
       confirm-button-text = ${config.confirmButtonText}">
   <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig"*/-->
   <th:block th:each="sectionEntry : ${config.sections}"
@@ -35,7 +35,7 @@
                       disable-select-all = ${field.disableSelectAll},
                       max-values = ${field.maxValues}">
                 <endpoint th:if="${sources.endpoint}">
-                  <url th:text="${sources.endpoint.url}"></url>
+                  <path th:text="${sources.endpoint.path}"></path>
                   <subscriptions th:each="fieldSource : ${sources.endpoint.subscribeToFields}">
                     <field th:text="${fieldSource}"></field>
                   </subscriptions>

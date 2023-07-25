@@ -20,7 +20,7 @@ export class SelectField extends Field<Select>{
     optionsRetrieving = false
 
     private endpointConfigElement: HTMLElement = this.configElement.querySelector("endpoint")
-    private endpointUrl: string = this.endpointConfigElement?.querySelector("url")?.textContent
+    private endpointPath: string = this.endpointConfigElement?.querySelector("path")?.textContent
     private endpointSubscribedFields: Map<string, Field<InputFragment<any>>|null> = new Map(this.endpointConfigElement ?
         [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
             .map(fieldElement => [fieldElement.textContent, null]) : null)
@@ -32,7 +32,7 @@ export class SelectField extends Field<Select>{
     }
 
     listenSubscribedFields(){
-        if(!!this.endpointUrl) {
+        if(!!this.endpointPath) {
             if (this.endpointSubscribedFields.size > 0) {
                 const headers: Map<string, string> = new Map()
                 this.endpointSubscribedFields.forEach(<T>(field: Field<InputFragment<any>>, key) =>
@@ -40,9 +40,9 @@ export class SelectField extends Field<Select>{
                         headers.set(key, value != null ? stringify(value) : null)
                         if (this.optionsRetrieving === true)
                             this.retrieveOptionsPromise(
-                                "endpoint", fetchEndpointOptions(this.endpointUrl, headers))
+                                "endpoint", fetchEndpointOptions(this.endpointPath, headers))
                     }))
-            } else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointUrl))
+            } else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointPath))
         }
     }
 

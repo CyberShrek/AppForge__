@@ -1,49 +1,49 @@
 import {Fragment} from "../abstract/Fragment"
+import {createDivElement, emptyElement} from "../../utils/DOMWizard"
+import {fetchReport} from "../../utils/api/reportsAPI"
+import {Head} from "./Head"
+import {Body} from "./Body"
 
 export default class ReportSlot extends Fragment{
+
+    protected readonly path: string
+    protected readonly head: Head
+    protected readonly body: Body
+
     constructor(public location: FragmentLocation) {
         super(location)
+        this.core = location.target
+        this.path = this.core.getAttribute("path")
+        this.head = new Head(this.core.querySelector(".head"))
+        this.body = new Body(this.core.querySelector(".body"))
     }
-}
 
-class Report {
-    totalRow
-    rows = []
-    isEmpty
-    // (fetchedReport) is a table with header — basic array of column names, and body — rows whose are basic arrays too.
-    // (ReportRowClass) is a class used for totalRow and rows.
-    // (getTotalCell) is a function used for finding the total row via cell "TOTAL"
-    constructor(fetchedReport, getTotalCell) {
-        // Iterating through the all rows
-        for(const row of fetchedReportToRows(fetchedReport)){
-            if(!this.totalRow && getTotalCell(row).trim() === "TOTAL")
-                this.totalRow = row
-            else
-                this.rows.push(row)
-        }
-        this.isEmpty= this.rows.length === 0
+    applyNewReportByValues(values: FormValues){
+        this.reset()
+        this.body.showLoading()
+        fetchReport(this.path, values).then(model => this.report = model)
     }
-}
 
-class ReportRow{
-    constructor(rowArray, columnNamedIndexes) {
-        for (const namedIndex in columnNamedIndexes) {
-            this[namedIndex] = rowArray[columnNamedIndexes[namedIndex]]
-        }
+    private set report(model: ReportModel){
+        this.reset()
+        if(model.title)
+            this.head.title = model.title
+        if(model.table)
+            this.body.applyTable(model.table)
+        if(model.charts)
+            this.body.applyCharts(model.charts)
+
+        this.applyButtons(!!model.table, !!model.charts)
     }
-}
 
-function fetchedReportToRows(reportTable){
-    const columnNamedIndexes = getColumnNamedIndexesOfHeader(reportTable.header)
-    return reportTable.body
-        .map(rowArray => new ReportRow(rowArray, columnNamedIndexes))
-}
-
-// Takes a header row array, find indexes by its values and returns an object having all these indexes as js fields
-function getColumnNamedIndexesOfHeader(header){
-    const indexes = {}
-    for (let i = 0; i < header.length; i++) {
-        indexes[header[i]] = i
+    private applyButtons(hasTable: boolean, hasCharts: boolean){
+        this.head.applyCollapseButton().subscribe(() => this.body.toggleCollapse())
+        this.head.applyFullscreenButton()
+        this.head.applyToTopButton()
     }
-    return indexes
+
+    private reset(){
+        this.head.reset()
+        this.body.reset()
+    }
 }

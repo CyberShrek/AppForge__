@@ -32,9 +32,12 @@ export function createImageElement(src: string = "", alt: string = "not found", 
 }
 
 // Removes all child elements
-export function emptyElement(element: Element){
+export function emptyElement(element: Element, withText: boolean = true){
+    const text = element.textContent
     while(element.firstElementChild !== null)
         element.firstElementChild.remove()
+
+    if(!withText) element.textContent = text
 }
 
 // Returns startName with serial number

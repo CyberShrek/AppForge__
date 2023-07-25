@@ -15,9 +15,9 @@ export abstract class InputFragment<V> extends Fragment{
 
     protected constructor(protected readonly location: FragmentLocation) { super(location) }
 
-    subscribe(onValueEvent: (value: V) => void, doNotRunOnInit: boolean = false){
+    subscribe(onValueEvent: (value: V) => void, runOnInit: boolean = true){
         this.valueEventCallbacks.push(onValueEvent)
-        if(!doNotRunOnInit)
+        if(runOnInit)
             onValueEvent(this.value)
     }
 

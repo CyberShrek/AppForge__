@@ -2,9 +2,9 @@ import wretch from "wretch"
 import {setCursorToDefault, setCursorToLoading} from "../misc"
 import {popupHttpDataError} from "../modal"
 
-export function validateFieldValues(url: string, fieldValues: MainFormValues): Promise<boolean|Map<OptionKey, string>>{
+export function validateFieldValues(path: string, fieldValues: FormValues): Promise<boolean|Map<OptionKey, string>>{
     setCursorToLoading()
-    return wretch(url)
+    return wretch(path)
         .json(Object.fromEntries(fieldValues))
         .post()
         .forbidden(error => new Map(Object.entries(error.json)))

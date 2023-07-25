@@ -21,11 +21,17 @@
     </th:block>
 
     <th:block th:each="reportSlotItem : ${config.reportSlots}"
-              th:with="name = ${reportSlotItem.key}, slot = ${reportSlotItem.value}">
-        <div th:class="${slot.isModal ? 'modal ' : ''}+'report'" th:name="${name}">
+              th:with="key = ${reportSlotItem.key}, slot = ${reportSlotItem.value}">
+        <div th:class="${slot.isModal ? 'modal ' : ''}+'report'"
+             th:attr="
+             key = ${key},
+             path = ${config.reportPath + '/' + key}">
             <div class="head">
                 <p th:text="${slot.title}"></p>
-                <div class="buttons"></div>
+                <div class="buttons">
+                </div>
+            </div>
+            <div class="body">
             </div>
         </div>
     </th:block>

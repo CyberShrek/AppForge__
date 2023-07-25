@@ -15,11 +15,11 @@ import {Field} from "./fields/Field";
 
 resolveCSS("main-form")
 
-export default class MainForm extends InputFragment<MainFormValues>{
+export default class MainForm extends InputFragment<FormValues>{
 
     readonly confirmButton: Button
 
-    private readonly validationUrl: string
+    private readonly validationPath: string
 
     constructor(location: FragmentLocation) {
         super(location)
@@ -30,7 +30,7 @@ export default class MainForm extends InputFragment<MainFormValues>{
         this.confirmButton.text = this.core.getAttribute("confirm-button-text")
         this.resolveFields()
         this.resolveFieldsSubscriptions()
-        this.validationUrl = this.core.getAttribute("validation-url")
+        this.validationPath = this.core.getAttribute("validation-path")
     }
 
     private fields: Map<string, Field<InputFragment<any>>> = new Map()
@@ -61,8 +61,8 @@ export default class MainForm extends InputFragment<MainFormValues>{
 
     private validateFields(){
         this.confirmButton.isAvailable = false
-        if(!!this.validationUrl){
-            validateFieldValues(this.validationUrl, this.value).then(result => {
+        if(!!this.validationPath){
+            validateFieldValues(this.validationPath, this.value).then(result => {
                 this.fields.forEach(field => field.makeValid())
                 if(result instanceof Map)
                     result.forEach((message, fieldKey) => this.fields.get(fieldKey).makeInvalid(message))

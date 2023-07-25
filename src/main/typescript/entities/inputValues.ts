@@ -7,4 +7,4 @@ type Options = Map<OptionKey, OptionLabel>
 
 type FieldKey = string
 
-type MainFormValues = Map<FieldKey, string>
+type FormValues = Map<FieldKey, string>

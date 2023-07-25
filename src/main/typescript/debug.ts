@@ -1,4 +1,4 @@
-import {TableFragment} from "./fragments/report/content/TableFragment";
+import {Table} from "./fragments/report/content/Table";
 import {setOf} from "./utils/misc"
 import {resolveCSS} from "./utils/resolver"
 import {Text} from "./fragments/inputs/Text";
@@ -15,16 +15,16 @@ debugElement.className = "report"
 // const textInput = new Text({target: debugElement})
 // textInput.subscribe(value => console.log(value))
 
-const tableFragment = new TableFragment({
+const tableFragment = new Table({
     target: debugElement
 })
 
-tableFragment.setHead(setOf(
-    [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
-    [{content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "3", hasFilter: true}, {content: "4", hasFilter: true}, {content: "5", hasFilter: true}]
-))
-tableFragment.setBody(createContentMap(2, 5, 30))
-tableFragment.setTotal()
+// tableFragment.setHead(setOf(
+//     [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
+//     [{content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "3", hasFilter: true}, {content: "4", hasFilter: true}, {content: "5", hasFilter: true}]
+// ))
+// tableFragment.setBody(createContentMap(2, 5, 30))
+// tableFragment.setTotal()
 
 
 
