@@ -1,12 +1,12 @@
 import wretch from "wretch"
 import {popupHttpDataError} from "../../modal"
-import {setCursorToDefault, setCursorToLoading} from "../../misc"
+import {jsonifyFields, setCursorToDefault, setCursorToLoading} from "../../misc"
+import {Field} from "../../../fragments/mainForm/fields/Field"
 
-export const fetchEndpointOptions = (url: string, headers?: Map<string, string>): Promise<Options> => {
+export const fetchEndpointOptions = (url: string, subscribedFields?: Map<FieldKey, Field<any>>): Promise<Options> => {
         setCursorToLoading()
         return wretch(url)
-            .headers(headers ? Object.fromEntries(headers) : {})
-            .get()
+            .post(subscribedFields ? jsonifyFields(subscribedFields) : undefined)
             .json(json => new Map<OptionKey, OptionLabel>(Object.entries(json)))
             .catch(error => {
                 popupHttpDataError(error, "Не удалось загрузить список опций")

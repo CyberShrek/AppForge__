@@ -1,12 +1,12 @@
 import wretch from "wretch"
-import {setCursorToDefault, setCursorToLoading} from "../misc"
+import {jsonifyFields, setCursorToDefault, setCursorToLoading} from "../misc"
 import {popupHttpDataError} from "../modal"
+import {Field} from "../../fragments/mainForm/fields/Field";
 
-export function validateFieldValues(path: string, fieldValues: FormValues): Promise<boolean|Map<OptionKey, string>>{
+export function validateFields(path: string, fields: Map<FieldKey, Field<any>>): Promise<boolean|Map<OptionKey, string>>{
     setCursorToLoading()
     return wretch(path)
-        .json(Object.fromEntries(fieldValues))
-        .post()
+        .post(jsonifyFields(fields))
         .forbidden(error => new Map(Object.entries(error.json)))
         .text(() => true)
         .catch(error => {

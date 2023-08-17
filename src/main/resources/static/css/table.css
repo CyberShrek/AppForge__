@@ -1,7 +1,12 @@
-.report table-container {
+.report .table {
     overflow-y: hidden;
     margin-bottom: var(--border-radius);
+    border-top: var(--light-border);
     border-bottom: var(--light-border);
+}
+.report .table button{
+    margin: var(--indent);
+    margin-left: auto;
 }
 .report :is(table-container.scrollable, table-container.windowed) { overflow-y: auto }
 .report table-container.scrollable{
@@ -35,6 +40,7 @@
     padding: 10px;
     color: white;
     width: 100vw;
+    white-space: nowrap;
     font-weight: bold;
     background: var(--primary-color);
 }
@@ -44,7 +50,7 @@
     cursor: pointer;
 }
 
-.report :is(tr.total td, tr td.page){
+.report tfoot tr td{
     font-weight: bold;
     background: var(--secondary-color);
 }
@@ -65,6 +71,7 @@
     color: var(--primary-color);
     padding: var(--indent) calc(var(--indent)/2);
     text-align: center;
+    vertical-align: top;
     transition: all 0.3s;
     background-color: #fff;
 }
@@ -115,3 +122,4 @@
     width: 70px;
     height: 70px;
 }
+

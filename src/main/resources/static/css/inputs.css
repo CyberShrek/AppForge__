@@ -1,9 +1,16 @@
 /* COMMONS */
 input, button{
-    padding: var(--indent);
+    padding: var(--light-indent);
     color: var(--primary-color);
     border-radius: var(--border-radius);
     border: var(--border);
+}
+
+button.confirm{
+    padding: var(--indent);
+    font-size: large;
+    color: white;
+    background: var(--primary-color);
 }
 
 input[type=date],
@@ -50,4 +57,25 @@ button.negative{
 }
 :is(option, button):active {
     filter: contrast(60%)
+}
+
+.field.text {
+}
+
+.field.text input[type=text] {
+    width: 100px;
+}
+.field.text.empty input[type=text] {
+    width: 25px;
+}
+
+.field.text button.reset {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: auto;
+    transform: translateX(-150%);
+}
+.field.text.empty button.reset {
+    display: none;
 }

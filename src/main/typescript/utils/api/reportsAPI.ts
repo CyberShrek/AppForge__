@@ -1,28 +1,30 @@
 import wretch from "wretch"
 import {setCursorToDefault, setCursorToLoading} from "../misc"
 import {popupHttpDataError} from "../modal"
+import domtoimage from "dom-to-image";
 
-export const fetchReport = (path: string, mainFormValues: FormValues): Promise<ReportModel> => {
+export const fetchReport = (path: string, values: JsonFieldValues): Promise<ReportModel> => {
     setCursorToLoading()
     return wretch(path)
-        .post(mainFormValues)
+        .post(values)
         .json(json => json)
         .catch(error => popupHttpDataError(error, "Не удалось загрузить отчёт"))
         .finally(setCursorToDefault)
 }
 
-export const convertReportToXlsx=(report) => {
+export function downloadXlsx(model: XlsxTableModel) {
     setCursorToLoading()
-    wretch("converter/xlsx")
-        .post(report)
+    wretch("appforge/converter/xlsx")
+        .post(model)
         .blob(blob => {
             const aElement = document.createElement('a')
-            aElement.setAttribute('download', report.title + ".xlsx")
+            aElement.setAttribute('download', model.name + ".xlsx")
             const href = URL.createObjectURL(blob)
             aElement.href = href
             aElement.setAttribute('target', '_blank')
             aElement.click()
             URL.revokeObjectURL(href)
         })
+        .catch(error => popupHttpDataError(error, "Ошибка экспорта"))
         .finally(setCursorToDefault)
 }

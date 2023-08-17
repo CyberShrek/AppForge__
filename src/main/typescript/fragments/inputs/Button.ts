@@ -19,9 +19,15 @@ export class Button extends InputFragment<void> {
             this.core.classList.remove("unavailable")
         else this.core.classList.add("unavailable")
     }
-
     get isAvailable(): boolean{
         return !this.core.classList.contains("unavailable")
+    }
+    enable=() => this.isAvailable = true
+    disable=() => this.isAvailable = false
+
+
+    get hint(): string{
+        return this.core.getAttribute("title")
     }
 
     set hint(hint: string){
@@ -36,7 +42,7 @@ export class Button extends InputFragment<void> {
     }
 
     set image(src: string|null){
-        this.imageElement.remove()
+        this.imageElement?.remove()
         if(!!src) {
             this.imageElement = createImageElement(src)
             this.core.appendChild(this.imageElement)
@@ -44,5 +50,9 @@ export class Button extends InputFragment<void> {
     }
     get image(): string{
         return this.imageElement?.src
+    }
+
+    override subscribe(onValueEvent: (value: void) => void, runOnInit: boolean = false) {
+        super.subscribe(onValueEvent, runOnInit)
     }
 }

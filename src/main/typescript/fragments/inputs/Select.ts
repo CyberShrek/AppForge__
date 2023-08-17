@@ -1,12 +1,13 @@
 import {resolveCSS} from "../../utils/resolver"
 import {InputFragment} from "../abstract/InputFragment"
 import {createDivElement} from "../../utils/DOMWizard"
-import {stringify} from "../../utils/misc"
+import {compareMaps} from "../../utils/misc"
 
 resolveCSS("third-party/virtual-select")
 
-// When multiselect turned on then value is OptionKey else value is Set<OptionKey>
-export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
+export default class Select extends InputFragment<Options>{
+
+    private options: Options
 
     constructor(location: FragmentLocation, config: SelectInputConfig) {
         super(location)
@@ -15,27 +16,29 @@ export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
         // this.value = config.multiple === true ? new Set() : ""
         applyVirtualSelect(this.core, config)
         this.core.addEventListener("change", event => {
-            const newValue: OptionKey|Set<OptionKey> = config.multiple === true
-                // @ts-ignore !!! Resolved by html import !!!
-                ? new Set(typeof event.currentTarget.value === "object" ? event.currentTarget.value : [event.currentTarget.value])
-                // @ts-ignore !!! Resolved by html import !!!
-                : event.currentTarget.value
+            // @ts-ignore !!! Resolved by html import !!!
+            const value = event.currentTarget.value
+            const selectedOptions: Options = value.length > 0 ? this.optionKeysToOptions(
+                typeof value === "object" ? value : [value]
+            ) : null
+
             // Need to check real changes to prevent doubling
-            if(stringify(this.value) !== stringify(newValue))
-                this.value = newValue
+            if(!compareMaps(this.value, selectedOptions))
+                this.value = selectedOptions
         })
     }
 
     protected optionsRetrievalCallbacks: Set<() => Promise<Options>> = new Set()
 
     setOptions(options: Options){
-        const enabledOptionsCache: Set<OptionKey> = this.value === null ? new Set() : this.value instanceof Set ? this.value : new Set([this.value])
+        this.options = options
+        const selectedKeysCache: Set<OptionKey> = new Set(!!this.value ? this.value.keys() : undefined)
         if(!!options && options.size > 0) {
-            const defaultOptions: Set<OptionKey> = new Set(options.get("default")?.split(","))
+            const defaultKeys: Set<OptionKey> = new Set(options.get("default")?.split(","))
             options.delete("default")
             // @ts-ignore !!! Resolved by html import !!!
             this.core.setOptions(mapToVirtualSelectOptions(options))
-            this.setSelected(enabledOptionsCache.size > 0 ? enabledOptionsCache : defaultOptions)
+            this.setSelected(selectedKeysCache.size > 0 ? selectedKeysCache : defaultKeys)
             // @ts-ignore !!! Resolved by html import !!!
             this.core.enable()
         }
@@ -52,6 +55,9 @@ export default class Select extends InputFragment<OptionKey|Set<OptionKey>>{
         // @ts-ignore !!! Resolved by html import !!!
         this.core.setValue(Array.from(values))
     }
+
+    private optionKeysToOptions=(keys: OptionKey[]): Options =>
+        new Map(keys.map(key => [key, this.options.get(key)]))
 }
 
 function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
@@ -62,6 +68,7 @@ function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
         disabled: true,
         autofocus: false,
         markSearchResults: true,
+        zIndex: 100,
         optionsCount: 6,
         multiple: config.multiple,
         search: config.search,
@@ -69,7 +76,7 @@ function applyVirtualSelect(core: HTMLElement, config: SelectInputConfig){
         disableSelectAll: config.disableSelectAll,
         maxValues: config.maxValues,
 
-        placeholder: "Выберите",
+        placeholder: "",
         noOptionsText: "Варианты не найдены",
         noSearchResultsText: "Результатов не найдено",
         selectAllText: "Выбрать все",

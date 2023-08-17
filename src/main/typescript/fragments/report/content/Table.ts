@@ -1,41 +1,43 @@
 import {Fragment} from "../../abstract/Fragment"
 import {emptyElement, createElement} from "../../../utils/DOMWizard"
-import {concatMaps, filterMap, numberOf, sortMap} from "../../../utils/misc"
+import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../utils/misc"
 import {Text} from "../../inputs/Text"
+import {resolveCSS} from "../../../utils/resolver"
+
+resolveCSS("table")
 
 export class Table extends Fragment{
 
-    protected thead: HTMLTableSectionElement = createElement("thead")
-    protected tbody: HTMLTableSectionElement = createElement("tbody")
-    protected tfoot: HTMLTableSectionElement = createElement("tfoot")
+    thead: HTMLTableSectionElement = createElement("thead")
+    tbody: HTMLTableSectionElement = createElement("tbody")
+    tfoot: HTMLTableSectionElement = createElement("tfoot")
 
-    protected bodyContent: TableBody = new Map()
+    protected _tableMap: TableMap = new Map()
 
     // Key is filtrated column, value is filter text value
     protected filtersMap: Map<number, string> = new Map()
 
-    constructor(location: FragmentLocation, model?: TableModel) {
+    constructor(location: FragmentLocation, private model: TableModel) {
         super(location)
         this.core = createElement("table")
         this.core.append(this.thead, this.tfoot, this.tbody)
-        if(model){
-            this.head = model.head
-            this.body = model.body
-            if(model.total)
-                this.total = model.total.length > 0 ? model.total : this.calculateTotal()
-        }
+        this.head = model.head
+        this.tableMap = new Map(model.data.map(rowData => [
+            rowData.slice(0, model.primaryColumnsNumber).map(cellData => stringify(cellData)),
+            rowData.slice(model.primaryColumnsNumber)
+        ]))
+        if(model.total)
+            this.total = model.total.length > 0 ? model.total : this.calculateTotal()
     }
 
-    set head(head: TableHead){
+    private set head(head: TableHead){
         emptyElement(this.thead)
         head.forEach(headRow => {
-            let columnId: number = 0
             this.thead.appendChild(
                 this.createHTMLRow(headRow.map(
                     headCell => {
-                        const htmlHeadCell = this.createHTMLHeadCell(headCell.content, headCell.rowSpan, headCell.colSpan)
-                        if (headCell.hasFilter === true) this.setFilter(htmlHeadCell, columnId)
-                        columnId = columnId + htmlHeadCell.colSpan
+                        const htmlHeadCell = this.createHTMLHeadCell(headCell.text, headCell.rowspan, headCell.colspan)
+                        if (headCell.addFilter === true) this.setFilter(htmlHeadCell)
                         return htmlHeadCell
                     })
                 )
@@ -43,43 +45,48 @@ export class Table extends Fragment{
         })
     }
 
-    set body(bodyContent: TableBody){
+    private set tableMap(tableMap: TableMap){
         emptyElement(this.tbody)
-        this.bodyContent = new Map()
-        this.addBody(bodyContent)
-    }
-
-    private addBody(bodyContent: TableBody){
-        this.bodyContent = concatMaps(this.bodyContent, bodyContent)
-        sortMap(this.filterBodyContent(this.bodyContent)).forEach((valueCells, primaryCells) =>
-            this.tbody.append(this.createHTMLRow(
-                primaryCells.map(cell => this.createHTMLCell(cell, "primary")).concat(
-                    valueCells.map(cell => this.createHTMLCell(String(cell))))))
-        )
+        this._tableMap = new Map()
+        this.addTableMap(tableMap)
         this.groupPrimaryCells()
     }
 
-    set total(total: ValueCell[]){
+    private addTableMap(tableMap: TableMap){
+        this._tableMap = concatMaps(this._tableMap, tableMap)
+        sortMap(this.filtrateTableMap(this._tableMap)).forEach((valueCells, primaryCells) =>
+            this.tbody.append(this.createHTMLRow(
+                primaryCells.map(cell => {
+                    const primaryCellElement = this.createHTMLCell(cell)
+                    primaryCellElement.classList.add("primary")
+                    return primaryCellElement
+                }).concat(
+                    valueCells.map(cell => this.createHTMLCell(String(cell))))))
+        )
+    }
+
+    private set total(total: CellData[]){
         this.tfoot.querySelector(".total")?.remove()
         this.tfoot.appendChild(this.createHTMLTotalRow(total.map(value => this.createHTMLCell(value))))
     }
 
-    calculateTotal(): ValueCell[]{
-        const total: ValueCell[] = []
-        this.bodyContent.forEach(values=> values.forEach((value, i) => {
+    private calculateTotal(): CellData[]{
+        const total: CellData[] = []
+        this._tableMap.forEach(values=> values.forEach((value, i) => {
             total[i] = total[i] ? numberOf(total[i]) + numberOf(value) : value
         }))
         return total
     }
 
     private createHTMLTotalRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
-        const primaryTotalCell = this.createHTMLCell("Всего")
+        const primaryTotalCell: HTMLTableCellElement = this.createHTMLCell("Итого")
+        const totalRow: HTMLTableRowElement = this.createHTMLRow([primaryTotalCell, ...htmlCells])
         primaryTotalCell.colSpan = this.tbody.querySelector("tr").querySelectorAll(".primary").length
-        return this.createHTMLRow([primaryTotalCell, ...htmlCells], "total")
+        return totalRow
     }
 
-    private createHTMLRow(htmlCells: HTMLTableCellElement[], cssClass?: string): HTMLTableRowElement{
-        const tr: HTMLTableRowElement = createElement("tr", "", {class: cssClass})
+    private createHTMLRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
+        const tr: HTMLTableRowElement = createElement("tr")
         tr.append(...htmlCells)
         return tr
     }
@@ -88,20 +95,27 @@ export class Table extends Fragment{
         return createElement("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
     }
 
-    private createHTMLCell(cellContent: string|number, cssClass?: string): HTMLTableCellElement {
-        return createElement("td", String(cellContent), {class: cssClass})
+    private createHTMLCell(data: CellData): HTMLTableCellElement {
+        return createElement("td", String(data))
     }
 
-    private setFilter(htmlHeadCell: HTMLTableCellElement, targetColumnId: number){
-        const filterFragment = new Text({target: htmlHeadCell})
+    private setFilter(htmlHeadCell: HTMLTableCellElement){
+        const title = htmlHeadCell.textContent
+        htmlHeadCell.textContent = ""
+        const filterFragment = new Text(
+            {target: htmlHeadCell, position: "beforeend"},
+            {title, placeholder: "🔎"}
+        )
         filterFragment.subscribe(value => {
-            this.filtersMap.set(targetColumnId, value)
-            this.body = this.bodyContent
-        })
+            console.log(getCellIndexWithSpans(htmlHeadCell))
+            this.filtersMap.set(getCellIndexWithSpans(htmlHeadCell), value)
+            this.tableMap = this._tableMap
+        }, false)
     }
 
-    private filterBodyContent(bodyContent: TableBody): TableBody{
-        return filterMap(bodyContent, (valueCells, primaryCells) => {
+
+    private filtrateTableMap(tableMap: TableMap): TableMap{
+        return filterMap(tableMap, (valueCells, primaryCells) => {
             const cellTexts = primaryCells.concat(valueCells.map(v => String(v)))
             for (let i = 0; i < cellTexts.length; i++) {
                 const filterText = this.filtersMap.get(i)
@@ -112,11 +126,13 @@ export class Table extends Fragment{
         })
     }
 
-    private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
+    // TODO works incorrectly if the size is more than 1
+    private groupPrimaryCells(size: number = this.model.groupedColumnsNumber ? this.model.groupedColumnsNumber : 0,
+                              startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
                               endHtmlRow: HTMLTableRowElement = this.tbody.lastElementChild as HTMLTableRowElement,
                               nesting: number = 0){
-        if(startHtmlRow === endHtmlRow) return
-        const primaryHtmlCell = startHtmlRow.cells[nesting]
+        if(startHtmlRow === endHtmlRow || size === nesting) return
+        const primaryHtmlCell= startHtmlRow.cells[nesting]
         if(!primaryHtmlCell?.classList?.contains("primary")) return
         let nextHtmlRow = startHtmlRow
         do {
@@ -126,11 +142,52 @@ export class Table extends Fragment{
                 primaryHtmlCell.rowSpan++
                 nextPrimaryHtmlCell.hidden = true
             } else {
-                this.groupPrimaryCells(startHtmlRow, nextHtmlRow, nesting + 1)
-                this.groupPrimaryCells(nextHtmlRow, endHtmlRow)
+                this.groupPrimaryCells(size, startHtmlRow, nextHtmlRow, nesting + 1)
+                this.groupPrimaryCells(size, nextHtmlRow, endHtmlRow)
                 return
             }
         }
         while (nextHtmlRow !== endHtmlRow)
     }
+}
+function getCellIndexWithSpans(targetCell: HTMLTableCellElement): number  {
+
+    let result: number = -1
+
+    let rows = targetCell.parentElement.parentElement.querySelectorAll('tr'),
+        matrix = [],
+        cell: HTMLTableCellElement = null,
+        rowIndex: number = null,
+        colIndex: number = null
+
+
+    for (let i = 0; i < rows.length && result === -1; i++) {
+        console.log(true)
+        matrix[i] = matrix[i] || [];
+        const row = rows[i];
+
+        for (let j = 0; j < row.cells.length; j++) {
+            cell = row.cells[j]
+            rowIndex = row.rowIndex;
+            matrix[rowIndex] = matrix[rowIndex] || [];
+            colIndex = null;
+            for (let l = 0; l <= matrix[rowIndex].length && colIndex === null; l++) {
+                if (!matrix[rowIndex][l]) colIndex = l;
+            }
+
+            if (cell === targetCell) {
+                result = colIndex
+                break;
+            }
+
+            for (let k = rowIndex; k < rowIndex + cell.rowSpan; k++) {
+                for (let l = colIndex; l < colIndex + cell.colSpan; l++) {
+                    matrix[k] = matrix[k] || [];
+                    matrix[k][l] = 1;
+                }
+            }
+        }
+    }
+
+    return result;
 }

@@ -1,50 +1,98 @@
-import {Table} from "./fragments/report/content/Table";
-import {setOf} from "./utils/misc"
 import {resolveCSS} from "./utils/resolver"
-import {Text} from "./fragments/inputs/Text";
+import {Factory, HTMLFragment} from "./fragments/abstract/HTMLFragment"
 
 resolveCSS("global")
 resolveCSS("inputs")
 resolveCSS("states")
 resolveCSS("third-party/animate")
-resolveCSS("report/table")
+resolveCSS("misc")
 
-const debugElement: HTMLElement = document.querySelector("debug")
-debugElement.className = "report"
+class InnerFragment extends HTMLFragment<HTMLDivElement>{
+    html = `<div>inner</div>`
+}
 
-// const textInput = new Text({target: debugElement})
-// textInput.subscribe(value => console.log(value))
+class DebugFragment extends HTMLFragment<HTMLDivElement>{
 
-const tableFragment = new Table({
-    target: debugElement
-})
+    innerFragment = new InnerFragment()
 
-// tableFragment.setHead(setOf(
-//     [{content: "Primary", colSpan: 2}, {content: "Values", colSpan: 5}],
-//     [{content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "1", hasFilter: true}, {content: "2", hasFilter: true}, {content: "3", hasFilter: true}, {content: "4", hasFilter: true}, {content: "5", hasFilter: true}]
-// ))
-// tableFragment.setBody(createContentMap(2, 5, 30))
-// tableFragment.setTotal()
+    html = `<div>outer</div>`
+}
+
+document.body.appendChild(Factory.create(DebugFragment).element)
 
 
+// const reportSlot = new ReportSlot({target: document.querySelector("div.report")})
 
-// создание и заполнение MAP
-function createContentMap(primaryCellsSize: number, valueCellsSize: number, tableSize: number): TableBody {
-    const contentMap: TableBody = new Map();
-    for(let i : number = 0; i < tableSize; i++){
+// reportSlot.applyNewReport({
+//     charts: [
+//     //     {
+//     //     data: {a: 123, b: 444, c: 3334},
+//     //     config: {
+//     //         title: "Debug",
+//     //         graphs: [
+//     //             {
+//     //                 type: "bar",
+//     //                 color: "red",
+//     //                 name: "debug"
+//     //             }
+//     //         ]
+//     //     }
+//     // },{
+//     //     data: {a: 344, b: 4244, c: 23, d: 4, e: 1233},
+//     //     config: {
+//     //         title: "Debug",
+//     //         graphs: [
+//     //             {
+//     //                 type: "bar",
+//     //                 color: "blue",
+//     //                 name: "debug"
+//     //             }
+//     //         ]
+//     //     }
+//     // },
+//         {
+//         title: "Debug",
+//         diagram: [
+//             {
+//                 type: "line",
+//                 name: "debug"
+//             },
+//             {
+//                 type: "pie",
+//                 name: "debug2"
+//             }
+//         ],
+//         data: {a: [344, 44], b: [244, 51], c: [23, 134], d: [4, 100], e: [233, 10]}
+//     }],
+//     table: {
+//         data: createTableData(2, 5, 100),
+//         total: [],
+//         head: [
+//             [{text: "Primary", colspan: 2}, {text: "Values", colspan: 5}],
+//             [{text: "1", addFilter: true},{text: "2", addFilter: true},
+//                 {text: "1"}, {text: "2"}, {text: "3"}, {text: "4"}, {text: "5"}]
+//         ],
+//         primaryColumnsNumber: 2,
+//         groupedColumnsNumber: 1,
+//         xlsxExport: null
+//     }
+// })
+
+function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): TableData {
+    const tableData: TableData = []
+    for(let i : number = 0; i < tableHeight; i++){
         const primaryCells: string[] = [];
         for(let j : number = 0; j < primaryCellsSize; j++) {
-            primaryCells[j] = (primaryCells.length > 0 ? primaryCells[j-1]+"." : "")+randomWord()
+            primaryCells[j] = randomWord()
         }
         const valueCells: number[] = []
         for(let j : number = 0; j < valueCellsSize; j++)
             valueCells[j] = Math.floor(Math.random()*1000);
-        contentMap.set(primaryCells, valueCells);
+        tableData[i] = [...primaryCells, ...valueCells]
     }
-    return contentMap;
+    return tableData
 }
 
-//рандомная строка
 function randomWord():string {
     const words :string [] = ['Вахта','Вакцина','Отечество','Владения','Овца','Решительность',
         'Рана','Опасность','Производство','Коммерция','Звание','Начало','Институт',

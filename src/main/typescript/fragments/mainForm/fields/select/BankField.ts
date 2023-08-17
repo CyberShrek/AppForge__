@@ -19,7 +19,7 @@ export abstract class BankField extends SelectField{
         this.dateFieldSubscription = getFieldFn(this.dateFieldKey)
     }
 
-    protected resolveBankSubscribing(fetchOptionsFn: (...subscriptionValues: any[]) => Promise<Options>,
+    protected resolveBankSubscribing(fetchBankOptionsFn: (...subscriptionValues: any[]) => Promise<Options>,
                                      ...subscriptionFields: Field<InputFragment<any>>[]){
 
         subscriptionFields.forEach(field =>
@@ -31,7 +31,7 @@ export abstract class BankField extends SelectField{
                     }
                 }
                 this.retrieveOptionsPromise("bank",
-                    fetchOptionsFn(...subscriptionFields.map(subscription => subscription.input.value)))
+                    fetchBankOptionsFn(...subscriptionFields.map(subscription => subscription.input.value)))
             }))
     }
 }

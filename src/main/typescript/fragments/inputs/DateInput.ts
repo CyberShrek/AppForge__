@@ -56,7 +56,7 @@ function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (date
             maxDays: config.maxDays
         },
         css: [
-            "css/third-party/easepick.css"
+            "app-forge/css/third-party/easepick.css"
         ],
         setup(picker) {
             picker.on("select", (e) => {

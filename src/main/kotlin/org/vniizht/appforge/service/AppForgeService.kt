@@ -8,10 +8,10 @@ import javax.naming.InitialContext
 @Service
 class AppForgeService {
 
-    fun getInfoByCode(code: String): AppInfo {
+    fun getInfo(appCode: String, additionalInfo: String?): AppInfo {
         val info = (InitialContext()
             .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote)
-            .info(code)
+            .info(appCode)
 
         return AppInfo (
             name              = info["zadname"] as String,
@@ -27,7 +27,8 @@ class AppForgeService {
             helpPath          = info["helpstr"] as String,
             comment           = info["comment"] as String,
             tables            = info["pril_tables"] as Array<String>,
-            instructionPath   = info["helpstr"] as String
+            instructionPath   = info["helpstr"] as String,
+            additionalInfo
         )
     }
 }

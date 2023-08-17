@@ -12,12 +12,12 @@ data class AppConfig(
     // Key is the report id
     val reportSlots: Map<String, ReportSlotConfig>? = null,
     val reportPath: String,
+    val additionalInfo: String?
 ) {
     data class AppGroup(
         val name: String,
         val path: String
     )
-
     data class MainFormConfig(
         // Key is the section id
         val sections: Map<String, FormSectionConfig>,

@@ -8,3 +8,7 @@ type Attribute =
     { class: string } |
     { name: string } |
     {[attribute: string]: string|number}
+
+interface FragmentOptions{
+
+}

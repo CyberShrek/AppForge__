@@ -32,4 +32,16 @@ export abstract class Fragment {
     addClass   =(className: string) => this.core.classList.add(className)
     removeClass=(className: string) => this.core.classList.remove(className)
     toggleClass=(className: string) => this.core.classList.toggle(className)
+
+    hide(){
+        this.core.style.display = "none"
+    }
+
+    show(){
+        this.core.style.display = ""
+    }
+
+    remove(){
+        this.core.remove()
+    }
 }

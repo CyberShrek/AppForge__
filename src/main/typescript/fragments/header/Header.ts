@@ -21,12 +21,14 @@ export default class Header extends Fragment{
         this.activateButton("info", button => {
             console.log(button)
             popupList(
-                "Информация о приложении",
+                "Информация",
                 [
-                    "Версия программы: "          + button.getAttribute("version"),
-                    "Дата последнего обновления: "+ button.getAttribute("update-date"),
-                    "Технолог: "                  + button.getAttribute("technologist-name")
-                ])})
+                    {icon: "🛈", text: "Версия программы: " + button.getAttribute("version")},
+                    {icon: "🗓", text: "Дата обновления: "  + button.getAttribute("update-date")},
+                    {icon: "👤", text: "Технолог: "         + button.getAttribute("technologist-name")}
+                ]
+                , button.getAttribute("footer")
+                )})
     }
 
     private activateHelpButton(){

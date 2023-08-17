@@ -1,4 +1,4 @@
-package org.vniizht.appforge.data
+package org.vniizht.appforge.store
 import org.springframework.web.servlet.ModelAndView
 import java.util.*
 

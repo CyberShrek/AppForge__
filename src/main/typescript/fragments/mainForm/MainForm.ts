@@ -9,13 +9,13 @@ import {CarriersField} from "./fields/select/CarriersField"
 import {CountriesField} from "./fields/select/CountriesField"
 import {RoadsField} from "./fields/select/RoadsField"
 import {StationsField} from "./fields/select/StationsField"
-import {validateFieldValues} from "../../utils/api/validation";
-import {stringify} from "../../utils/misc";
-import {Field} from "./fields/Field";
+import {validateFields} from "../../utils/api/validation"
+import {Field} from "./fields/Field"
+import {Fragment} from "../abstract/Fragment"
 
 resolveCSS("main-form")
 
-export default class MainForm extends InputFragment<FormValues>{
+export default class MainForm extends Fragment{
 
     readonly confirmButton: Button
 
@@ -24,7 +24,6 @@ export default class MainForm extends InputFragment<FormValues>{
     constructor(location: FragmentLocation) {
         super(location)
         this.core = location.target
-        this.value = new Map()
         this.confirmButton = new Button({target: this.core, position: "afterend"})
         this.confirmButton.addClass("confirm")
         this.confirmButton.text = this.core.getAttribute("confirm-button-text")
@@ -33,7 +32,7 @@ export default class MainForm extends InputFragment<FormValues>{
         this.validationPath = this.core.getAttribute("validation-path")
     }
 
-    private fields: Map<string, Field<InputFragment<any>>> = new Map()
+    fields: Map<string, Field<InputFragment<any>>> = new Map()
 
     private resolveFields(){
         this.core.querySelectorAll(".section").forEach(sectionElement => {
@@ -52,22 +51,19 @@ export default class MainForm extends InputFragment<FormValues>{
                 field.listenSubscribedFields()
                 field.optionsRetrieving = true
             }
-            field.input.subscribe(value => {
-                this.value.set(key, value)
-                this.validateFields()
-            })
+            field.input.subscribe(value => this.validateFields())
         })
     }
 
     private validateFields(){
-        this.confirmButton.isAvailable = false
+        this.confirmButton.disable()
         if(!!this.validationPath){
-            validateFieldValues(this.validationPath, this.value).then(result => {
+            validateFields(this.validationPath, this.fields).then(result => {
                 this.fields.forEach(field => field.makeValid())
                 if(result instanceof Map)
                     result.forEach((message, fieldKey) => this.fields.get(fieldKey).makeInvalid(message))
                 else if(result === true)
-                    this.confirmButton.isAvailable = true
+                    this.confirmButton.enable()
             })
         }
     }

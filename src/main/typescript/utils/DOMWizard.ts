@@ -31,6 +31,11 @@ export function createImageElement(src: string = "", alt: string = "not found", 
     return createElement("img", "", {src}, ...attributes)
 }
 
+export function createCanvasElement(...attributes: Attribute[]): HTMLCanvasElement{
+    return createElement("canvas", "", ...attributes)
+}
+
+
 // Removes all child elements
 export function emptyElement(element: Element, withText: boolean = true){
     const text = element.textContent

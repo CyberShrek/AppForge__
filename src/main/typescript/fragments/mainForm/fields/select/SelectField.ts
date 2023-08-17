@@ -1,5 +1,5 @@
 import Select from "../../../inputs/Select"
-import {concatMaps, javaSetToSet, numberOf, stringify} from "../../../../utils/misc"
+import {concatMaps, numberOf} from "../../../../utils/misc"
 import {InputFragment} from "../../../abstract/InputFragment"
 import {fetchEndpointOptions} from "../../../../utils/api/options/endpointOptions"
 import {Field} from "../Field";
@@ -34,13 +34,11 @@ export class SelectField extends Field<Select>{
     listenSubscribedFields(){
         if(!!this.endpointPath) {
             if (this.endpointSubscribedFields.size > 0) {
-                const headers: Map<string, string> = new Map()
                 this.endpointSubscribedFields.forEach(<T>(field: Field<InputFragment<any>>, key) =>
                     field.input.subscribe(value => {
-                        headers.set(key, value != null ? stringify(value) : null)
                         if (this.optionsRetrieving === true)
                             this.retrieveOptionsPromise(
-                                "endpoint", fetchEndpointOptions(this.endpointPath, headers))
+                                "endpoint", fetchEndpointOptions(this.endpointPath, this.endpointSubscribedFields))
                     }))
             } else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointPath))
         }

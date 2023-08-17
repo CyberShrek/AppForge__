@@ -2,6 +2,7 @@ import applyTypescript from "@rollup/plugin-typescript"
 import resolveNodeJs from '@rollup/plugin-node-resolve'
 import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
+import commonjs from '@rollup/plugin-commonjs'
 
 let crap
 
@@ -15,6 +16,7 @@ export default  {
             sourcemap: true,
             manualChunks:{
                 wretch: ["wretch"],
+                domtoimage: ["dom-to-image"],
                 sweetAlert2: ["sweetalert2"],
                 easePick: ["@easepick/amp-plugin", "@easepick/core", "@easepick/lock-plugin", "@easepick/range-plugin"]
             }
@@ -22,6 +24,11 @@ export default  {
     ],
     plugins: [
         clean(),
+        commonjs({
+            namedExports:{
+                "dom-to-image": ["dom-to-image"],
+            }
+        }),
         resolveNodeJs({
             mainFields: [ "module", "browser", "main" ],
             dedupe: ['s']

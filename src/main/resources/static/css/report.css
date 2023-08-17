@@ -1,12 +1,17 @@
+:root{
+    --report-header-button-height: 35px;
+}
+
 .report {
     display: flex;
     flex-direction: column;
     color: black;
+    min-height: calc(var(--report-header-button-height) + var(--indent) * 2);
+    width: 100%;
     background: white;
     height: min-content;
     overflow-x: hidden;
     border-radius: calc(var(--border-radius) + 2px);
-    border: var(--light-border);
     box-shadow: var(--shadow);
 }
 
@@ -19,18 +24,21 @@
     align-items: center;
     padding: var(--indent)
 }
-.report head p {
+.report .head p {
     font-size: larger;
     margin: 0 var(--indent);
 }
 
 .report .buttons{
     margin-left: auto;
+    display: flex;
 }
 
 .report button{
-    height: 35px;
-    width: 35px;
+    height: var(--report-header-button-height);
+    width: var(--report-header-button-height);
+    margin-left: var(--indent);
+    background: white;
     border: 0;
 }
 
@@ -40,7 +48,6 @@
     margin: var(--indent);
     margin-top: 0;
 }
-
 
 
 /* Chart.js */

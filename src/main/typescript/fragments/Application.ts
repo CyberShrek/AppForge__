@@ -3,6 +3,7 @@ import Header from "./header/Header"
 import MainForm from "./mainForm/MainForm"
 import ReportSlot from "./report/ReportSlot"
 import {fetchReport} from "../utils/api/reportsAPI"
+import {jsonify, jsonifyFields} from "../utils/misc";
 
 export class Application extends Fragment{
 
@@ -23,10 +24,10 @@ export class Application extends Fragment{
     private createMainForm(): MainForm {
         const mainForm = new MainForm({target: document.getElementById("main-form") as HTMLFormElement})
         mainForm.confirmButton.subscribe(() => {
+            mainForm.confirmButton.disable()
             // The main form apply the "main" report only
-            this.reportSlots.get("main").applyNewReportByValues(mainForm.value)
+            this.reportSlots.get("main").applyNewReportByFieldValues(jsonifyFields(mainForm.fields), mainForm.confirmButton.enable)
         }, false)
-
         return mainForm
     }
 

@@ -22,9 +22,8 @@ export const fetchCountriesByDate = (date: DateRange, postSovietOnly: boolean): 
         (item) => postSovietOnly ? item["g_prsng"] == "1" : true,
         "Не удалось загрузить список государств")
 
-export const fetchRoadsByDateAndCountries = async (date: DateRange,
-                                                   countryKeys: OptionKey|Set<OptionKey>): Promise<Options> => {
-    const fetchRoads=(countryKey) =>
+export const fetchRoadsByDateAndCountries = async (date: DateRange, countries: Options): Promise<Options> => {
+    const fetchRoads=(countryKey: OptionKey) =>
         fetchOptions("dorList", date,
             item => [
                 // Each key consists of countryKey.roadKey
@@ -36,18 +35,16 @@ export const fetchRoadsByDateAndCountries = async (date: DateRange,
             }, null,
             "Не удалось загрузить список дорог"
         )
-    if (countryKeys instanceof Set)
-        return mergePromises([...countryKeys].map(countryKey => fetchRoads(countryKey)))
 
-    return fetchRoads(countryKeys)
+    return mergeOptionPromises([...countries.entries()].map(([key, _]) => fetchRoads(key)))
 }
 
 
 export const fetchStationsByDateAndRoads = async (date: DateRange,
-                                                  roadKeys: OptionKey|Set<OptionKey>,
+                                                  roads: Options,
                                                   extraProperty?: Pair<string, string>): Promise<Options> =>
-    mergePromises(
-        [...mapRoadsByCountryCodeAndRoadCodes(roadKeys)].map(([countryValue, roadValues]) =>
+    mergeOptionPromises(
+        [...mapRoadsByCountryCodeAndRoadCodes(roads)].map(([countryValue, roadValues]) =>
             fetchOptions("stanList", date,
                 (item) => [item["stan"], item["pnazv"]],
                 {
@@ -77,7 +74,12 @@ const fetchOptions = (listName: string,
             const firstChildKey = Object.keys(json)[0]
             return new Map((json[firstChildKey] as Array<any>)
                 .filter((item) => filter ? filter(item) : true)
-                .map((item) => parseItemFn(item)))
+                .map((item) => {
+                    const parsed = parseItemFn(item)
+                    // Trim the value
+                    parsed[1] = parsed[1].trim()
+                    return parsed
+                }))
         })
         .catch(error => {
             popupHttpDataError(error, errorFooter)
@@ -86,7 +88,7 @@ const fetchOptions = (listName: string,
         .finally(() => setCursorToDefault())
 }
 
-function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promise<Options> {
+function mergeOptionPromises(promises: Promise<Options>[]): Promise<Options> {
     return Promise.all(promises)
         .then((results) => {
             const mergedResult = new Map<OptionKey, OptionLabel>();
@@ -103,10 +105,10 @@ function mergePromises(promises: Promise<Map<OptionKey, OptionLabel>>[]): Promis
 }
 
 
-function mapRoadsByCountryCodeAndRoadCodes (roads: OptionKey|Set<OptionKey>) {
+function mapRoadsByCountryCodeAndRoadCodes (roads: Options) {
     const codesMap = new Map<OptionKey, string[]>()
-    const parseRoad = (road: OptionKey) => {
-        const roadValueEntries = road.split("."),
+    const parseRoadKey = (key: OptionKey) => {
+        const roadValueEntries = key.split("."),
             countryValue = roadValueEntries[0],
             roadValue = roadValueEntries[1]
 
@@ -115,9 +117,7 @@ function mapRoadsByCountryCodeAndRoadCodes (roads: OptionKey|Set<OptionKey>) {
         }
         codesMap.get(countryValue)?.push(roadValue)
     }
-    if(roads instanceof Set)
-        roads.forEach(road => parseRoad(road))
-    else parseRoad(roads)
+    roads.forEach((_, key) => parseRoadKey(key))
 
     return codesMap
 }

@@ -16,13 +16,14 @@
             th:attr="
             version = ${appInfo.version},
             update-date = ${appInfo.updateDate},
-            technologist-name = ${appInfo.technologistName}">
+            technologist-name = ${appInfo.technologistName},
+            footer = ${appInfo.additional}">
       <img src="./img/info.svg" alt="">
     </button>
     <button title="Руководство пользователя"
             class="frameless help"
             th:attr="instruction-path = ${appInfo.instructionPath}">
-      <img src="./img/help.svg" alt="">
+      <img src="./app-forge/img/help.svg" alt="">
     </button>
 
 </header>

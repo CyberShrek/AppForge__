@@ -11,17 +11,19 @@ export function popupMessage(title?: string, text?: string){
     popupSweetModal({title, text})
 }
 
-export function popupList(title?: string, list?: string[], footer?: string){
+export function popupList(title?: string, list?: { icon: string, text: string }[], footer?: string){
     popupSweetModal({
         title,
-        html:`<ul>${list.map(item => `<li>${item}</li>`).join("")}</ul>`,
+        html:`<ul>${list.map(item => `<li style='list-style-type: "${item.icon}\t"'>${item.text}</li>`).join("")}</ul>`,
         footer
     })
 }
 
-export function popupTimeoutAction(text?: string, confirmButtonText?: string, onConfirm?: () => void){
+export function popupTimeoutAction(text?: string, confirmButtonText?: string, onConfirm?: () => void, radioOptions?: {[key: string]: string}){
     popupSweetModal({
         text, confirmButtonText,
+        input: radioOptions ? "radio" : undefined,
+        inputOptions: radioOptions ? radioOptions : undefined,
         showConfirmButton: true,
         timer: 3000,
         timerProgressBar: true,

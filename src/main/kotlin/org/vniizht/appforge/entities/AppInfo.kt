@@ -14,5 +14,6 @@ data class AppInfo (
     val helpPath: String? = null,           // путь к помощи
     val comment: String? = null,            // сообщение о ЕСПП
     val tables: Array<String>? = null,       // список таблиц
-    val instructionPath: String? = null          // Путь к руководсту пользователя
+    val instructionPath: String? = null,         // Путь к руководсту пользователя
+    val additional: String? = null
 )

@@ -14,6 +14,10 @@ interface SelectInputConfig extends InputConfig{
     maxValues?: number
 }
 
+interface TextInputConfig extends InputConfig {
+    title?: string
+    placeholder?: string
+}
 
 interface DateInputConfig extends InputConfig {
     maxDays?: number

@@ -6,6 +6,7 @@
 	--border: thin solid var(--primary-color);
 	--light-border: thin solid lightsteelblue;
 	--indent: 10px;
+	--light-indent: 5px;
 	--border-radius: calc(var(--indent)/2);
 	--shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.3);
 	

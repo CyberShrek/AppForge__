@@ -5,5 +5,10 @@ resolveCSS("global")
 resolveCSS("inputs")
 resolveCSS("states")
 resolveCSS("third-party/animate")
+resolveCSS("misc")
 
-const application = new Application({target: document.body})
+document.onreadystatechange = () => {
+    if (document.readyState === "complete")
+        new Application({target: document.body})
+            .show()
+}
