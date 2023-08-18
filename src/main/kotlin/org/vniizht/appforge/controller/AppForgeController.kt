@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.store.forgedAppsCache
-import org.vniizht.appforge.entities.AppConfig
+import org.vniizht.appforge.model.AppConfig
 import org.vniizht.appforge.service.AppForgeService
 import org.vniizht.appforge.service.checkRequest
 import javax.servlet.http.HttpServletRequest

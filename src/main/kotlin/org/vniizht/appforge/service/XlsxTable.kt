@@ -1,7 +1,7 @@
 package org.vniizht.appforge.service
 
-import org.vniizht.appforge.entities.CompleteCell
-import org.vniizht.appforge.entities.XlsxTableModel
+import org.vniizht.appforge.model.CompleteCell
+import org.vniizht.appforge.model.XlsxTableModel
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellAddress
 import org.apache.poi.ss.util.CellRangeAddress

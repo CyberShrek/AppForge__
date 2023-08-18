@@ -35,8 +35,10 @@ export class Body extends ExistedFragment{
         this.tableWrapper = createDivElement({class: "table"})
         this.core.insertAdjacentElement("beforeend", this.tableWrapper)
         this.table = new Table({target: this.tableWrapper, position: "beforeend"}, model)
-        this.xlsxTableModelCache = this.getXlsxTableModel()
-        this.exportTableButton = this.createExportButton(this.tableWrapper, "Экспортировать таблицу в .xlsx?", () => this.exportTable())
+        if(model.xlsxExport) {
+            this.xlsxTableModelCache = this.getXlsxTableModel()
+            this.exportTableButton = this.createExportButton(this.tableWrapper, "Экспортировать таблицу в .xlsx?", () => this.exportTable())
+        }
         return this.table
     }
 

@@ -1,4 +1,4 @@
-package org.vniizht.appforge.entities
+package org.vniizht.appforge.model
 
 data class AppInfo (
     val name: String? = null,               // название

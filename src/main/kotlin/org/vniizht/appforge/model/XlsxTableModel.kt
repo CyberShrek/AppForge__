@@ -1,4 +1,4 @@
-package org.vniizht.appforge.entities
+package org.vniizht.appforge.model
 
 data class XlsxTableModel (
     val name:  String? = null,

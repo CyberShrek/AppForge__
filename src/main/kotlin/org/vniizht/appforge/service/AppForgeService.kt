@@ -1,7 +1,7 @@
 package org.vniizht.appforge.service
 
 import org.springframework.stereotype.Service
-import org.vniizht.appforge.entities.AppInfo
+import org.vniizht.appforge.model.AppInfo
 import org.vniizht.prilinfo.PrilInfoRemote
 import javax.naming.InitialContext
 

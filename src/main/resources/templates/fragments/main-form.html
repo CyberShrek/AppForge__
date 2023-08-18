@@ -3,28 +3,28 @@
       th:attr="
       validation-path = ${config.validationPath},
       confirm-button-text = ${config.confirmButtonText}">
-  <!--/*@thymesVar id="config" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig"*/-->
+    <!--/*@thymesVar id="config" type="org.vniizht.appforge.model.AppConfig.MainFormConfig"*/-->
   <th:block th:each="sectionEntry : ${config.sections}"
             th:with="key = ${sectionEntry.key}, section = ${sectionEntry.value}">
-    <!--/*@thymesVar id="section" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig"*/-->
+      <!--/*@thymesVar id="section" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig"*/-->
     <div class="section" th:key="${key}">
       <p th:text="${section.title}"></p>
       <div>
         <th:block th:each="fieldEntry : ${section.fields}"
                   th:with="key = ${fieldEntry.key}, field = ${fieldEntry.value}">
-          <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Field"*/-->
+            <!--/*@thymesVar id="field" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Field"*/-->
           <div th:class="${field.type}+' field'" th:key="${key}">
-            <p th:if="${field.type} != 'checkbox'" th:text="${field.title}"></p>
+            <p th:if="${field.type} != 'checkbox'" th:text="${field.label}"></p>
             <th:block th:switch="${field.type}">
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.CheckBox"*/-->
+                <!--/*@thymesVar id="field" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.CheckBox"*/-->
               <config th:case="'checkbox'"
-                      th:attr="label = ${field.title}">
+                      th:attr="label = ${field.label}">
               </config>
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Date"*/-->
+                <!--/*@thymesVar id="field" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Date"*/-->
               <config th:case="'date'"
                       th:attr="max-days = ${field.maxDays}">
               </config>
-              <!--/*@thymesVar id="field" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select"*/-->
+                <!--/*@thymesVar id="field" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Select"*/-->
               <config hidden="true"
                       th:case="'select'"
                       th:with="sources = ${field.optionSources}"
@@ -45,21 +45,21 @@
                       th:type="${bank.type}">
                   <subscriptions th:switch="${bank.type}">
                     <th:block th:case="'carriers'">
-                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankCarriers"*/-->
+                        <!--/*@thymesVar id="bank" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankCarriers"*/-->
                       <date th:text="${bank.subscribeToDate}"></date>
                     </th:block>
                     <th:block th:case="'countries'">
-                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankCountries"*/-->
+                        <!--/*@thymesVar id="bank" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankCountries"*/-->
                       <date th:text="${bank.subscribeToDate}"></date>
                       <postsoviet th:text="${bank.subscribeToPostSovietCheckbox}"></postsoviet>
                     </th:block>
                     <th:block th:case="'roads'">
-                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankRoads"*/-->
+                        <!--/*@thymesVar id="bank" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankRoads"*/-->
                       <date th:text="${bank.subscribeToDate}"></date>
                       <countries th:text="${bank.subscribeToCountries}"></countries>
                     </th:block>
                     <th:block th:case="'stations'">
-                      <!--/*@thymesVar id="bank" type="org.vniizht.appforge.entities.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankStations"*/-->
+                        <!--/*@thymesVar id="bank" type="org.vniizht.appforge.model.AppConfig.MainFormConfig.FormSectionConfig.Select.OptionSources.ServiceBankStations"*/-->
                       <date th:text="${bank.subscribeToDate}"></date>
                       <roads th:text="${bank.subscribeToRoads}"></roads>
                     </th:block>

@@ -1,4 +1,4 @@
-package org.vniizht.appforge.entities
+package org.vniizht.appforge.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -41,27 +41,27 @@ data class AppConfig(
             )
             abstract class Field(
                 open val type: String,
-                open val title: String? = null
+                open val label: String? = null
             )
 
             data class CheckBox(
-                override val title: String = ""
-            ) : Field("checkbox", title)
+                override val label: String = ""
+            ) : Field("checkbox", label)
 
             data class Date(
-                override val title: String? = null,
+                override val label: String? = null,
                 val maxDays: Int? = null
-            ) : Field("date", title)
+            ) : Field("date", label)
 
             data class Select(
-                override val title: String? = null,
+                override val label: String? = null,
                 val showCodes: Boolean = false,
                 val search: Boolean = false,
                 val multiple: Boolean = false,
                 val disableSelectAll: Boolean = false,
                 val maxValues: Int = 0,
                 val optionSources: OptionSources? = null
-            ) : Field("select", title) {
+            ) : Field("select", label) {
 
                 data class OptionSources(
                     val endpoint: Endpoint? = null,

@@ -1,6 +1,6 @@
 package org.vniizht.appforge.controller
 
-import org.vniizht.appforge.entities.XlsxTableModel
+import org.vniizht.appforge.model.XlsxTableModel
 import org.vniizht.appforge.service.XlsxTable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
