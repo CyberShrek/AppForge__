@@ -17,12 +17,12 @@ class AppForgeController(private val request: HttpServletRequest,
 ) {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createApp(@RequestBody config: AppConfig): ModelAndView {
-        checkRequest(request, config.code)
+    fun createApp(@RequestBody(required = true) config: AppConfig): ModelAndView {
+        checkRequest(request, config.code!!)
         val forgedApp = ModelAndView("forge")
         forgedApp.addObject("config", config)
         forgedApp.addObject("appInfo", service.getInfo(config.code, config.additionalInfo))
-        forgedAppsCache[config.name] = forgedApp
+        forgedAppsCache[config.name!!] = forgedApp
         return forgedApp
     }
 
