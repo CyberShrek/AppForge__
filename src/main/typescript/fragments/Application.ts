@@ -2,7 +2,6 @@ import {Fragment} from "./abstract/Fragment"
 import Header from "./header/Header"
 import MainForm from "./mainForm/MainForm"
 import ReportSlot from "./report/ReportSlot"
-import {fetchReport} from "../utils/api/reportsAPI"
 import {jsonify, jsonifyFields} from "../utils/misc";
 
 export class Application extends Fragment{

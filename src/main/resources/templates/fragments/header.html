@@ -9,7 +9,7 @@
     <p th:text="${name}"></p>
     <button title="Сброс"
             class="frameless reset">
-      <img src="./img/reset.svg" alt="">
+      <img src="/appforge/img/reset.svg" alt="">
     </button>
     <button title="Информация о приложении"
             class="frameless info"
@@ -18,12 +18,12 @@
             update-date = ${appInfo.updateDate},
             technologist-name = ${appInfo.technologistName},
             footer = ${appInfo.additional}">
-      <img src="./img/info.svg" alt="">
+      <img src="/appforge/img/info.svg" alt="">
     </button>
     <button title="Руководство пользователя"
             class="frameless help"
             th:attr="instruction-path = ${appInfo.instructionPath}">
-      <img src="./app-forge/img/help.svg" alt="">
+      <img src="/appforge/img/help.svg" alt="">
     </button>
 
 </header>

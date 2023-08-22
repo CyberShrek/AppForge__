@@ -1,19 +1,21 @@
 package org.vniizht.appforge.model
 
+const val noDataText = "Нет данных"
+
 data class AppInfo (
-    val name: String? = null,               // название
-    val superName: String? = null,          // название приложения верхнего ур.
-    val path: String? = null,               // путь
-    val superPath: String? = null,          // путь к приложению верхнего ур.
-    val version: String? = null,            // версия
-    val releaseDate: String? = null,        // дата выхода
-    val updateDate: String? = null,         // дата последнего обновления
-    val technologistName: String? = null,   // имя технолога
-    val technologistPhone: String? = null,  // телефон технолога
-    val technologistMail: String? = null,   // почта технолога
-    val helpPath: String? = null,           // путь к помощи
-    val comment: String? = null,            // сообщение о ЕСПП
-    val tables: Array<String>? = null,       // список таблиц
-    val instructionPath: String? = null,         // Путь к руководсту пользователя
-    val additional: String? = null
+    val name: String? = noDataText,               // название
+    val superName: String? = noDataText,          // название приложения верхнего ур.
+    val path: String? = noDataText,               // путь
+    val superPath: String? = noDataText,          // путь к приложению верхнего ур.
+    val version: String? = noDataText,            // версия
+    val releaseDate: String? = noDataText,        // дата выхода
+    val updateDate: String? = noDataText,         // дата последнего обновления
+    val technologistName: String? = noDataText,   // имя технолога
+    val technologistPhone: String? = noDataText,  // телефон технолога
+    val technologistMail: String? = noDataText,   // почта технолога
+    val helpPath: String? = noDataText,           // путь к помощи
+    val comment: String? = noDataText,            // сообщение о ЕСПП
+    val tables: Array<String>? = arrayOf(noDataText),  // список таблиц
+    val instructionPath: String? = noDataText,         // Путь к руководсту пользователя
+    val additional: String? = noDataText
 )
