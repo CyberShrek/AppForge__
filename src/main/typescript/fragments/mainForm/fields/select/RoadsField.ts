@@ -12,8 +12,8 @@ export class RoadsField extends BankField {
     private countriesKey = this.bankConfigElement.querySelector("subscriptions countries")?.textContent
     private countriesSubscription
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
-        super.resolveSubscribedFields(getFieldFn)
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+        super.resolveTriggerFields(getFieldFn)
         this.countriesSubscription = getFieldFn(this.countriesKey)
     }
 

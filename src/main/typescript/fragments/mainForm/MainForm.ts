@@ -47,7 +47,7 @@ export default class MainForm extends Fragment{
     private resolveFieldsSubscriptions(){
         this.fields.forEach((field, key) => {
             if(field instanceof SelectField) {
-                field.resolveSubscribedFields(key => this.fields.get(key))
+                field.resolveTriggerFields(key => this.fields.get(key))
                 field.listenSubscribedFields()
                 field.optionsRetrieving = true
             }

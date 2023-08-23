@@ -2,7 +2,6 @@ import {BankField} from "./BankField"
 import {InputFragment} from "../../../abstract/InputFragment"
 import {fetchStationsByDateAndRoads} from "../../../../utils/api/options/serviceBank"
 import {Field} from "../Field";
-import {createLabelElement} from "../../../../utils/DOMWizard";
 
 export class StationsField extends BankField {
 
@@ -13,8 +12,8 @@ export class StationsField extends BankField {
     private roadsKey = this.bankConfigElement.querySelector("subscriptions roads")?.textContent
     private roadsSubscription
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
-        super.resolveSubscribedFields(getFieldFn)
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+        super.resolveTriggerFields(getFieldFn)
         this.roadsSubscription = getFieldFn(this.roadsKey)
     }
 

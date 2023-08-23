@@ -12,8 +12,8 @@ export class CountriesField extends BankField {
     private postSovietKey = this.bankConfigElement.querySelector("subscriptions postsoviet")?.textContent
     private postSovietSubscription
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
-        super.resolveSubscribedFields(getFieldFn)
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+        super.resolveTriggerFields(getFieldFn)
         this.postSovietSubscription = getFieldFn(this.postSovietKey)
     }
 
