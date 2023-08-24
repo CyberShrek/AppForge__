@@ -1,5 +1,5 @@
-import {resolveCSS} from "./utils/resolver"
-import {Application} from "./fragments/Application"
+import {resolveCSS} from "./util/resolver"
+import {ForgedApplication} from "./fragments/ForgedApplication"
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -9,6 +9,5 @@ resolveCSS("misc")
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete")
-        new Application({target: document.body})
-            .show()
+        new ForgedApplication()
 }

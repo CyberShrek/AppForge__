@@ -1,7 +1,7 @@
 import {SelectField} from "./SelectField"
 import {DateField} from "../DateField"
-import {InputFragment} from "../../../abstract/InputFragment"
-import {stringify} from "../../../../utils/misc"
+import {InputFragment} from "../../../../abstract/InputFragment"
+import {stringify} from "../../../../../util/data"
 import {Field} from "../Field"
 
 export abstract class BankField extends SelectField{

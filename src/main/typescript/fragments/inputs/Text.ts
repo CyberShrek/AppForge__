@@ -1,4 +1,4 @@
-import {createButtonElement, createDivElement, createInputElement} from "../../utils/DOMWizard"
+import {createButtonElement, createDivElement, createInputElement} from "../../util/domWizard"
 import {InputFragment} from "../abstract/InputFragment"
 
 export class Text extends InputFragment<string>{

@@ -1,8 +1,8 @@
 import {Fragment} from "../../abstract/Fragment"
-import {emptyElement, createElement} from "../../../utils/DOMWizard"
-import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../utils/misc"
+import {emptyElement, createElement} from "../../../util/domWizard"
+import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../util/data"
 import {Text} from "../../inputs/Text"
-import {resolveCSS} from "../../../utils/resolver"
+import {resolveCSS} from "../../../util/resolver"
 
 resolveCSS("table")
 

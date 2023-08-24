@@ -1,7 +1,7 @@
 import {Fragment} from "../../abstract/Fragment"
-import {createCanvasElement} from "../../../utils/DOMWizard"
+import {createCanvasElement} from "../../../util/domWizard"
 import {Chart as ChartJS, ChartDataset, ChartOptions, registerables} from 'chart.js'
-import {transposeMatrix} from "../../../utils/misc"
+import {transposeMatrix} from "../../../util/data"
 ChartJS.register(...registerables)
 
 const defaultColors = ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#ffee65", "#beb9db", "#fdcce5", "#8bd3c7"]

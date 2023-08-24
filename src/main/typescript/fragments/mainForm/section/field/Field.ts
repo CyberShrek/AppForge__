@@ -1,7 +1,7 @@
-import {InputFragment} from "../../abstract/InputFragment"
-import {Fragment} from "../../abstract/Fragment"
-import {createLabelElement} from "../../../utils/DOMWizard";
-import {jsonify} from "../../../utils/misc";
+import {InputFragment} from "../../../abstract/InputFragment"
+import {Fragment} from "../../../abstract/Fragment"
+import {createLabelElement} from "../../../../util/domWizard"
+import {jsonify} from "../../../../util/data"
 
 export abstract class Field<T extends InputFragment<any>> extends Fragment{
 

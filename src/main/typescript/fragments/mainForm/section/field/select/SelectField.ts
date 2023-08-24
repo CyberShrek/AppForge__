@@ -1,7 +1,7 @@
-import Select from "../../../inputs/Select"
-import {concatMaps, numberOf} from "../../../../utils/misc"
-import {InputFragment} from "../../../abstract/InputFragment"
-import {fetchEndpointOptions} from "../../../../utils/api/options/endpointOptions"
+import Select from "../../../../inputs/Select"
+import {concatMaps, numberOf} from "../../../../../util/data"
+import {InputFragment} from "../../../../abstract/InputFragment"
+import {fetchEndpointOptions} from "../../../../../util/api/options/endpointOptions"
 import {Field} from "../Field";
 
 export class SelectField extends Field<Select>{
@@ -21,17 +21,18 @@ export class SelectField extends Field<Select>{
 
     private endpointConfigElement: HTMLElement = this.configElement.querySelector("endpoint")
     private endpointPath: string = this.endpointConfigElement?.querySelector("path")?.textContent
-    private endpointTriggerFields: Map<Field<InputFragment<any>>|null> = new Map(this.endpointConfigElement ?
+    // TODO should be a Set
+    private endpointTriggerFields: Map<FieldKey, Field<InputFragment<any>>|null> = new Map(this.endpointConfigElement ?
         [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
             .map(fieldElement => [fieldElement.textContent, null]) : null)
 
-    resolveTriggerFields(getFieldFn: (location: FieldAddress) => Field<InputFragment<any>>){
+    resolveTriggerFields(getFieldFn: (fieldKey: string) => Field<InputFragment<any>>){
         this.endpointTriggerFields.forEach((_, location) => {
             this.endpointTriggerFields.set(location, getFieldFn(location))
         })
     }
 
-    listenSubscribedFields(){
+    listenTriggerFields(){
         if(!!this.endpointPath) {
             if (this.endpointTriggerFields.size > 0) {
                 this.endpointTriggerFields.forEach(<T>(field: Field<InputFragment<any>>, key) =>

@@ -1,7 +1,7 @@
-import {resolveCSS} from "../../utils/resolver"
+import {resolveCSS} from "../../util/resolver"
 import {InputFragment} from "../abstract/InputFragment"
-import {createDivElement} from "../../utils/DOMWizard"
-import {compareMaps} from "../../utils/misc"
+import {createDivElement} from "../../util/domWizard"
+import {compareMaps} from "../../util/data"
 
 resolveCSS("third-party/virtual-select")
 

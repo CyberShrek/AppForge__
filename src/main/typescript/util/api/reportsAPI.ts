@@ -1,5 +1,5 @@
 import wretch from "wretch"
-import {setCursorToDefault, setCursorToLoading} from "../misc"
+import {setCursorToDefault, setCursorToLoading} from "../domWizard"
 import {popupHttpDataError} from "../modal"
 import domtoimage from "dom-to-image";
 

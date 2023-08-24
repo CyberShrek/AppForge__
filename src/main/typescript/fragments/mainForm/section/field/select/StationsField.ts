@@ -1,6 +1,6 @@
 import {BankField} from "./BankField"
-import {InputFragment} from "../../../abstract/InputFragment"
-import {fetchStationsByDateAndRoads} from "../../../../utils/api/options/serviceBank"
+import {InputFragment} from "../../../../abstract/InputFragment"
+import {fetchStationsByDateAndRoads} from "../../../../../util/api/options/serviceBank"
 import {Field} from "../Field";
 
 export class StationsField extends BankField {
@@ -17,8 +17,8 @@ export class StationsField extends BankField {
         this.roadsSubscription = getFieldFn(this.roadsKey)
     }
 
-    override listenSubscribedFields() {
-        super.listenSubscribedFields()
+    override listenTriggerFields() {
+        super.listenTriggerFields()
         this.resolveBankSubscribing(fetchStationsByDateAndRoads, this.dateFieldSubscription, this.roadsSubscription)
     }
 }

@@ -1,6 +1,6 @@
 import {BankField} from "./BankField"
-import {fetchCountriesByDate} from "../../../../utils/api/options/serviceBank"
-import {InputFragment} from "../../../abstract/InputFragment"
+import {fetchCountriesByDate} from "../../../../../util/api/options/serviceBank"
+import {InputFragment} from "../../../../abstract/InputFragment"
 import {Field} from "../Field"
 
 export class CountriesField extends BankField {
@@ -17,8 +17,8 @@ export class CountriesField extends BankField {
         this.postSovietSubscription = getFieldFn(this.postSovietKey)
     }
 
-    override listenSubscribedFields() {
-        super.listenSubscribedFields()
+    override listenTriggerFields() {
+        super.listenTriggerFields()
         this.resolveBankSubscribing(fetchCountriesByDate, this.dateFieldSubscription, this.postSovietSubscription)
     }
 }
