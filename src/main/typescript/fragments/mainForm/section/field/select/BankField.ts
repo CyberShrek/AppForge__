@@ -1,8 +1,8 @@
 import {SelectField} from "./SelectField"
 import {DateField} from "../DateField"
-import {InputFragment} from "../../../abstract/InputFragment"
-import {stringify} from "../../../../utils/misc";
-import {Field} from "../Field";
+import {InputFragment} from "../../../../abstract/InputFragment"
+import {stringify} from "../../../../../util/data"
+import {Field} from "../Field"
 
 export abstract class BankField extends SelectField{
     protected constructor(location: FragmentLocation, configElement: HTMLElement) {
@@ -12,10 +12,11 @@ export abstract class BankField extends SelectField{
     protected bankConfigElement: HTMLElement = this.configElement.querySelector("bank")
 
     private dateFieldKey = this.bankConfigElement.querySelector("subscriptions date")?.textContent
+    protected bankTriggerFields: Map<string, Field<any>> = new Map()
     protected dateFieldSubscription: DateField = null
 
-    override resolveSubscribedFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
-        super.resolveSubscribedFields(getFieldFn)
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+        super.resolveTriggerFields(getFieldFn)
         this.dateFieldSubscription = getFieldFn(this.dateFieldKey)
     }
 

@@ -1,5 +1,5 @@
 import {InputFragment} from "../abstract/InputFragment"
-import {createDivElement, createInputElement, createLabelElement, generateUniqueId} from "../../utils/DOMWizard"
+import {createDivElement, createInputElement, createLabelElement, generateUniqueId} from "../../util/domWizard"
 
 export default class Checkbox extends InputFragment<boolean>{
 

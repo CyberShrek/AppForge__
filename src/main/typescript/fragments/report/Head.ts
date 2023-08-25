@@ -1,7 +1,7 @@
 import {ExistedFragment} from "../abstract/ExistedFragment"
-import {emptyElement} from "../../utils/DOMWizard";
+import {emptyElement} from "../../util/domWizard";
 import {Button} from "../inputs/Button";
-import {getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../utils/misc";
+import {getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../util/domWizard";
 import ReportSlot from "./ReportSlot"
 import {Loader} from "../misc/Loader"
 

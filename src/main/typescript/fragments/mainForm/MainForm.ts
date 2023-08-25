@@ -1,16 +1,15 @@
-import {resolveCSS} from "../../utils/resolver"
+import {resolveCSS} from "../../util/resolver"
 import {Button} from "../inputs/Button"
 import {InputFragment} from "../abstract/InputFragment"
-import {Text} from "../inputs/Text"
-import {DateField} from "./fields/DateField"
-import {CheckboxField} from "./fields/CheckboxField"
-import {SelectField} from "./fields/select/SelectField"
-import {CarriersField} from "./fields/select/CarriersField"
-import {CountriesField} from "./fields/select/CountriesField"
-import {RoadsField} from "./fields/select/RoadsField"
-import {StationsField} from "./fields/select/StationsField"
-import {validateFields} from "../../utils/api/validation"
-import {Field} from "./fields/Field"
+import {DateField} from "./section/field/DateField"
+import {CheckboxField} from "./section/field/CheckboxField"
+import {SelectField} from "./section/field/select/SelectField"
+import {CarriersField} from "./section/field/select/CarriersField"
+import {CountriesField} from "./section/field/select/CountriesField"
+import {RoadsField} from "./section/field/select/RoadsField"
+import {StationsField} from "./section/field/select/StationsField"
+import {validateFields} from "../../util/api/validation"
+import {Field} from "./section/field/Field"
 import {Fragment} from "../abstract/Fragment"
 
 resolveCSS("main-form")
@@ -47,8 +46,8 @@ export default class MainForm extends Fragment{
     private resolveFieldsSubscriptions(){
         this.fields.forEach((field, key) => {
             if(field instanceof SelectField) {
-                field.resolveSubscribedFields(key => this.fields.get(key))
-                field.listenSubscribedFields()
+                field.resolveTriggerFields(key => this.fields.get(key))
+                field.listenTriggerFields()
                 field.optionsRetrieving = true
             }
             field.input.subscribe(value => this.validateFields())

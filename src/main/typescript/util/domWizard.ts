@@ -55,3 +55,26 @@ export function generateUniqueId(startName: string = "element"){
 
     return name
 }
+
+export function scrollIntoElement(element: HTMLElement) {
+    element.scrollIntoView({behavior: "smooth", block: "start"})
+}
+
+export function toggleFullscreen(element: HTMLElement){
+    if(!!getFullscreenElement())
+        document.exitFullscreen()
+    else
+        element.requestFullscreen()
+}
+
+export function getFullscreenElement(): Element{
+    return document.querySelector(":fullscreen")
+}
+
+export function setCursorToLoading() {
+    document.documentElement.style.cursor = 'wait'
+}
+
+export function setCursorToDefault() {
+    document.documentElement.style.cursor = 'default'
+}

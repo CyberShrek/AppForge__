@@ -1,5 +1,5 @@
-import DateInput from "../../inputs/DateInput"
-import {numberOf} from "../../../utils/misc"
+import DateInput from "../../../inputs/DateInput"
+import {numberOf} from "../../../../util/data"
 import {Field} from "./Field";
 
 export class DateField extends Field<DateInput>{

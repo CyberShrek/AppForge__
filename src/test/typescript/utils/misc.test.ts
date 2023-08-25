@@ -1,4 +1,4 @@
-import {concatMaps, javaMapToMap, mapOf, pairOf} from "../../../main/typescript/utils/misc"
+import {concatMaps, javaMapToMap, mapOf, pairOf} from "../../../main/typescript/util/data"
 
 test("test pairOf", () => expect(
     pairOf("first", "second")

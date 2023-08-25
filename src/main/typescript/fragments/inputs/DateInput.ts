@@ -1,12 +1,12 @@
-import {resolveCSS} from "../../utils/resolver"
-import {numberOf, stringifyDate} from "../../utils/misc"
+import {resolveCSS} from "../../util/resolver"
+import {numberOf, stringifyDate} from "../../util/data"
 import {easepick} from "@easepick/core"
 import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {DateTime} from "@easepick/datetime"
 import {InputFragment} from "../abstract/InputFragment"
-import {createDivElement} from "../../utils/DOMWizard"
+import {createDivElement} from "../../util/domWizard"
 
 resolveCSS("third-party/easepick")
 
@@ -56,7 +56,7 @@ function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (date
             maxDays: config.maxDays
         },
         css: [
-            "app-forge/css/third-party/easepick.css"
+            "/appforge/css/third-party/easepick.css"
         ],
         setup(picker) {
             picker.on("select", (e) => {

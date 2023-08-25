@@ -1,10 +1,10 @@
 import {Fragment} from "../abstract/Fragment"
-import {fetchReport} from "../../utils/api/reportsAPI"
+import {fetchReport} from "../../util/api/reportsAPI"
 import {Head} from "./Head"
 import {Body} from "./Body"
-import {resolveCSS} from "../../utils/resolver"
-import {popupMessage} from "../../utils/modal"
-import {scrollIntoElement} from "../../utils/misc"
+import {resolveCSS} from "../../util/resolver"
+import {popupMessage} from "../../util/modal"
+import {scrollIntoElement} from "../../util/domWizard"
 
 resolveCSS("report")
 

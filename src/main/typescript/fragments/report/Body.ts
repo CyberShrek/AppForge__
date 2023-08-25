@@ -1,13 +1,13 @@
 import {ExistedFragment} from "../abstract/ExistedFragment"
-import {createDivElement, emptyElement} from "../../utils/DOMWizard";
+import {createDivElement, emptyElement} from "../../util/domWizard";
 import {Table} from "./content/Table";
 import {Chart} from "./content/Chart";
 import {Button} from "../inputs/Button";
-import {popupTimeoutAction} from "../../utils/modal"
+import {popupTimeoutAction} from "../../util/modal"
 import domtoimage from "dom-to-image";
 import ReportSlot from "./ReportSlot";
-import {stringify} from "../../utils/misc";
-import {downloadXlsx} from "../../utils/api/reportsAPI";
+import {stringify} from "../../util/data";
+import {downloadXlsx} from "../../util/api/reportsAPI";
 
 export class Body extends ExistedFragment{
 

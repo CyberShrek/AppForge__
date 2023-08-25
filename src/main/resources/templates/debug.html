@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Debug</title>
-</head>
-<body>
-<div class="report">
-    <div class="head">
-        <p>Debug</p>
-        <div class="buttons">
-        </div>
-    </div>
-    <div class="body">
-    </div>
-</div>
-</body>
-<script type="module" src="./js/build/debug.js"></script>
+<script>
+    const appConfig = {
+        "name": "Пригород",
+        "code": "SUBURB",
+        "title": "Debug",
+        "mainForm": {
+            "sections": {
+                "period": {
+                    "title": "Период продажи",
+                    "fields": {
+                        "range": {
+                            "type": "date"
+                        }
+                    }
+                }
+            }
+        },
+        "reportSlots": {
+            "mainReport": {
+                "title": "Отчёт",
+                "path": "777"
+            }
+        }
+    }
+</script>
+<script type="module" src="./js/build/debug.js">
+</script>
 </html>

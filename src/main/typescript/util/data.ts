@@ -1,5 +1,5 @@
 // Returns vararg items as a Set of the vararg items
-import {Field} from "../fragments/mainForm/fields/Field"
+import {Field} from "../fragments/mainForm/section/field/Field"
 
 export function setOf<T>(...items: T[]): Set<T>{
     return new Set(items)
@@ -140,25 +140,7 @@ export function transposeMatrix<T>(matrix: T[][]): T[][]{
     return matrix[0].map((_, i) => matrix.map(row => row[i]))
 }
 
-export function setCursorToLoading() {
-    document.documentElement.style.cursor = 'wait'
-}
+export const nullOrUndefined = (value: any): boolean => value === null || value === undefined
 
-export function setCursorToDefault() {
-    document.documentElement.style.cursor = 'default'
-}
-
-export function scrollIntoElement(element: HTMLElement) {
-    element.scrollIntoView({behavior: "smooth", block: "start"})
-}
-
-export function toggleFullscreen(element: HTMLElement){
-    if(!!getFullscreenElement())
-        document.exitFullscreen()
-    else
-        element.requestFullscreen()
-}
-
-export function getFullscreenElement(): Element{
-    return document.querySelector(":fullscreen")
-}
+export const valueOrDefault = <T>(value: T | any, defaultValue: T): T =>
+    nullOrUndefined(value) ? defaultValue : value

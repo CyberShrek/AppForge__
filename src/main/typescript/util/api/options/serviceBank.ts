@@ -2,7 +2,7 @@
 // The code also defines several interfaces for different types of objects.
 import wretch from "wretch"
 import {popupHttpDataError} from "../../modal";
-import {setCursorToDefault, setCursorToLoading} from "../../misc";
+import {setCursorToDefault, setCursorToLoading} from "../../domWizard";
 const serviceBankURL = `${document.location.origin}/servicebank/getdata`
 
 export const fetchCarriersByDate = (date: DateRange): Promise<Map<OptionKey, OptionLabel>> =>

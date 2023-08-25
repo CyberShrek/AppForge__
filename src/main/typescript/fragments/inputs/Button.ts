@@ -1,4 +1,4 @@
-import {createButtonElement, createImageElement} from "../../utils/DOMWizard"
+import {createButtonElement, createImageElement} from "../../util/domWizard"
 import {InputFragment} from "../abstract/InputFragment"
 
 export class Button extends InputFragment<void> {

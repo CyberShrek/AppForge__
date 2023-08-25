@@ -1,5 +1,5 @@
-import {resolveCSS} from "../../utils/resolver"
-import {popupList, popupTimeoutAction} from "../../utils/modal"
+import {resolveCSS} from "../../util/resolver"
+import {popupList, popupTimeoutAction} from "../../util/modal"
 import {Fragment} from "../abstract/Fragment"
 
 export default class Header extends Fragment{

@@ -1,28 +1,31 @@
 package org.vniizht.appforge.model
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 
+@JsonInclude(Include.NON_NULL)
 data class AppConfig(
-    val code: String,
-    val name: String,
+    @JsonProperty(required = true)
+    val code: String?,
+    @JsonProperty(required = true)
+    val name: String?,
     val group: AppGroup? = null,
-    val title: String = name,
-    val mainForm: MainFormConfig,
-    // Key is the report id
-    val reportSlots: Map<String, ReportSlotConfig>? = null,
-    val reportPath: String,
-    val additionalInfo: String?
+    val title: String? = name,
+    @JsonProperty(required = true)
+    val mainForm: MainFormConfig?,
+    @JsonProperty(required = true)
+    val reportSlots: Map<String, ReportSlotConfig>?, // Key is the report id
+    val additionalInfo: String? = null
 ) {
     data class AppGroup(
-        val name: String,
-        val path: String
+        val name: String?,
+        val path: String?
     )
     data class MainFormConfig(
         // Key is the section id
-        val sections: Map<String, FormSectionConfig>,
-        val validationPath: String? = null,
-        val confirmButtonText: String = "Подтвердить"
+        val sections: Map<String, FormSectionConfig>?,
+        val validationPath: String? = "validate",
+        val confirmButtonText: String? = "Подтвердить"
     ) {
         data class FormSectionConfig(
             val title: String? = null,
@@ -40,7 +43,7 @@ data class AppConfig(
                 JsonSubTypes.Type(value = Select::class, name = "select")
             )
             abstract class Field(
-                open val type: String,
+                open val type: String?,
                 open val label: String? = null
             )
 
@@ -54,21 +57,21 @@ data class AppConfig(
             ) : Field("date", label)
 
             data class Select(
-                override val label: String? = null,
+                override val label: String? = "",
                 val showCodes: Boolean = false,
                 val search: Boolean = false,
                 val multiple: Boolean = false,
                 val disableSelectAll: Boolean = false,
                 val maxValues: Int = 0,
-                val optionSources: OptionSources? = null
+                val optionsSource: OptionsSource? = null
             ) : Field("select", label) {
 
-                data class OptionSources(
+                data class OptionsSource(
                     val endpoint: Endpoint? = null,
                     val serviceBank: ServiceBank? = null
                 ) {
                     data class Endpoint(
-                        val path: String,
+                        val path: String?,
                         val subscribeToFields: Set<String> = setOf()
                     )
 
@@ -84,32 +87,32 @@ data class AppConfig(
                         JsonSubTypes.Type(value = ServiceBankStations::class, name = "stations")
                     )
                     abstract class ServiceBank(
-                        val type: String,
-                        open val subscribeToDate: String,
+                        val type: String?,
+                        open val subscribeToDate: String?,
                         open val extraProperties: Map<String, String>? = null
                     )
 
                     data class ServiceBankCarriers(
-                        override val subscribeToDate: String,
+                        override val subscribeToDate: String?,
                         override val extraProperties: Map<String, String>? = null
                     ) : ServiceBank("carriers", subscribeToDate, extraProperties)
 
                     data class ServiceBankCountries(
-                        override val subscribeToDate: String,
+                        override val subscribeToDate: String?,
                         override val extraProperties: Map<String, String>? = null,
                         val subscribeToPostSovietCheckbox: String? = null
                     ) : ServiceBank("countries", subscribeToDate, extraProperties)
 
                     data class ServiceBankRoads(
-                        override val subscribeToDate: String,
+                        override val subscribeToDate: String?,
                         override val extraProperties: Map<String, String>? = null,
-                        val subscribeToCountries: String
+                        val subscribeToCountries: String?
                     ) : ServiceBank("roads", subscribeToDate, extraProperties)
 
                     data class ServiceBankStations(
-                        override val subscribeToDate: String,
+                        override val subscribeToDate: String?,
                         override val extraProperties: Map<String, String>? = null,
-                        val subscribeToRoads: String,
+                        val subscribeToRoads: String?,
                     ) : ServiceBank("stations", subscribeToDate, extraProperties)
                 }
             }
@@ -117,7 +120,8 @@ data class AppConfig(
     }
 
     data class ReportSlotConfig(
-        val title: String,
-        val isModal: Boolean = false
+        val title: String?,
+        val isModal: Boolean? = false,
+        val path: String?
     )
 }
