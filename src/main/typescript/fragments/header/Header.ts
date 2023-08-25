@@ -1,12 +1,23 @@
 import {resolveCSS} from "../../util/resolver"
 import {popupList, popupTimeoutAction} from "../../util/modal"
 import {Fragment} from "../abstract/Fragment"
+import {createDivElement, createElement, createLinkElement} from "../../util/domWizard";
+import {appInfoPromise} from "../../store/appInfo";
+import {appConfig} from "../../store/appConfig";
 
 export default class Header extends Fragment{
 
-    constructor(location: FragmentLocation) {
-        super(location)
-        this.core = location.target
+    constructor() {
+        super(createElement("header"))
+
+        appInfoPromise.then(appInfo => {
+            this.append(
+                createLinkElement(appInfo.groupName, appInfo.groupPath),
+            )
+        })
+
+
+
         resolveCSS("header")
         this.activateResetButton()
         this.activateInfoButton()
@@ -17,17 +28,16 @@ export default class Header extends Fragment{
         this.activateButton("reset", () => location.reload())
     }
 
-    private activateInfoButton(){
+    private activateInfoButton(appInfo: AppInfo){
         this.activateButton("info", button => {
-            console.log(button)
             popupList(
                 "Информация",
                 [
-                    {icon: "🛈", text: "Версия программы: " + button.getAttribute("version")},
-                    {icon: "🗓", text: "Дата обновления: "  + button.getAttribute("update-date")},
-                    {icon: "👤", text: "Технолог: "         + button.getAttribute("technologist-name")}
+                    {icon: "🛈", text: "Версия программы: " + appInfo.version},
+                    {icon: "🗓", text: "Дата обновления: "  + appInfo.updateDate},
+                    {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
                 ]
-                , button.getAttribute("footer")
+                , appConfig.additionalInfo
                 )})
     }
 

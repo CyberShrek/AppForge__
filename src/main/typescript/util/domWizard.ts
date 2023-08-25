@@ -23,6 +23,10 @@ export function createInputElement(type: string, ...attributes: Attribute[]): HT
     return createElement("input", "", {type}, ...attributes)
 }
 
+export function createLinkElement(textContent: string = "", href: string, ...attributes: Attribute[]): HTMLLabelElement{
+    return createElement("a", textContent, {href}, ...attributes)
+}
+
 export function createLabelElement(textContent: string = "", ...attributes: Attribute[]): HTMLLabelElement{
     return createElement("label", textContent, ...attributes)
 }
@@ -33,6 +37,10 @@ export function createImageElement(src: string = "", alt: string = "not found", 
 
 export function createCanvasElement(...attributes: Attribute[]): HTMLCanvasElement{
     return createElement("canvas", "", ...attributes)
+}
+
+export function create<T extends Node>(html: string): T{
+    createElement()
 }
 
 

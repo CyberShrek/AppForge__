@@ -7,19 +7,14 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.store.forgedAppsCache
 import org.vniizht.appforge.model.AppConfig
-import org.vniizht.appforge.service.AppForgeService
 
 @RestController
-class AppForgeController(
-    private val service: AppForgeService
-) {
+class AppForgeController {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody(required = true) config: AppConfig): ModelAndView {
         val forgedApp = ModelAndView("forge")
         forgedApp.addObject("config", config)
-        forgedApp.addObject("appInfo", service.getInfo(config.code!!, config.additionalInfo))
-        forgedAppsCache[config.name!!] = forgedApp
         return forgedApp
     }
 

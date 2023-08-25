@@ -4,9 +4,9 @@ const val noDataText = "Нет данных"
 
 data class AppInfo (
     val name: String? = noDataText,               // название
-    val superName: String? = noDataText,          // название приложения верхнего ур.
+    val groupName: String? = noDataText,          // название приложения верхнего ур.
     val path: String? = noDataText,               // путь
-    val superPath: String? = noDataText,          // путь к приложению верхнего ур.
+    val groupPath: String? = noDataText,          // путь к приложению верхнего ур.
     val version: String? = noDataText,            // версия
     val releaseDate: String? = noDataText,        // дата выхода
     val updateDate: String? = noDataText,         // дата последнего обновления
@@ -16,6 +16,6 @@ data class AppInfo (
     val helpPath: String? = noDataText,           // путь к помощи
     val comment: String? = noDataText,            // сообщение о ЕСПП
     val tables: Array<String>? = arrayOf(noDataText),  // список таблиц
-    val instructionPath: String? = noDataText,         // Путь к руководсту пользователя
-    val additional: String? = noDataText
+    val instructionPath: String? = noDataText         // Путь к руководсту пользователя=
 )
+

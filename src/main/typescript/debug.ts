@@ -1,11 +1,4 @@
-import {resolveCSS} from "./util/resolver"
-import {ForgedApplication} from "./fragments/ForgedApplication";
-
-resolveCSS("global")
-resolveCSS("inputs")
-resolveCSS("states")
-resolveCSS("third-party/animate")
-resolveCSS("misc")
+import {ForgedApplication} from "./applicaton/ForgedApplication";
 
 new ForgedApplication()
 

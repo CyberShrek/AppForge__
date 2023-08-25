@@ -1,16 +1,8 @@
-interface AppConfig {
+interface ForgedAppConfig {
     code: string
-    name: string
-    group?: AppGroup
-    title?: string
     mainForm: MainFormConfig
     reportSlots?: { [key: string]: ReportSlotConfig }
     additionalInfo?: string
-}
-
-interface AppGroup {
-    name: string
-    path: string
 }
 
 interface MainFormConfig {

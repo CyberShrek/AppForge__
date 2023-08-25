@@ -8,19 +8,11 @@ data class AppConfig(
     @JsonProperty(required = true)
     val code: String?,
     @JsonProperty(required = true)
-    val name: String?,
-    val group: AppGroup? = null,
-    val title: String? = name,
-    @JsonProperty(required = true)
     val mainForm: MainFormConfig?,
     @JsonProperty(required = true)
     val reportSlots: Map<String, ReportSlotConfig>?, // Key is the report id
     val additionalInfo: String? = null
 ) {
-    data class AppGroup(
-        val name: String?,
-        val path: String?
-    )
     data class MainFormConfig(
         // Key is the section id
         val sections: Map<String, FormSectionConfig>?,

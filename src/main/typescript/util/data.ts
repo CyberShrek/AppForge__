@@ -144,3 +144,8 @@ export const nullOrUndefined = (value: any): boolean => value === null || value 
 
 export const valueOrDefault = <T>(value: T | any, defaultValue: T): T =>
     nullOrUndefined(value) ? defaultValue : value
+
+export const valueOrError = <T>(value: T | any, errorMessage: string): T =>{
+    if(nullOrUndefined(value)) throw new Error(errorMessage)
+    return value
+}
