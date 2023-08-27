@@ -1,58 +1,58 @@
 import {resolveCSS} from "../../util/resolver"
 import {popupList, popupTimeoutAction} from "../../util/modal"
-import {Fragment} from "../abstract/Fragment"
-import {createDivElement, createElement, createLinkElement} from "../../util/domWizard";
-import {appInfoPromise} from "../../store/appInfo";
-import {appConfig} from "../../store/appConfig";
+import {appInfoPromise} from "../../store/appInfo"
+import {appConfig} from "../../store/appConfig"
+import {HTMLFragment} from "../abstract/HTMLFragment"
 
-export default class Header extends Fragment{
+resolveCSS("header")
+
+export default class Header extends HTMLFragment<HTMLHeadingElement>{
 
     constructor() {
-        super(createElement("header"))
+        super(`
+            <header>
+                <p></p>
+                <button class="frameless reset" onclick=location.reload()></button>
+                <button class="frameless info"></button>
+                <button class="frameless help"></button>
+            </header>
+        `)
 
         appInfoPromise.then(appInfo => {
-            this.append(
-                createLinkElement(appInfo.groupName, appInfo.groupPath),
-            )
+            const paragraphEl = this.root.querySelector("p")
+            paragraphEl.textContent = appInfo.name
+            if(!!appInfo.groupName && !!appInfo.groupPath)
+                this.root.insertAdjacentHTML("afterbegin",
+                    `<a href="${appInfo.groupPath}">${appInfo.groupName}</a> | `
+                )
+
+            this.activateButton("info", () => this.showAppInfo(appInfo))
+            this.activateButton("help", () => this.showHelpDownloader(appInfo.instructionPath))
         })
-
-
-
-        resolveCSS("header")
-        this.activateResetButton()
-        this.activateInfoButton()
-        this.activateHelpButton()
     }
 
-    private activateResetButton(){
-        this.activateButton("reset", () => location.reload())
+    private showAppInfo(appInfo: AppInfo){
+        popupList(
+            "Информация",
+            [
+                {icon: "🛈", text: "Версия программы: " + appInfo.version},
+                {icon: "🗓", text: "Дата обновления: "  + appInfo.updateDate},
+                {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
+            ],
+            appConfig.additionalInfo
+        )
     }
 
-    private activateInfoButton(appInfo: AppInfo){
-        this.activateButton("info", button => {
-            popupList(
-                "Информация",
-                [
-                    {icon: "🛈", text: "Версия программы: " + appInfo.version},
-                    {icon: "🗓", text: "Дата обновления: "  + appInfo.updateDate},
-                    {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
-                ]
-                , appConfig.additionalInfo
-                )})
-    }
-
-    private activateHelpButton(){
-        this.activateButton("help", button => {
-            popupTimeoutAction(
-                "Руководство",
-                "Скачать инструкцию",
-                () => downloadUserManual(button.getAttribute("instruction-path"))
-            )
-        })
+    private showHelpDownloader(helpPath: string){
+        popupTimeoutAction(
+            "Руководство",
+            "Скачать инструкцию",
+            () => downloadUserManual(helpPath)
+        )
     }
 
     private activateButton(buttonClassName: string, onClick: (clickedButton?: HTMLButtonElement) => void){
-        const buttonElement: HTMLButtonElement = this.core.querySelector("button."+buttonClassName)
+        const buttonElement: HTMLButtonElement = this.root.querySelector("button."+buttonClassName)
         buttonElement.addEventListener("click", event => onClick(buttonElement))
     }
 }

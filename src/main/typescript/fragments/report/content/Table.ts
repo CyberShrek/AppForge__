@@ -1,5 +1,5 @@
 import {Fragment} from "../../abstract/Fragment"
-import {emptyElement, createElement} from "../../../util/domWizard"
+import {emptyElement, createHtmlElement} from "../../../util/domWizard"
 import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../util/data"
 import {Text} from "../../inputs/Text"
 import {resolveCSS} from "../../../util/resolver"
@@ -8,9 +8,9 @@ resolveCSS("table")
 
 export class Table extends Fragment{
 
-    thead: HTMLTableSectionElement = createElement("thead")
-    tbody: HTMLTableSectionElement = createElement("tbody")
-    tfoot: HTMLTableSectionElement = createElement("tfoot")
+    thead: HTMLTableSectionElement = createHtmlElement("thead")
+    tbody: HTMLTableSectionElement = createHtmlElement("tbody")
+    tfoot: HTMLTableSectionElement = createHtmlElement("tfoot")
 
     protected _tableMap: TableMap = new Map()
 
@@ -19,7 +19,7 @@ export class Table extends Fragment{
 
     constructor(location: FragmentLocation, private model: TableModel) {
         super(location)
-        this.core = createElement("table")
+        this.core = createHtmlElement("table")
         this.core.append(this.thead, this.tfoot, this.tbody)
         this.head = model.head
         this.tableMap = new Map(model.data.map(rowData => [
@@ -86,17 +86,17 @@ export class Table extends Fragment{
     }
 
     private createHTMLRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
-        const tr: HTMLTableRowElement = createElement("tr")
+        const tr: HTMLTableRowElement = createHtmlElement("tr")
         tr.append(...htmlCells)
         return tr
     }
 
     private createHTMLHeadCell(cellContent: string, rowSpan: number = 1, colSpan: number = 1): HTMLTableCellElement{
-        return createElement("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
+        return createHtmlElement("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
     }
 
     private createHTMLCell(data: CellData): HTMLTableCellElement {
-        return createElement("td", String(data))
+        return createHtmlElement("td", String(data))
     }
 
     private setFilter(htmlHeadCell: HTMLTableCellElement){

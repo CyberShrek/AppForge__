@@ -1,6 +1,5 @@
 import Header from "../fragments/header/Header"
 import {resolveCSS} from "../util/resolver"
-import {Fragment} from "../fragments/abstract/Fragment"
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -8,14 +7,13 @@ resolveCSS("states")
 resolveCSS("third-party/animate")
 resolveCSS("misc")
 
-export class ForgedApplication extends Fragment{
+export class ForgedApplication{
 
     readonly header: Header = new Header()
     // readonly mainForm: MainForm = new MainForm()
     // readonly reportSlots: Map<string, ReportSlot> = new Map()
 
     constructor() {
-        super(document.body)
         this.append(
             this.header,
             // this.mainForm
