@@ -3,7 +3,7 @@ const factoryElement = document.createElement("factory")
 document.body.appendChild(factoryElement)
 factoryElement.hidden = true
 
-export function createHtmlElement<T extends HTMLElement>(html: string): T{
+export function create<T extends HTMLElement>(html: string): T{
     factoryElement.innerHTML = html
     return factoryElement.firstElementChild as T
 }

@@ -5,12 +5,12 @@ import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {DateTime} from "@easepick/datetime"
-import {InputFragment} from "../abstract/InputFragment"
+import {Trigger} from "../abstract/Trigger"
 import {createDivElement} from "../../util/domWizard"
 
 resolveCSS("third-party/easepick")
 
-export default class DateInput extends InputFragment<DateRange>{
+export default class DateInput extends Trigger<DateRange>{
 
     constructor(location: FragmentLocation, config: DateInputConfig) {
         super(location)

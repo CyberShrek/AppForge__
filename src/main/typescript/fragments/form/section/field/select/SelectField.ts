@@ -1,6 +1,6 @@
 import Select from "../../../../inputs/Select"
 import {concatMaps, numberOf} from "../../../../../util/data"
-import {InputFragment} from "../../../../abstract/InputFragment"
+import {Trigger} from "../../../../abstract/Trigger"
 import {fetchEndpointOptions} from "../../../../../util/api/options/endpointOptions"
 import {Field} from "../Field";
 
@@ -22,11 +22,11 @@ export class SelectField extends Field<Select>{
     private endpointConfigElement: HTMLElement = this.configElement.querySelector("endpoint")
     private endpointPath: string = this.endpointConfigElement?.querySelector("path")?.textContent
     // TODO should be a Set
-    private endpointTriggerFields: Map<FieldKey, Field<InputFragment<any>>|null> = new Map(this.endpointConfigElement ?
+    private endpointTriggerFields: Map<FieldKey, Field<Trigger<any>>|null> = new Map(this.endpointConfigElement ?
         [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
             .map(fieldElement => [fieldElement.textContent, null]) : null)
 
-    resolveTriggerFields(getFieldFn: (fieldKey: string) => Field<InputFragment<any>>){
+    resolveTriggerFields(getFieldFn: (fieldKey: string) => Field<Trigger<any>>){
         this.endpointTriggerFields.forEach((_, location) => {
             this.endpointTriggerFields.set(location, getFieldFn(location))
         })
@@ -35,8 +35,8 @@ export class SelectField extends Field<Select>{
     listenTriggerFields(){
         if(!!this.endpointPath) {
             if (this.endpointTriggerFields.size > 0) {
-                this.endpointTriggerFields.forEach(<T>(field: Field<InputFragment<any>>, key) =>
-                    field.input.subscribe(value => {
+                this.endpointTriggerFields.forEach(<T>(field: Field<Trigger<any>>, key) =>
+                    field.input.onValueChange(value => {
                         if (this.optionsRetrieving === true)
                             this.retrieveOptionsPromise(
                                 "endpoint", fetchEndpointOptions(this.endpointPath, this.endpointTriggerFields))

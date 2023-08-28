@@ -99,7 +99,7 @@ export class Head extends ExistedFragment{
 
     private createButton(action: () => void, image: string, hint: string): Button {
         const button = new Button({target: this.buttonsElement, position: "beforeend"})
-        button.subscribe(() => action())
+        button.onValueChange(() => action())
         button.image = image
         button.hint = hint
         return button

@@ -1,5 +1,5 @@
-import {Fragment} from "../../abstract/Fragment"
-import {emptyElement, createHtmlElement} from "../../../util/domWizard"
+import {Fragment} from "../../Fragment"
+import {emptyElement, create} from "../../../util/domWizard"
 import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../util/data"
 import {Text} from "../../inputs/Text"
 import {resolveCSS} from "../../../util/resolver"
@@ -8,9 +8,9 @@ resolveCSS("table")
 
 export class Table extends Fragment{
 
-    thead: HTMLTableSectionElement = createHtmlElement("thead")
-    tbody: HTMLTableSectionElement = createHtmlElement("tbody")
-    tfoot: HTMLTableSectionElement = createHtmlElement("tfoot")
+    thead: HTMLTableSectionElement = create("thead")
+    tbody: HTMLTableSectionElement = create("tbody")
+    tfoot: HTMLTableSectionElement = create("tfoot")
 
     protected _tableMap: TableMap = new Map()
 
@@ -19,7 +19,7 @@ export class Table extends Fragment{
 
     constructor(location: FragmentLocation, private model: TableModel) {
         super(location)
-        this.core = createHtmlElement("table")
+        this.core = create("table")
         this.core.append(this.thead, this.tfoot, this.tbody)
         this.head = model.head
         this.tableMap = new Map(model.data.map(rowData => [
@@ -86,17 +86,17 @@ export class Table extends Fragment{
     }
 
     private createHTMLRow(htmlCells: HTMLTableCellElement[]): HTMLTableRowElement{
-        const tr: HTMLTableRowElement = createHtmlElement("tr")
+        const tr: HTMLTableRowElement = create("tr")
         tr.append(...htmlCells)
         return tr
     }
 
     private createHTMLHeadCell(cellContent: string, rowSpan: number = 1, colSpan: number = 1): HTMLTableCellElement{
-        return createHtmlElement("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
+        return create("th", cellContent, {rowspan: rowSpan}, {colspan: colSpan})
     }
 
     private createHTMLCell(data: CellData): HTMLTableCellElement {
-        return createHtmlElement("td", String(data))
+        return create("td", String(data))
     }
 
     private setFilter(htmlHeadCell: HTMLTableCellElement){
@@ -106,7 +106,7 @@ export class Table extends Fragment{
             {target: htmlHeadCell, position: "beforeend"},
             {title, placeholder: "🔎"}
         )
-        filterFragment.subscribe(value => {
+        filterFragment.onValueChange(value => {
             console.log(getCellIndexWithSpans(htmlHeadCell))
             this.filtersMap.set(getCellIndexWithSpans(htmlHeadCell), value)
             this.tableMap = this._tableMap

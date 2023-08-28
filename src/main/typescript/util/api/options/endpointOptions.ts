@@ -1,7 +1,7 @@
 import wretch from "wretch"
 import {popupHttpDataError} from "../../modal"
 import {setCursorToDefault, setCursorToLoading} from "../../domWizard"
-import {Field} from "../../../fragments/mainForm/section/field/Field"
+import {Field} from "../../../fragments/form/section/field/Field"
 import {jsonifyFields} from "../../data";
 
 export const fetchEndpointOptions = (url: string, subscribedFields?: Map<FieldKey, Field<any>>): Promise<Options> => {

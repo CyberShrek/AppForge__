@@ -10,14 +10,14 @@ import javax.naming.InitialContext
 @RestController
 class ResourcesController {
 
-    @GetMapping
+    @GetMapping("/info")
     fun getApplicationInfo(@RequestHeader(required = true) code: String): AppInfo {
         val prilInfo = (InitialContext()
             .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote)
             .info(code)
 
-        fun find(key: String) = prilInfo["zadname"] as String?
-        fun findAll(key: String) = prilInfo["zadname"] as Array<String>?
+        fun find(key: String) = (prilInfo[key] ?: "") as String
+        fun findAll(key: String) = (prilInfo[key] ?: arrayOf("")) as Array<String>
 
         return AppInfo (
             name              = find("zadname"),

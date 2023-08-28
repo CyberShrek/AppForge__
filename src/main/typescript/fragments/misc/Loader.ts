@@ -1,5 +1,5 @@
-import {Fragment} from "../abstract/Fragment"
-import {createDivElement, createHtmlElement} from "../../util/domWizard"
+import {Fragment} from "../Fragment"
+import {createDivElement, create} from "../../util/domWizard"
 
 export class Loader extends Fragment{
 

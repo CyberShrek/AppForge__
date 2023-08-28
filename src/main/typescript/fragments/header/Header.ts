@@ -1,34 +1,33 @@
 import {resolveCSS} from "../../util/resolver"
 import {popupList, popupTimeoutAction} from "../../util/modal"
-import {appInfoPromise} from "../../store/appInfo"
 import {appConfig} from "../../store/appConfig"
-import {HTMLFragment} from "../abstract/HTMLFragment"
-
+import {Fragment} from "../Fragment"
+import {Button} from "../inputs/Button"
+import {create} from "../../util/domWizard"
+import {valueOrDefault} from "../../util/data";
 resolveCSS("header")
 
-export default class Header extends HTMLFragment<HTMLHeadingElement>{
+export default class Header extends Fragment<HTMLHeadingElement>{
+
+    groupLink = create<HTMLLinkElement>(`<a></a>`)
+    appName = create<HTMLParagraphElement>(`<p></p>`)
+    resetButton = new Button({className: "frameless reset", image: "reset.svg", hint: "Сброс"}, location.reload)
+    infoButton  = new Button({className: "frameless info",  image: "info.svg",  hint: "Информация о приложении"})
+    helpButton  = new Button({className: "frameless help",  image: "help.svg",  hint: "Руководство пользователя"})
 
     constructor() {
-        super(`
-            <header>
-                <p></p>
-                <button class="frameless reset" onclick=location.reload()></button>
-                <button class="frameless info"></button>
-                <button class="frameless help"></button>
-            </header>
-        `)
+        super(`<header id="header"></header>`)
 
-        appInfoPromise.then(appInfo => {
-            const paragraphEl = this.root.querySelector("p")
-            paragraphEl.textContent = appInfo.name
-            if(!!appInfo.groupName && !!appInfo.groupPath)
-                this.root.insertAdjacentHTML("afterbegin",
-                    `<a href="${appInfo.groupPath}">${appInfo.groupName}</a> | `
-                )
+        this.append(this.groupLink, "|", this.appName, this.resetButton, this.infoButton, this.helpButton)
+    }
 
-            this.activateButton("info", () => this.showAppInfo(appInfo))
-            this.activateButton("help", () => this.showHelpDownloader(appInfo.instructionPath))
-        })
+    setAppInfo(appInfo: AppInfo){
+        this.groupLink.href        = appInfo.groupPath
+        this.groupLink.textContent = appInfo.groupName
+        this.appName.textContent   = appInfo.name
+
+        this.infoButton.subscribe(() => this.showAppInfo(appInfo))
+        this.helpButton.subscribe(() => this.showHelpDownloader(appInfo.instructionPath))
     }
 
     private showAppInfo(appInfo: AppInfo){
@@ -36,10 +35,10 @@ export default class Header extends HTMLFragment<HTMLHeadingElement>{
             "Информация",
             [
                 {icon: "🛈", text: "Версия программы: " + appInfo.version},
-                {icon: "🗓", text: "Дата обновления: "  + appInfo.updateDate},
+                {icon: "🗓", text: "Дата обновления: "  + valueOrDefault(appConfig.info.updateDate, appInfo.updateDate)},
                 {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
             ],
-            appConfig.additionalInfo
+            appConfig.info.additional
         )
     }
 
@@ -49,11 +48,6 @@ export default class Header extends HTMLFragment<HTMLHeadingElement>{
             "Скачать инструкцию",
             () => downloadUserManual(helpPath)
         )
-    }
-
-    private activateButton(buttonClassName: string, onClick: (clickedButton?: HTMLButtonElement) => void){
-        const buttonElement: HTMLButtonElement = this.root.querySelector("button."+buttonClassName)
-        buttonElement.addEventListener("click", event => onClick(buttonElement))
     }
 }
 

@@ -1,7 +1,7 @@
 import {ForgedApplication} from "./applicaton/ForgedApplication"
-import {createHtmlElement} from "./util/domWizard"
+import {create} from "./util/domWizard"
 
-// new ForgedApplication
+new ForgedApplication()
 
 
 

@@ -84,7 +84,7 @@ export class Body extends ExistedFragment{
 
     private createExportButton(target: HTMLElement, actionText: string, action: () => void): Button {
         const button = new Button({target, position: "afterbegin"})
-        button.subscribe(() => popupTimeoutAction(actionText, "Подтвердить", action))
+        button.onValueChange(() => popupTimeoutAction(actionText, "Подтвердить", action))
         button.image = "img/download.svg"
         button.hint = "Экспортировать"
         return button

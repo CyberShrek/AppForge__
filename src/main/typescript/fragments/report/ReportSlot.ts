@@ -1,4 +1,4 @@
-import {Fragment} from "../abstract/Fragment"
+import {Fragment} from "../Fragment"
 import {fetchReport} from "../../util/api/reportsAPI"
 import {Head} from "./Head"
 import {Body} from "./Body"

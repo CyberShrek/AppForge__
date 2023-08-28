@@ -1,4 +1,4 @@
-import {Fragment} from "../../abstract/Fragment"
+import {Fragment} from "../../Fragment"
 import {createCanvasElement} from "../../../util/domWizard"
 import {Chart as ChartJS, ChartDataset, ChartOptions, registerables} from 'chart.js'
 import {transposeMatrix} from "../../../util/data"

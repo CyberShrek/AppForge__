@@ -1,7 +1,7 @@
-import {InputFragment} from "../abstract/InputFragment"
+import {Trigger} from "../abstract/Trigger"
 import {createDivElement, createInputElement, createLabelElement, generateUniqueId} from "../../util/domWizard"
 
-export default class Checkbox extends InputFragment<boolean>{
+export default class Checkbox extends Trigger<boolean>{
 
     private checkBoxElement = createInputElement("checkbox", {id: generateUniqueId("checkbox")})
     private labelElement    = createLabelElement("", {for: this.checkBoxElement.id})

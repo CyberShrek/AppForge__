@@ -1,6 +1,5 @@
 import {resolveCSS} from "../../util/resolver"
 import {Button} from "../inputs/Button"
-import {InputFragment} from "../abstract/InputFragment"
 import {DateField} from "./section/field/DateField"
 import {CheckboxField} from "./section/field/CheckboxField"
 import {SelectField} from "./section/field/select/SelectField"
@@ -10,28 +9,35 @@ import {RoadsField} from "./section/field/select/RoadsField"
 import {StationsField} from "./section/field/select/StationsField"
 import {validateFields} from "../../util/api/validation"
 import {Field} from "./section/field/Field"
-import {Fragment} from "../abstract/Fragment"
+import {Fragment, Trigger} from "../Fragment"
+import {appConfig} from "../../store/appConfig"
+import {Section} from "./section/Section"
 
 resolveCSS("main-form")
 
-export default class MainForm extends Fragment{
+export default class Form extends Fragment<HTMLFormElement> implements Trigger{
 
-    readonly confirmButton: Button
+    readonly sections = new Map<string, Section>
+    readonly confirmButton = new Button({
+        className: "confirm",
+        text: this.config.confirmButtonText
+    })
 
-    private readonly validationPath: string
+    constructor(protected config = appConfig.form) {
+        super(`<form id="main-form"></form>`)
 
-    constructor(location: FragmentLocation) {
-        super(location)
-        this.core = location.target
-        this.confirmButton = new Button({target: this.core, position: "afterend"})
-        this.confirmButton.addClass("confirm")
-        this.confirmButton.text = this.core.getAttribute("confirm-button-text")
+        for (const sectionKey in config.sections) {
+            this.sections.set(sectionKey, new Section(config.sections[sectionKey]))
+        }
+
         this.resolveFields()
         this.resolveFieldsSubscriptions()
-        this.validationPath = this.core.getAttribute("validation-path")
     }
 
-    fields: Map<string, Field<InputFragment<any>>> = new Map()
+    subscribe(callback: (value?: any) => void) {
+    }
+
+    fields: Map<string, Field<Trigger<any>>> = new Map()
 
     private resolveFields(){
         this.core.querySelectorAll(".section").forEach(sectionElement => {
@@ -50,7 +56,7 @@ export default class MainForm extends Fragment{
                 field.listenTriggerFields()
                 field.optionsRetrieving = true
             }
-            field.input.subscribe(value => this.validateFields())
+            field.input.onValueChange(value => this.validateFields())
         })
     }
 
@@ -68,7 +74,7 @@ export default class MainForm extends Fragment{
     }
 }
 
-function resolveField(fieldElement: HTMLElement): Field<InputFragment<any>>{
+function resolveField(fieldElement: HTMLElement): Field<Trigger<any>>{
     const containsClass = (className: string) => fieldElement.classList.contains(className)
     const location: FragmentLocation = {target: fieldElement}
     const configElement: HTMLElement = fieldElement.querySelector("config")

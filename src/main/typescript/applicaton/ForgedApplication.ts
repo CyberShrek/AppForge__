@@ -1,5 +1,8 @@
 import Header from "../fragments/header/Header"
 import {resolveCSS} from "../util/resolver"
+import {Fragment} from "../fragments/Fragment"
+import {appInfoPromise} from "../store/appInfo";
+import Form from "../fragments/form/Form";
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -7,17 +10,23 @@ resolveCSS("states")
 resolveCSS("third-party/animate")
 resolveCSS("misc")
 
-export class ForgedApplication{
+export class ForgedApplication extends Fragment<HTMLBodyElement>{
 
-    readonly header: Header = new Header()
-    // readonly mainForm: MainForm = new MainForm()
+    readonly header = new Header()
+    readonly mainForm = new Form()
     // readonly reportSlots: Map<string, ReportSlot> = new Map()
 
     constructor() {
+        super(document.body as HTMLBodyElement)
         this.append(
             this.header,
-            // this.mainForm
+            this.mainForm
         )
+
+        appInfoPromise.then(appInfo => {
+            document.title = appInfo.name
+            this.header.setAppInfo(appInfo)
+        })
     }
 
     // private createMainForm(): MainForm {

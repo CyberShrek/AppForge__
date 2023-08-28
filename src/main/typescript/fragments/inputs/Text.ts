@@ -1,7 +1,7 @@
 import {createButtonElement, createDivElement, createInputElement} from "../../util/domWizard"
-import {InputFragment} from "../abstract/InputFragment"
+import {Trigger} from "../abstract/Trigger"
 
-export class Text extends InputFragment<string>{
+export class Text extends Trigger<string>{
 
     private textInputElement    = createInputElement("text")
     private resetButtonElement = createButtonElement( "❌",{class: "frameless reset"})
@@ -21,7 +21,7 @@ export class Text extends InputFragment<string>{
         this.resetButtonElement.addEventListener("click",
             () => this.value = this.textInputElement.value = ""
         )
-        this.subscribe(value => {
+        this.onValueChange(value => {
             this.core.classList.toggle("empty", !value || value.length === 0)
         })
     }

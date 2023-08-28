@@ -1,5 +1,5 @@
 // Returns vararg items as a Set of the vararg items
-import {Field} from "../fragments/mainForm/section/field/Field"
+import {Field} from "../fragments/form/section/field/Field"
 
 export function setOf<T>(...items: T[]): Set<T>{
     return new Set(items)
@@ -109,7 +109,7 @@ export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonFieldValue
     return json
 }
 
-export function stringifyDate(date: Date): string {
+export function stringifyDate(date: DateConfig): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,
         day = date.getDate()

@@ -1,11 +1,20 @@
-interface ForgedAppConfig {
+interface AppConfig {
     code: string
-    mainForm: MainFormConfig
+
+    form?: MainFormConfig
+    forms?: { [key: string]: MainFormConfig }
+
+    reportSlot?: ReportSlotConfig
     reportSlots?: { [key: string]: ReportSlotConfig }
-    additionalInfo?: string
+
+    info?: {
+        updateDate?: string
+        additional?: string
+    }
 }
 
 interface MainFormConfig {
+    title?: string
     sections?: { [key: string]: FormSectionConfig }
     validationPath?: string
     confirmButtonText?: string
@@ -13,23 +22,23 @@ interface MainFormConfig {
 
 interface FormSectionConfig {
     title?: string
-    fields?: { [key: string]: Field }
+    fields?: { [key: string]: FieldConfig }
 }
 
-type Field = CheckBox | Date | Select
+type FieldConfig = CheckBoxConfig | DateConfig | SelectConfig
 
-interface CheckBox {
+interface CheckBoxConfig {
     type: "checkbox"
     label: string
 }
 
-interface Date {
+interface DateConfig {
     type: "date"
     label?: string
     maxDays?: number
 }
 
-interface Select {
+interface SelectConfig {
     type: "select"
     label?: string
     showCodes?: boolean

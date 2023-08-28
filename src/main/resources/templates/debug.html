@@ -2,16 +2,25 @@
 <html lang="en">
 <script>
     const config = {
-        "name": "Пригород",
         "code": "SUBURB",
-        "title": "Debug",
-        "mainForm": {
+        // "code": "CORRESPWEB",
+        "form": {
             "sections": {
                 "period": {
                     "title": "Период продажи",
                     "fields": {
                         "range": {
+                            "label": "date",
                             "type": "date"
+                        }
+                    }
+                },
+                "check": {
+                    "title": "Чекбокс",
+                    "fields": {
+                        "checkbox": {
+                            "label": "checkbox",
+                            "type": "checkbox"
                         }
                     }
                 }
@@ -22,6 +31,10 @@
                 "title": "Отчёт",
                 "path": "777"
             }
+        },
+        "info": {
+            "updateDate": "28-00-2023",
+            "additional": "От ИВЦ все запросы — через ЕСПП"
         }
     }
 </script>

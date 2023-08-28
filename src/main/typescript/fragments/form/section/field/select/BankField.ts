@@ -1,6 +1,6 @@
 import {SelectField} from "./SelectField"
 import {DateField} from "../DateField"
-import {InputFragment} from "../../../../abstract/InputFragment"
+import {Trigger} from "../../../../abstract/Trigger"
 import {stringify} from "../../../../../util/data"
 import {Field} from "../Field"
 
@@ -15,16 +15,16 @@ export abstract class BankField extends SelectField{
     protected bankTriggerFields: Map<string, Field<any>> = new Map()
     protected dateFieldSubscription: DateField = null
 
-    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<Trigger<any>>) {
         super.resolveTriggerFields(getFieldFn)
         this.dateFieldSubscription = getFieldFn(this.dateFieldKey)
     }
 
     protected resolveBankSubscribing(fetchBankOptionsFn: (...subscriptionValues: any[]) => Promise<Options>,
-                                     ...subscriptionFields: Field<InputFragment<any>>[]){
+                                     ...subscriptionFields: Field<Trigger<any>>[]){
 
         subscriptionFields.forEach(field =>
-            field.input.subscribe(value => {
+            field.input.onValueChange(value => {
                 for (const subscription of subscriptionFields) {
                     if (subscription.input.value === null || stringify(subscription.input.value).length <= 0) {
                         this.input.setOptions(null)

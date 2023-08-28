@@ -1,5 +1,5 @@
 import {BankField} from "./BankField"
-import {InputFragment} from "../../../../abstract/InputFragment"
+import {Trigger} from "../../../../abstract/Trigger"
 import {fetchRoadsByDateAndCountries} from "../../../../../util/api/options/serviceBank"
 import {Field} from "../Field"
 
@@ -12,7 +12,7 @@ export class RoadsField extends BankField {
     private countriesKey = this.bankConfigElement.querySelector("subscriptions countries")?.textContent
     private countriesSubscription
 
-    override resolveTriggerFields(getFieldFn: (key: string) => Field<InputFragment<any>>) {
+    override resolveTriggerFields(getFieldFn: (key: string) => Field<Trigger<any>>) {
         super.resolveTriggerFields(getFieldFn)
         this.countriesSubscription = getFieldFn(this.countriesKey)
     }

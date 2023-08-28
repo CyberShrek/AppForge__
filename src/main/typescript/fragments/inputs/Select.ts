@@ -1,11 +1,11 @@
 import {resolveCSS} from "../../util/resolver"
-import {InputFragment} from "../abstract/InputFragment"
+import {Trigger} from "../abstract/Trigger"
 import {createDivElement} from "../../util/domWizard"
 import {compareMaps} from "../../util/data"
 
 resolveCSS("third-party/virtual-select")
 
-export default class Select extends InputFragment<Options>{
+export default class Select extends Trigger<Options>{
 
     private options: Options
 
