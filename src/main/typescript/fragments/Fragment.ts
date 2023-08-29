@@ -1,6 +1,6 @@
 import {create} from "../util/domWizard"
 
-export abstract class Fragment<T extends HTMLElement> {
+export abstract class Fragment<T extends HTMLElement = HTMLElement> {
 
     protected root: T
 
@@ -44,8 +44,8 @@ export abstract class Fragment<T extends HTMLElement> {
     removeClass(tokens: string){
         this.root.classList.remove(tokens)
     }
-    toggleClass(tokens: string){
-        this.root.classList.toggle(tokens)
+    toggleClass(tokens: string, force?: boolean){
+        this.root.classList.toggle(tokens, force)
     }
     hasClass(token: string): boolean{
         return this.root.classList.contains(token)
@@ -56,8 +56,8 @@ export abstract class Fragment<T extends HTMLElement> {
     get className(){
         return this.root.className
     }
-}
 
-export interface Trigger {
-    subscribe(callback: (value?: any) => void)
+    listen(event: keyof HTMLElementEventMap, onEvent: (event?: Event) => void){
+        this.root.addEventListener(event, onEvent)
+    }
 }

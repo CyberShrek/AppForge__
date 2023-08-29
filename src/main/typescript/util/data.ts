@@ -109,7 +109,7 @@ export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonFieldValue
     return json
 }
 
-export function stringifyDate(date: DateConfig): string {
+export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,
         day = date.getDate()

@@ -1,7 +1,7 @@
 import {Fragment, Trigger} from "../../../Fragment"
 import {jsonify} from "../../../../util/data"
 
-export abstract class Field<T extends Input> extends Fragment<HTMLDivElement> implements Trigger{
+export abstract class Field extends Fragment<HTMLDivElement> implements Trigger{
 
     abstract jsonValue: object
     abstract subscribe(callback: (value?: any) => void)

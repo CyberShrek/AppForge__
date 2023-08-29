@@ -1,4 +1,4 @@
-import Header from "../fragments/header/Header"
+import Header from "../fragments/main/Header"
 import {resolveCSS} from "../util/resolver"
 import {Fragment} from "../fragments/Fragment"
 import {appInfoPromise} from "../store/appInfo";

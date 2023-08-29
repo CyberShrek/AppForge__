@@ -1,28 +1,34 @@
-import {createButtonElement, createDivElement, createInputElement} from "../../util/domWizard"
-import {Trigger} from "../abstract/Trigger"
+import {Fragment} from "../Fragment"
+import {Button} from "./Button"
 
-export class Text extends Trigger<string>{
+export class Text extends Fragment{
 
-    private textInputElement    = createInputElement("text")
-    private resetButtonElement = createButtonElement( "❌",{class: "frameless reset"})
+    private textInputElement: HTMLInputElement
 
-    constructor(location: FragmentLocation, config?: TextInputConfig) {
-        super(location)
-        this.core = createDivElement({class: "text field"})
-        if(config.title){
-            this.core.textContent = config.title
-            this.textInputElement.style.marginLeft = "var(--indent)"
-        }
-        this.textInputElement.placeholder = config.placeholder
-        this.core.append(this.textInputElement, this.resetButtonElement)
-        this.textInputElement.addEventListener("input",
-            this.debounce(() => this.value = this.textInputElement.value)
-        )
-        this.resetButtonElement.addEventListener("click",
-            () => this.value = this.textInputElement.value = ""
-        )
-        this.onValueChange(value => {
-            this.core.classList.toggle("empty", !value || value.length === 0)
+    constructor(placeholder: string, onInput: (text: string) => void) {
+        super(`
+            <div class="text input">
+                <input type="text" placeholder="${placeholder}">
+            <div/>
+        `)
+        this.append(new Button({
+            className: "frameless reset",
+            text: "❌",
+            hint: "Сбросить"
+        }, () => this.text = ""))
+
+        this.textInputElement = this.select("input")
+
+        this.listen("input", () => {
+            this.toggleClass("empty", !this.text || this.text.length === 0)
+            if(onInput) onInput(this.text)
         })
+    }
+
+    get text(): string{
+        return this.textInputElement.value
+    }
+    set text(str: string){
+        this.textInputElement.value = str
     }
 }

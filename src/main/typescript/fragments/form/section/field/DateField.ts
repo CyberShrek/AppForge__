@@ -1,11 +1,11 @@
-import DateInput from "../../../inputs/DateInput"
+import Datepicker from "../../../inputs/Datepicker"
 import {numberOf} from "../../../../util/data"
 import {Field} from "./Field";
 
-export class DateField extends Field<DateInput>{
+export class DateField extends Field<Datepicker>{
 
     constructor(location: FragmentLocation, configElement: HTMLElement) {
-        super(location, DateInput, {
+        super(location, Datepicker, {
             maxDays: numberOf(configElement.getAttribute("max-days"))
         })
     }

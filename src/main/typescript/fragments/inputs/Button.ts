@@ -1,4 +1,4 @@
-import {Fragment, Trigger} from "../Fragment"
+import {Fragment} from "../Fragment"
 import {create} from "../../util/domWizard"
 
 export interface Config{
@@ -8,11 +8,11 @@ export interface Config{
     hint?: string
 }
 
-export class Button extends Fragment<HTMLButtonElement> implements Trigger{
+export class Button extends Fragment<HTMLButtonElement>{
 
     private imageElement: HTMLImageElement
 
-    constructor(config: Config, onClick?: () => void) {
+    constructor(config: Config, onClick: () => void) {
         super(`<button></button>`)
 
         this.className = config.className
@@ -20,11 +20,7 @@ export class Button extends Fragment<HTMLButtonElement> implements Trigger{
         this.image = config.image
         this.hint = config.hint
 
-        if(onClick) this.subscribe(onClick)
-    }
-
-    subscribe(callback: () => void) {
-        this.root.addEventListener("click", () => callback())
+        this.listen("click", onClick)
     }
 
     set isAvailable(available: boolean){

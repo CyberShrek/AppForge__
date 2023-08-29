@@ -1,4 +1,4 @@
-import Select from "../../../../inputs/Select"
+import Select from "../../../../inputs/selects/Select"
 import {concatMaps, numberOf} from "../../../../../util/data"
 import {Trigger} from "../../../../abstract/Trigger"
 import {fetchEndpointOptions} from "../../../../../util/api/options/endpointOptions"

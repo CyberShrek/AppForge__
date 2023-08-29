@@ -1,22 +1,23 @@
-import {Trigger} from "../abstract/Trigger"
-import {createDivElement, createInputElement, createLabelElement, generateUniqueId} from "../../util/domWizard"
+import {generateUniqueId} from "../../util/domWizard"
+import {Fragment} from "../Fragment";
 
-export default class Checkbox extends Trigger<boolean>{
+export default class Checkbox extends Fragment<HTMLDivElement>{
 
-    private checkBoxElement = createInputElement("checkbox", {id: generateUniqueId("checkbox")})
-    private labelElement    = createLabelElement("", {for: this.checkBoxElement.id})
+    private checkboxElement: HTMLInputElement
 
-    constructor(location: FragmentLocation, config: CheckboxInputConfig) {
-        super(location)
-        this.core = createDivElement({class: "checkbox"})
-        this.core.append(this.checkBoxElement, this.labelElement)
-        this.label = config.label
-        const updateValue=() => this.value = this.checkBoxElement.checked
-        updateValue()
-        this.checkBoxElement.addEventListener("change", updateValue)
+    constructor(label: string, onToggle: (checked: boolean) => void) {
+        const id = generateUniqueId("checkbox")
+        super(`
+            <div class="checkbox">
+                <input type="checkbox" id="${id}">
+                <label for="${id}">${label}</label>
+            </div>`
+        )
+        this.checkboxElement = this.select("input")
+        this.listen("change", () => onToggle(this.checked))
     }
 
-    set label(name: string){
-        this.labelElement.textContent = name
+    get checked(): boolean{
+        return this.checkboxElement.checked
     }
 }

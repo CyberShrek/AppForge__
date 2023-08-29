@@ -5,22 +5,30 @@ import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {DateTime} from "@easepick/datetime"
-import {Trigger} from "../abstract/Trigger"
-import {createDivElement} from "../../util/domWizard"
+import {Fragment} from "../Fragment"
 
 resolveCSS("third-party/easepick")
 
-export default class DateInput extends Trigger<DateRange>{
+interface DateInputConfig {
+    maxDays?: number
+    defaultRange?: DateRange
+}
 
-    constructor(location: FragmentLocation, config: DateInputConfig) {
-        super(location)
-        this.core = createDivElement({class: "datepicker"})
+export default class Datepicker extends Fragment{
+
+    pickedDateRange: DateRange = this.config.defaultRange
+
+    constructor(private config: DateInputConfig, onPick: (range: DateRange) => void) {
+        super(`
+            <div class="datepicker"></div>
+        `)
+
         if(!config.defaultRange)
             config.defaultRange = [stringifyDate(new Date()), stringifyDate(new Date())]
 
-        this.value = config.defaultRange
-        applyPicker(this.core, config, dateRange => {
-            this.value = dateRange
+        applyPicker(this.root, config, dateRange => {
+            this.pickedDateRange = dateRange
+            onPick(dateRange)
         })
     }
 }
