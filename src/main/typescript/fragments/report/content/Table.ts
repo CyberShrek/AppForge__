@@ -1,7 +1,7 @@
 import {Fragment} from "../../Fragment"
 import {emptyElement, create} from "../../../util/domWizard"
 import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../util/data"
-import {Text} from "../../inputs/Text"
+import {TextInput} from "../../inputs/TextInput"
 import {resolveCSS} from "../../../util/resolver"
 
 resolveCSS("table")
@@ -102,7 +102,7 @@ export class Table extends Fragment{
     private setFilter(htmlHeadCell: HTMLTableCellElement){
         const title = htmlHeadCell.textContent
         htmlHeadCell.textContent = ""
-        const filterFragment = new Text(
+        const filterFragment = new TextInput(
             {target: htmlHeadCell, position: "beforeend"},
             {title, placeholder: "🔎"}
         )

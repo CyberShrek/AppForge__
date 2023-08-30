@@ -1,16 +1,8 @@
-import {resolveCSS} from "../../../util/resolver"
-import {compareMaps, valueOrDefault} from "../../../util/data"
-import {Fragment} from "../../Fragment"
+import {resolveCSS} from "../../util/resolver"
+import {compareMaps, valueOrDefault} from "../../util/data"
+import {Fragment} from "../Fragment"
 
 resolveCSS("third-party/virtual-select")
-
-interface SelectConfig {
-    multiple?: boolean
-    search?: boolean
-    showCodes?: boolean
-    disableSelectAll?: boolean
-    maxValues?: number
-}
 
 export default class Select extends Fragment{
 

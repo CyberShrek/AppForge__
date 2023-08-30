@@ -1,8 +1,8 @@
 import {resolveCSS} from "../../util/resolver"
 import {Button} from "../inputs/Button"
-import {DateField} from "./section/field/DateField"
+import {DatepickerField} from "./section/field/DatepickerField"
 import {CheckboxField} from "./section/field/CheckboxField"
-import {SelectField} from "./section/field/select/SelectField"
+import {_SelectField} from "./section/field/select/_SelectField"
 import {CarriersField} from "./section/field/select/CarriersField"
 import {CountriesField} from "./section/field/select/CountriesField"
 import {RoadsField} from "./section/field/select/RoadsField"
@@ -34,6 +34,11 @@ export default class Form extends Fragment<HTMLFormElement> implements Trigger{
         this.resolveFieldsSubscriptions()
     }
 
+    findField(location: string): Field<any>{
+        const sectionAndField = location.split(".")
+        return this.sections.get(sectionAndField[0]).get(sectionAndField[1])
+    }
+
     subscribe(callback: (value?: any) => void) {
     }
 
@@ -51,7 +56,7 @@ export default class Form extends Fragment<HTMLFormElement> implements Trigger{
 
     private resolveFieldsSubscriptions(){
         this.fields.forEach((field, key) => {
-            if(field instanceof SelectField) {
+            if(field instanceof _SelectField) {
                 field.resolveTriggerFields(key => this.fields.get(key))
                 field.listenTriggerFields()
                 field.optionsRetrieving = true
@@ -72,23 +77,4 @@ export default class Form extends Fragment<HTMLFormElement> implements Trigger{
             })
         }
     }
-}
-
-function resolveField(fieldElement: HTMLElement): Field<Trigger<any>>{
-    const containsClass = (className: string) => fieldElement.classList.contains(className)
-    const location: FragmentLocation = {target: fieldElement}
-    const configElement: HTMLElement = fieldElement.querySelector("config")
-    return containsClass("date") ? new DateField(location, configElement)
-        : containsClass("checkbox") ? new CheckboxField(location, configElement)
-            : resolveSelectField(location, configElement)
-}
-
-function resolveSelectField(location: FragmentLocation, configElement: HTMLElement): SelectField{
-    switch (configElement.querySelector("bank")?.getAttribute("type")){
-        case "carriers":  return new CarriersField(location, configElement)
-        case "countries": return new CountriesField(location, configElement)
-        case "roads":     return new RoadsField(location, configElement)
-        case "stations":  return new StationsField(location, configElement)
-    }
-    return new SelectField(location, configElement)
 }

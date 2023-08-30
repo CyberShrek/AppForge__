@@ -1,18 +1,11 @@
 import {Fragment} from "../Fragment"
 import {create} from "../../util/domWizard"
 
-export interface Config{
-    className?: string
-    text?: string
-    image?: string
-    hint?: string
-}
-
 export class Button extends Fragment<HTMLButtonElement>{
 
     private imageElement: HTMLImageElement
 
-    constructor(config: Config, onClick: () => void) {
+    constructor(config: ButtonConfig, onClick: () => void) {
         super(`<button></button>`)
 
         this.className = config.className

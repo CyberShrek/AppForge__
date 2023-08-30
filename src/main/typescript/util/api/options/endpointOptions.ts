@@ -4,10 +4,10 @@ import {setCursorToDefault, setCursorToLoading} from "../../domWizard"
 import {Field} from "../../../fragments/form/section/field/Field"
 import {jsonifyFields} from "../../data";
 
-export const fetchEndpointOptions = (url: string, subscribedFields?: Map<FieldKey, Field<any>>): Promise<Options> => {
+export const fetchEndpointOptions = (url: string, fields?: Map<FieldKey, Field<any>>): Promise<Options> => {
         setCursorToLoading()
         return wretch(url)
-            .post(subscribedFields ? jsonifyFields(subscribedFields) : undefined)
+            .post(fields ? jsonifyFields(fields) : undefined)
             .json(json => new Map<OptionKey, OptionLabel>(Object.entries(json)))
             .catch(error => {
                 popupHttpDataError(error, "Не удалось загрузить список опций")

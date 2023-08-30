@@ -1,5 +1,5 @@
 import {resolveCSS} from "../../util/resolver"
-import {numberOf, stringifyDate} from "../../util/data"
+import {stringifyDate} from "../../util/data"
 import {easepick} from "@easepick/core"
 import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
@@ -9,16 +9,11 @@ import {Fragment} from "../Fragment"
 
 resolveCSS("third-party/easepick")
 
-interface DateInputConfig {
-    maxDays?: number
-    defaultRange?: DateRange
-}
-
 export default class Datepicker extends Fragment{
 
     pickedDateRange: DateRange = this.config.defaultRange
 
-    constructor(private config: DateInputConfig, onPick: (range: DateRange) => void) {
+    constructor(private config: DatepickerConfig, onPick: (range: DateRange) => void) {
         super(`
             <div class="datepicker"></div>
         `)
@@ -33,7 +28,7 @@ export default class Datepicker extends Fragment{
     }
 }
 
-function applyPicker(core: HTMLElement, config: DateInputConfig, onSelect: (dateRange: DateRange) => void){
+function applyPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (dateRange: DateRange) => void){
     new easepick.create({
         element: core,
         format: "DD.MM.YYYY",

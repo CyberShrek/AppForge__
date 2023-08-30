@@ -1,7 +1,7 @@
 import {Fragment} from "../Fragment"
 import {Button} from "./Button"
 
-export class Text extends Fragment{
+export class TextInput extends Fragment{
 
     private textInputElement: HTMLInputElement
 

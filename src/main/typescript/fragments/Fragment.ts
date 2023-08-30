@@ -9,7 +9,7 @@ export abstract class Fragment<T extends HTMLElement = HTMLElement> {
     }
 
     // Inserts elements into "slot" tag. Or into root if there are no slots
-    append(...items: (Fragment<HTMLElement> | Element | string)[]){
+    append(...items: (Fragment | Element | string)[]){
         let target: HTMLElement = this.root.querySelector("slot")
         if(!target)
             target = this.root

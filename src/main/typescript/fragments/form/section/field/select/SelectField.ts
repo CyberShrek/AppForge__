@@ -1,55 +1,50 @@
-import Select from "../../../../inputs/selects/Select"
-import {concatMaps, numberOf} from "../../../../../util/data"
-import {Trigger} from "../../../../abstract/Trigger"
+import {Field} from "../Field"
+import Select from "../../../../inputs/Select"
+import {Section} from "../../Section"
 import {fetchEndpointOptions} from "../../../../../util/api/options/endpointOptions"
-import {Field} from "../Field";
+import {concatMaps} from "../../../../../util/data";
 
-export class SelectField extends Field<Select>{
-    constructor(location: FragmentLocation,
-                protected configElement: HTMLElement) {
-        const getBoolAttr=(attributeName: string): boolean => configElement.getAttribute(attributeName) === "true"
-        super(location, Select, {
-            maxValues: numberOf(configElement.getAttribute("max-values")),
-            multiple: getBoolAttr("multiselect"),
-            search: getBoolAttr("search"),
-            showCodes: getBoolAttr("show-codes"),
-            disableSelectAll: getBoolAttr("disable-select-all")
-        } as SelectInputConfig)
+export class SelectField extends Field<Options>{
+
+    protected selectInput: Select
+
+    constructor(section: Section, private config: SelectFieldConfig) {
+        const select = new Select(config, options => this.changeValue(options))
+        super(section, `<p>${config.label}</p>`, select)
+        this.selectInput = select
     }
 
-    optionsRetrieving = false
+    startOptionsRetrieving(){
+        let endpointOptions: Options, serviceBankOptions: Options
 
-    private endpointConfigElement: HTMLElement = this.configElement.querySelector("endpoint")
-    private endpointPath: string = this.endpointConfigElement?.querySelector("path")?.textContent
-    // TODO should be a Set
-    private endpointTriggerFields: Map<FieldKey, Field<Trigger<any>>|null> = new Map(this.endpointConfigElement ?
-        [...this.endpointConfigElement.querySelectorAll<HTMLElement>("subscriptions field")]
-            .map(fieldElement => [fieldElement.textContent, null]) : null)
+        const update=() =>
+            this.selectInput.options = concatMaps(endpointOptions, serviceBankOptions)
 
-    resolveTriggerFields(getFieldFn: (fieldKey: string) => Field<Trigger<any>>){
-        this.endpointTriggerFields.forEach((_, location) => {
-            this.endpointTriggerFields.set(location, getFieldFn(location))
-        })
+        this.setupEndpointOptionsRetrieving(options => {endpointOptions = options; update()})
+        this.setupServiceBankOptionsRetrieving(options => {serviceBankOptions = options; update()})
     }
 
-    listenTriggerFields(){
-        if(!!this.endpointPath) {
-            if (this.endpointTriggerFields.size > 0) {
-                this.endpointTriggerFields.forEach(<T>(field: Field<Trigger<any>>, key) =>
-                    field.input.onValueChange(value => {
-                        if (this.optionsRetrieving === true)
-                            this.retrieveOptionsPromise(
-                                "endpoint", fetchEndpointOptions(this.endpointPath, this.endpointTriggerFields))
-                    }))
-            } else this.retrieveOptionsPromise("endpoint", fetchEndpointOptions(this.endpointPath))
-        }
+    private setupEndpointOptionsRetrieving(onFetch: (options: Options) => void){
+        this.subscribeToFields(this.config.optionsSources?.endpoint?.properties,
+            fields =>
+                fetchEndpointOptions(this.config.optionsSources.endpoint.path, fields)
+                    .then(options => onFetch(options)))
     }
 
-    private optionsBuffer: Map<string, Options> = new Map()
-    protected retrieveOptionsPromise(optionsGroupName: string, promise: Promise<Options>){
-        promise.then(options => {
-            this.optionsBuffer.set(optionsGroupName, options)
-            this.input.setOptions(concatMaps(...this.optionsBuffer.values()))
-        })
+
+    private setupServiceBankOptionsRetrieving(onFetch: (options: Options) => void){
+
+    }
+
+    private subscribeToFields(fieldLocations: string[], onValueChange: <T>(fields: Map<string, Field<any>>) => void){
+        const triggerFields: Map<string, Field<any>> = new Map()
+        fieldLocations.forEach(location =>
+            triggerFields.set(location, this.section.form.findField(location))
+        )
+        triggerFields.forEach((field, location) =>
+            field.onValueChange(() => {
+                onValueChange(triggerFields)
+            })
+        )
     }
 }

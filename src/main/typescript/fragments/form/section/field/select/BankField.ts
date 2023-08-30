@@ -1,10 +1,10 @@
-import {SelectField} from "./SelectField"
-import {DateField} from "../DateField"
+import {_SelectField} from "./_SelectField"
+import {DatepickerField} from "../DatepickerField"
 import {Trigger} from "../../../../abstract/Trigger"
 import {stringify} from "../../../../../util/data"
 import {Field} from "../Field"
 
-export abstract class BankField extends SelectField{
+export abstract class BankField extends _SelectField{
     protected constructor(location: FragmentLocation, configElement: HTMLElement) {
         super(location, configElement)
     }
@@ -13,7 +13,7 @@ export abstract class BankField extends SelectField{
 
     private dateFieldKey = this.bankConfigElement.querySelector("subscriptions date")?.textContent
     protected bankTriggerFields: Map<string, Field<any>> = new Map()
-    protected dateFieldSubscription: DateField = null
+    protected dateFieldSubscription: DatepickerField = null
 
     override resolveTriggerFields(getFieldFn: (key: string) => Field<Trigger<any>>) {
         super.resolveTriggerFields(getFieldFn)

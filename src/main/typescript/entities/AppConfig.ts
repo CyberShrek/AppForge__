@@ -22,66 +22,52 @@ interface MainFormConfig {
 
 interface FormSectionConfig {
     title?: string
-    fields?: { [key: string]: FieldConfig }
+    fields?: { [key: string]: CheckboxFieldConfig | DatepickerFieldConfig | SelectFieldConfig }
 }
 
-type FieldConfig = CheckBoxConfig | DateConfig | SelectConfig
+interface FieldConfig {
+    label?: string
+    type: "checkbox" | "datepicker" | "select"
+}
 
-interface CheckBoxConfig {
+interface CheckboxFieldConfig extends FieldConfig, CheckboxConfig{
     type: "checkbox"
-    label: string
 }
 
-interface DateConfig {
-    type: "date"
-    label?: string
-    maxDays?: number
+interface DatepickerFieldConfig extends FieldConfig, DatepickerConfig{
+    type: "datepicker"
 }
 
-interface SelectConfig {
+interface SelectFieldConfig extends FieldConfig, SelectConfig{
     type: "select"
-    label?: string
-    showCodes?: boolean
-    search?: boolean
-    multiple?: boolean
-    disableSelectAll?: boolean
-    maxValues?: number
-    optionsSource?: OptionsSource
+    optionsSources?: OptionsSources
 }
 
-interface OptionsSource {
+interface OptionsSources {
     endpoint?: Endpoint
     serviceBank?: ServiceBank
 }
 
 interface Endpoint {
     path: string
-    subscribeToFields: Set<string>
+    // Trigger field locations. Should be written as sectionName.fieldName
+    properties: string[]
 }
 
 interface ServiceBank {
-    type: string
-    subscribeToDate: string
-    extraProperties?: { [key: string]: string }
-}
-
-interface ServiceBankCarriers extends ServiceBank {
-    type: "carriers"
-}
-
-interface ServiceBankCountries extends ServiceBank {
-    type: "countries"
-    subscribeToPostSovietCheckbox?: string
-}
-
-interface ServiceBankRoads extends ServiceBank {
-    type: "roads"
-    subscribeToCountries?: string
-}
-
-interface ServiceBankStations extends ServiceBank {
-    type: "stations"
-    subscribeToRoads?: string
+    type: "carriers" | "countries" | "roads" | "stations"
+    // Could be either trigger field locations or absolute property values
+    properties: {
+        postSovietToggle: string | boolean,
+        startDate: string,
+        endDate: string,
+        carriers: string | string[],
+        countries: string | string[],
+        roads: string | string[]
+    }
+    custom?: {
+        [key: string]: string
+    }
 }
 
 interface ReportSlotConfig {
