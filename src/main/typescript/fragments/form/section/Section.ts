@@ -4,7 +4,7 @@ import {valueOrDefault} from "chart.js/helpers"
 import Form from "../Form"
 import {DatepickerField} from "./field/DatepickerField"
 import {CheckboxField} from "./field/CheckboxField"
-import {SelectField} from "./field/select/SelectField"
+import {SelectField} from "./field/SelectField"
 
 export class Section extends Fragment<HTMLDivElement>{
 

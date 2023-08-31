@@ -40,33 +40,39 @@ interface DatepickerFieldConfig extends FieldConfig, DatepickerConfig{
 
 interface SelectFieldConfig extends FieldConfig, SelectConfig{
     type: "select"
-    optionsSources?: OptionsSources
+    optionsSources?: OptionsSourcesConfig
 }
 
-interface OptionsSources {
-    endpoint?: Endpoint
-    serviceBank?: ServiceBank
+interface OptionsSourcesConfig {
+    endpoint?: EndpointOptionsConfig
+    serviceBank?: ServiceBankConfig
 }
 
-interface Endpoint {
+interface EndpointOptionsConfig {
     path: string
     // Trigger field locations. Should be written as sectionName.fieldName
-    properties: string[]
+    propertiesSources: string[]
 }
 
-interface ServiceBank {
+interface ServiceBankConfig {
     type: "carriers" | "countries" | "roads" | "stations"
-    // Could be either trigger field locations or absolute property values
-    properties: {
-        postSovietToggle: string | boolean,
+    // Works like Endpoint.subscribeToFields but with field locations as values
+    propertiesSources: {
+        postSovietToggle: string,
         startDate: string,
         endDate: string,
-        carriers: string | string[],
-        countries: string | string[],
-        roads: string | string[]
+        carriers: string,
+        countries: string,
+        roads: string
     }
-    custom?: {
-        [key: string]: string
+    properties?: {
+        postSovietToggle: boolean,
+        startDate: string,
+        endDate: string,
+        carriers: string[],
+        countries: string[],
+        roads: string[],
+        [custom: string]: any
     }
 }
 
