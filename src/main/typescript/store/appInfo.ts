@@ -1,3 +1,3 @@
-import {fetchAppInfo} from "../util/api/appInfo"
+import {fetchAppInfo} from "../api/appInfo"
 
 export const appInfoPromise: Promise<AppInfo> = fetchAppInfo()

@@ -1,9 +1,9 @@
 import wretch from "wretch"
-import {setCursorToDefault, setCursorToLoading} from "../domWizard"
-import {popupHttpDataError} from "../modal"
+import {setCursorToDefault, setCursorToLoading} from "../util/domWizard"
+import {popupHttpDataError} from "../util/modal"
 import domtoimage from "dom-to-image";
 
-export const fetchReport = (path: string, values: JsonFieldValues): Promise<ReportModel> => {
+export const fetchReport = (path: string, values: JsonProperties): Promise<ReportModel> => {
     setCursorToLoading()
     return wretch(path)
         .post(values)

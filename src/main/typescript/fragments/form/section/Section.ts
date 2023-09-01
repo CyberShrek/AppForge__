@@ -8,11 +8,11 @@ import {SelectField} from "./field/SelectField"
 
 export class Section extends Fragment<HTMLDivElement>{
 
-    private fields = new Map<string, Field<any>>()
+    readonly fields = new Map<string, Field<any>>()
 
-    get = (fieldKey: string) => this.fields.get(fieldKey)
+    getField = (fieldKey: string) => this.fields.get(fieldKey)
 
-    constructor(public form: Form, config: FormSectionConfig) {
+    constructor(readonly form: Form, config: FormSectionConfig) {
         super(`<div class="section"><p>${valueOrDefault(config.title, "")}</p><slot></slot></div>`)
         
         for (const fieldKey in config.fields) {
@@ -22,11 +22,12 @@ export class Section extends Fragment<HTMLDivElement>{
         form.append(this)
     }
 
-    private createField(config: CheckboxFieldConfig | DatepickerFieldConfig | SelectFieldConfig): Field<any>{
+    private createField(config: FieldLabel): Field<any>{
         switch (config.type){
-            case "checkbox":   return new CheckboxField(this, config)
-            case "datepicker": return new DatepickerField(this, config)
-            case "select":     return new SelectField(this, config)
+            case "checkbox":   return new CheckboxField(this, config as CheckboxFieldConfig)
+            case "switch":   return new CheckboxField(this, config as SwitchFieldConfig)
+            case "datepicker": return new DatepickerField(this, config as DatepickerFieldConfig)
+            case "select":     return new SelectField(this, config as SelectFieldConfig)
         }
     }
 }

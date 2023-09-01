@@ -1,12 +1,10 @@
 import Datepicker from "../../../inputs/Datepicker"
-import {numberOf} from "../../../../util/data"
-import {Field} from "./Field";
+import {Field} from "./Field"
+import {Section} from "../Section"
 
-export class DatepickerField extends Field<Datepicker>{
+export class DatepickerField extends Field<DateRange>{
 
-    constructor(location: FragmentLocation, configElement: HTMLElement) {
-        super(location, Datepicker, {
-            maxDays: numberOf(configElement.getAttribute("max-days"))
-        })
+    constructor(section: Section, config: DatepickerFieldConfig) {
+        super(section, new Datepicker(config, range => this.triggerValueChange(range)))
     }
 }

@@ -2,14 +2,18 @@ package org.vniizht.appforge.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.ModelAndView
 import org.vniizht.appforge.store.forgedAppsCache
 import org.vniizht.appforge.model.AppConfig
 
-@RestController
-class AppForgeController {
+@Controller
+class IndexController {
+
+    @GetMapping
+    fun getIndex() = "index.html"
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody(required = true) config: AppConfig): ModelAndView {

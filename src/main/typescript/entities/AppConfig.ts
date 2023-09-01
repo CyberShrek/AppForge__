@@ -1,8 +1,8 @@
 interface AppConfig {
     code: string
 
-    form?: MainFormConfig
-    forms?: { [key: string]: MainFormConfig }
+    form?: FormConfig
+    forms?: { [key: string]: FormConfig }
 
     reportSlot?: ReportSlotConfig
     reportSlots?: { [key: string]: ReportSlotConfig }
@@ -11,9 +11,11 @@ interface AppConfig {
         updateDate?: string
         additional?: string
     }
+
+    debug?: boolean
 }
 
-interface MainFormConfig {
+interface FormConfig {
     title?: string
     sections?: { [key: string]: FormSectionConfig }
     validationPath?: string
@@ -22,23 +24,29 @@ interface MainFormConfig {
 
 interface FormSectionConfig {
     title?: string
-    fields?: { [key: string]: CheckboxFieldConfig | DatepickerFieldConfig | SelectFieldConfig }
+    fields?: { [key: string]: FieldConfig }
 }
 
-interface FieldConfig {
+type FieldConfig = CheckboxFieldConfig | SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig
+
+interface FieldLabel {
     label?: string
-    type: "checkbox" | "datepicker" | "select"
+    type: "checkbox" | "switch" | "datepicker" | "select"
 }
 
-interface CheckboxFieldConfig extends FieldConfig, CheckboxConfig{
+interface CheckboxFieldConfig extends FieldLabel, CheckboxConfig{
     type: "checkbox"
 }
 
-interface DatepickerFieldConfig extends FieldConfig, DatepickerConfig{
+interface SwitchFieldConfig extends FieldLabel, SwitchConfig{
+    type: "switch"
+}
+
+interface DatepickerFieldConfig extends FieldLabel, DatepickerConfig{
     type: "datepicker"
 }
 
-interface SelectFieldConfig extends FieldConfig, SelectConfig{
+interface SelectFieldConfig extends FieldLabel, SelectConfig{
     type: "select"
     optionsSources?: OptionsSourcesConfig
 }
@@ -56,19 +64,17 @@ interface EndpointOptionsConfig {
 
 interface ServiceBankConfig {
     type: "carriers" | "countries" | "roads" | "stations"
-    // Works like Endpoint.subscribeToFields but with field locations as values
+    // Works like Endpoint.propertiesSources but with field locations as values
     propertiesSources: {
-        postSovietToggle: string,
-        startDate: string,
-        endDate: string,
+        postSoviet: string,
+        date: string,
         carriers: string,
         countries: string,
         roads: string
     }
     properties?: {
-        postSovietToggle: boolean,
-        startDate: string,
-        endDate: string,
+        postSoviet: boolean,
+        date: string,
         carriers: string[],
         countries: string[],
         roads: string[],

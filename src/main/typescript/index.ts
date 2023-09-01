@@ -1,5 +1,5 @@
 import {resolveCSS} from "./util/resolver"
-import {ForgedApplication} from "./applicaton/ForgedApplication"
+import {ForgedApplication} from "./fragments/applicatons/ForgedApplication"
 
 
 

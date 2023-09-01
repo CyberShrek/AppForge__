@@ -1,7 +1,6 @@
 import {Fragment} from "../../../Fragment"
 import {jsonify} from "../../../../util/data"
-import {Section} from "../Section";
-import {CheckboxField} from "./CheckboxField";
+import {Section} from "../Section"
 
 export abstract class Field<VALUE> extends Fragment<HTMLDivElement>{
 
@@ -35,7 +34,7 @@ export abstract class Field<VALUE> extends Fragment<HTMLDivElement>{
     }
 
     // Need to be called by implementations on each value change to set actual value and trigger onValueChangeCallbacks
-    protected changeValue(newValue: VALUE){
+    protected triggerValueChange(newValue: VALUE){
         this._value = newValue
         this.onValueChangeCallbacks.forEach(callback => callback(newValue))
     }

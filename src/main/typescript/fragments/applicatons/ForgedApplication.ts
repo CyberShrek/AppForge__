@@ -1,8 +1,8 @@
-import Header from "../fragments/main/Header"
-import {resolveCSS} from "../util/resolver"
-import {Fragment} from "../fragments/Fragment"
-import {appInfoPromise} from "../store/appInfo";
-import Form from "../fragments/form/Form";
+import Header from "../main/Header"
+import {resolveCSS} from "../../util/resolver"
+import {Fragment} from "../Fragment"
+import {appInfoPromise} from "../../store/appInfo";
+import Form from "../form/Form";
 
 resolveCSS("global")
 resolveCSS("inputs")

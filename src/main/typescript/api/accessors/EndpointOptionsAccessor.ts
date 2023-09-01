@@ -1,6 +1,6 @@
 import {Accessor} from "./Accessor"
 
-export class EndpointOptionsAccessor extends Accessor<Options>{
+export class EndpointOptionsAccessor extends Accessor<Options> {
 
     constructor(override path) {
         super()
@@ -8,8 +8,8 @@ export class EndpointOptionsAccessor extends Accessor<Options>{
         this.errorMessage = "Не удалось загрузить список опций"
     }
 
-    override fetch(body?: any) {
-        this.body = body
+    override fetch(jsonProperties?: JsonProperties) {
+        this.body = jsonProperties
         return super.fetch()
     }
 }

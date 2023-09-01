@@ -9,6 +9,10 @@ interface CheckboxConfig{
     label?: string
 }
 
+interface SwitchConfig extends CheckboxConfig{
+
+}
+
 interface SelectConfig {
     multiple?: boolean
     search?: boolean

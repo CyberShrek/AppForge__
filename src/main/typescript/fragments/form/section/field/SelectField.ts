@@ -1,61 +1,62 @@
 import {Field} from "./Field"
 import Select from "../../../inputs/Select"
 import {Section} from "../Section"
-import {fetchEndpointOptions} from "../../../../util/api/options/endpointOptions"
-import {concatMaps} from "../../../../util/data";
-import {EndpointOptionsAccessor} from "../../../../api/EndpointOptionsAccessor";
+import {concatMaps, jsonifyFields} from "../../../../util/data"
+import {EndpointOptionsAccessor} from "../../../../api/accessors/EndpointOptionsAccessor"
+import {ServiceBankOptionsAccessor} from "../../../../api/accessors/ServiceBankOptionsAccessor"
+import Form from "../../Form"
 
 export class SelectField extends Field<Options>{
 
-    protected selectInput: Select
+    protected selectFragment: Select
 
     constructor(section: Section, private config: SelectFieldConfig) {
-        const select = new Select(config, options => this.changeValue(options))
+        const select = new Select(config, options => this.triggerValueChange(options))
         super(section, `<p>${config.label}</p>`, select)
-        this.selectInput = select
+        this.selectFragment = select
     }
 
     startOptionsRetrieving(){
-        let endpointOptions: Options,
-            serviceBankOptions: Options
-        const update=() => this.selectInput.options = concatMaps(endpointOptions, serviceBankOptions)
+        let endpointOptions: Options = new Map(),
+            serviceBankOptions: Options = new Map()
+        const update=() => this.selectFragment.options = concatMaps(endpointOptions, serviceBankOptions),
+            form = this.section.form,
+            endpointConfig = this.config.optionsSources?.endpoint,
+            serviceBankConfig = this.config.optionsSources?.serviceBank
 
-        this.setupEndpointOptionsRetrieving(options => {endpointOptions = options; update()})
-        this.setupServiceBankOptionsRetrieving(options => {serviceBankOptions = options; update()})
+        if(endpointConfig)
+            setupEndpointRetrieving(form, endpointConfig, options => {endpointOptions = options; update()})
+        if(serviceBankConfig)
+            setupServiceBankRetrieving(form, serviceBankConfig, options => {serviceBankOptions = options; update()})
     }
 
-    private setupEndpointOptionsRetrieving(onFetch: (options: Options) => void){
-        const sourceFieldsMap = this.fieldLocationsToFieldsMap(
-            this.config.optionsSources?.endpoint?.propertiesSources)
-        const optionsAccessor = new EndpointOptionsAccessor(
-            this.config.optionsSources.endpoint.path, sourceFieldsMap, onFetch)
 
-        subscribeToFields(Array.from(sourceFieldsMap.values()), optionsAccessor.fetch)
-    }
-
-    private setupServiceBankOptionsRetrieving(onFetch: (options: Options) => void){
-        const rawPropertiesSources =
-            this.config.optionsSources?.serviceBank?.propertiesSources
-        const sourceFieldsMap =
-            this.fieldLocationsToFieldsMap(Object.values(rawPropertiesSources))
-        const optionsAccessor = new Service
-
-        subscribeToFields(Object.values(propertiesFields), fields => {
-
-        })
-    }
-
-    private fieldLocationsToFieldsMap(fieldLocations: string[]): Map<string, Field<any>>{
-        const fieldsMap: Map<string, Field<any>> = new Map()
-        fieldLocations.forEach(location =>
-            fieldsMap.set(location, this.section.form.findField(location))
-        )
-        return fieldsMap
-    }
+}
+function setupEndpointRetrieving(form: Form, config: EndpointOptionsConfig, onFetch: (options: Options) => void){
+    const sourceFields = form.findFields(config.propertiesSources)
+    const optionsAccessor = new EndpointOptionsAccessor(config.path)
+    subscribeToFields(sourceFields, () => optionsAccessor
+        .fetch(jsonifyFields(sourceFields))
+        .then(options => options ? onFetch(options) : options))
 }
 
-function subscribeToFields(fields: Field<any>[], onChange: () => void){
-    fields.forEach(field =>
+function setupServiceBankRetrieving(form: Form, config: ServiceBankConfig, onFetch: (options: Options) => void){
+    const sourceFields = form.findFields(Array.from(Object.values(config.propertiesSources)))
+    const optionsAccessor = new ServiceBankOptionsAccessor(config.type)
+    subscribeToFields(sourceFields, () => {
+        const properties: typeof config.properties = {...config.properties}
+        // Remapping
+        Object.entries(config.propertiesSources).forEach(entry =>
+            properties[entry[0]] = sourceFields.get(entry[1])
+        )
+        optionsAccessor
+            .fetch(properties)
+            .then(options => options ? onFetch(options) : options)
+    })
+}
+
+function subscribeToFields(fieldsMap: Map<string, Field<any>> | Field<any>[], onChange: () => void){
+    fieldsMap.forEach(field =>
         field.onValueChange(() => {
             onChange()
         })

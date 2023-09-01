@@ -1,5 +1,5 @@
 import {Fragment} from "../Fragment"
-import {fetchReport} from "../../util/api/reportsAPI"
+import {fetchReport} from "../../api/reportsAPI"
 import {Head} from "./Head"
 import {Body} from "./Body"
 import {resolveCSS} from "../../util/resolver"
@@ -15,7 +15,7 @@ export default class ReportSlot extends Fragment{
     readonly body: Body
     protected readonly path: string
 
-    jsonFieldValues: JsonFieldValues
+    jsonFieldValues: JsonProperties
     reportModel: ReportModel
 
     constructor(public location: FragmentLocation) {
@@ -37,7 +37,7 @@ export default class ReportSlot extends Fragment{
         this.report = model
     }
 
-    applyNewReportByFieldValues(values: JsonFieldValues, onLoad?: () => {}){
+    applyNewReportByFieldValues(values: JsonProperties, onLoad?: () => {}){
         this.head.loading.show()
         fetchReport(this.path, values).then(model => {
             this.head.loading.hide()

@@ -1,7 +1,7 @@
 import wretch from "wretch"
-import {mapToJson} from "../util/data"
-import {setCursorToDefault, setCursorToLoading} from "../util/domWizard"
-import {popupHttpDataError} from "../util/modal";
+import {mapToJson} from "../../util/data"
+import {setCursorToDefault, setCursorToLoading} from "../../util/domWizard"
+import {popupHttpDataError} from "../../util/modal";
 
 export abstract class Accessor<RESOURCE> {
 
@@ -11,7 +11,7 @@ export abstract class Accessor<RESOURCE> {
     body: any
     errorMessage: string = "Ошибка получения ресурса"
 
-    fetch<T = RESOURCE>(): Promise<T | void> {
+    fetch(): Promise<RESOURCE | void> {
         setCursorToLoading()
 
         const requestInit = wretch(this.path)
@@ -19,7 +19,7 @@ export abstract class Accessor<RESOURCE> {
             .body(this.body);
 
         return (this.method === "GET" ? requestInit.get() : requestInit.post())
-            .json((resource: T) => resource)
+            .json((resource: RESOURCE) => resource)
             .catch(error => popupHttpDataError(error, this.errorMessage))
             .finally(() => setCursorToDefault())
     }

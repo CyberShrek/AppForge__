@@ -101,7 +101,7 @@ export function jsonify<T>(value: T|null):  any{
     return value
 }
 
-export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonFieldValues{
+export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonProperties{
     const json: { [key: string]: object } = {}
     fields.forEach((field, key) => {
         json[key] = field.jsonValue
@@ -140,12 +140,12 @@ export function transposeMatrix<T>(matrix: T[][]): T[][]{
     return matrix[0].map((_, i) => matrix.map(row => row[i]))
 }
 
-export const nullOrUndefined = (value: any): boolean => value === null || value === undefined
+export const isNullOrUndefined = (value: any): boolean => value === null || value === undefined
 
 export const valueOrDefault = <T>(value: T | any, defaultValue: T): T =>
-    nullOrUndefined(value) ? defaultValue : value
+    isNullOrUndefined(value) ? defaultValue : value
 
 export const valueOrError = <T>(value: T | any, errorMessage: string): T =>{
-    if(nullOrUndefined(value)) throw new Error(errorMessage)
+    if(isNullOrUndefined(value)) throw new Error(errorMessage)
     return value
 }

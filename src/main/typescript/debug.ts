@@ -1,4 +1,4 @@
-import {ForgedApplication} from "./applicaton/ForgedApplication"
+import {ForgedApplication} from "./fragments/applicatons/ForgedApplication"
 import {create} from "./util/domWizard"
 
 new ForgedApplication()

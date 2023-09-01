@@ -1,5 +1,5 @@
 import wretch from "wretch"
-import {appConfig} from "../../store/appConfig"
+import {appConfig} from "../store/appConfig"
 
 export function fetchAppInfo(): Promise<AppInfo>{
     return wretch("info")

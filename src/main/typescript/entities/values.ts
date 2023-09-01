@@ -5,4 +5,4 @@ type OptionLabel = string
 
 type Options = Map<OptionKey, OptionLabel>
 
-type JsonFieldValues = { [key: string]: object }
+type JsonProperties = { [key: string]: object }

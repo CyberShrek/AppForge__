@@ -7,7 +7,7 @@ import {popupTimeoutAction} from "../../util/modal"
 import domtoimage from "dom-to-image";
 import ReportSlot from "./ReportSlot";
 import {stringify} from "../../util/data";
-import {downloadXlsx} from "../../util/api/reportsAPI";
+import {downloadXlsx} from "../../api/reportsAPI";
 
 export class Body extends ExistedFragment{
 
