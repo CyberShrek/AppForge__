@@ -84,10 +84,17 @@ export function getFullscreenElement(): Element{
     return document.querySelector(":fullscreen")
 }
 
-export function setCursorToLoading() {
+// Each enable of cursor loading adds 1 item into this array, each disabling removes also 1 item.
+// The only purpose is to prevent disabling when not all loaded
+let cursorLoadersCount = 0
+
+export function addCursorLoader() {
     document.documentElement.style.cursor = 'wait'
+    cursorLoadersCount++
 }
 
-export function setCursorToDefault() {
-    document.documentElement.style.cursor = 'default'
+export function removeCursorLoader() {
+    cursorLoadersCount--
+    if(cursorLoadersCount <= 0)
+        document.documentElement.style.cursor = 'default'
 }

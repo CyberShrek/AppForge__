@@ -104,7 +104,8 @@ export function jsonify<T>(value: T|null):  any{
 export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonProperties{
     const json: { [key: string]: object } = {}
     fields.forEach((field, key) => {
-        json[key] = field.jsonValue
+        if(!field.hidden)
+            json[key] = field.jsonValue
     })
     return json
 }

@@ -1,12 +1,12 @@
 import {resolveCSS} from "../../util/resolver"
 import {Button} from "../inputs/Button"
-import {validateFields} from "../../api/validation"
 import {Field} from "./section/field/Field"
 import {Fragment} from "../Fragment"
 import {appConfig} from "../../store/appConfig"
 import {Section} from "./section/Section"
 import {jsonifyFields} from "../../util/data"
 import {SelectField} from "./section/field/SelectField"
+import {FormStatementAccessor} from "../../api/FormStatementAccessor"
 
 resolveCSS("main-form")
 
@@ -19,7 +19,11 @@ export default class Form extends Fragment<HTMLFormElement>{
     readonly confirmButton = new Button({
         className: "confirm",
         text: this.config.confirmButtonText
-    }, () => this.onConfirm(jsonifyFields(this.fields)))
+    }, () => this.onConfirm(this.jsonValues))
+
+    onConfirm: (jsonValues: {[field: string]: any}) => {}
+
+    private readonly statementAccessor: FormStatementAccessor
 
     constructor(protected config = appConfig.form) {
         super(`<form id="main-form"></form>`)
@@ -31,7 +35,14 @@ export default class Form extends Fragment<HTMLFormElement>{
             section.fields.forEach((field, fieldKey) =>
                 this.fields.set(`${sectionKey}.${fieldKey}`, field)))
 
+        if(config.statementPath)
+            this.statementAccessor = new FormStatementAccessor(config.statementPath)
+
         this.startOptionsRetrieving()
+    }
+
+    get jsonValues(){
+        return jsonifyFields(this.fields)
     }
 
     // Return fields with specific locations or all fields
@@ -44,26 +55,33 @@ export default class Form extends Fragment<HTMLFormElement>{
         return fieldsMap
     }
 
-    onConfirm: (jsonValues: {[field: string]: any}) => {}
-
     private startOptionsRetrieving(){
         this.fields.forEach((field, key) => {
             if(field instanceof SelectField) {
                 field.startOptionsRetrieving()
             }
-            field.onValueChange(value => this.validateFields())
+            field.onValueChange(value => this.manageFieldsStatement())
         })
     }
 
-    private validateFields(){
+    private manageFieldsStatement(){
         this.confirmButton.disable()
-        if(!!this.config.validationPath){
-            validateFields(this.config.validationPath, this.fields).then(result => {
-                this.fields.forEach(field => field.makeValid())
-                if(result instanceof Map)
-                    result.forEach((message, fieldKey) => this.fields.get(fieldKey).makeInvalid())
-                else if(result === true)
-                    this.confirmButton.enable()
+        if(this.statementAccessor){
+            this.statementAccessor.fetch(this).then(statement => {
+                if(statement){
+                    if(statement.wrongFields) {
+                        this.fields.forEach((field, fieldKey) => {
+                            if (statement.wrongFields.find(wrongFieldKey => fieldKey === wrongFieldKey))
+                                field.makeInvalid()
+                            else
+                                field.makeValid()
+                        })
+                    }
+                    statement.hideFields?.forEach(key => this.fields.get(key).hide())
+                    statement.showFields?.forEach(key => this.fields.get(key).show())
+                    statement.hideSections?.forEach(key => this.sections.get(key).hide())
+                    statement.showSections?.forEach(key => this.sections.get(key).hide())
+                }
             })
         }
     }

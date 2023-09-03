@@ -2,8 +2,8 @@ import {Field} from "./Field"
 import Select from "../../../inputs/Select"
 import {Section} from "../Section"
 import {concatMaps, jsonifyFields} from "../../../../util/data"
-import {EndpointOptionsAccessor} from "../../../../api/accessors/EndpointOptionsAccessor"
-import {ServiceBankOptionsAccessor} from "../../../../api/accessors/ServiceBankOptionsAccessor"
+import {EndpointOptionsAccessor} from "../../../../api/EndpointOptionsAccessor"
+import {ServiceBankOptionsAccessor} from "../../../../api/ServiceBankOptionsAccessor"
 import Form from "../../Form"
 
 export class SelectField extends Field<Options>{

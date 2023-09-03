@@ -3,6 +3,8 @@ import {resolveCSS} from "../../util/resolver"
 import {Fragment} from "../Fragment"
 import {appInfoPromise} from "../../store/appInfo";
 import Form from "../form/Form";
+import {appConfig} from "../../store/appConfig";
+import {NavigationContainer} from "../navigation/NavigationContainer";
 
 resolveCSS("global")
 resolveCSS("inputs")
@@ -13,31 +15,31 @@ resolveCSS("misc")
 export class ForgedApplication extends Fragment<HTMLBodyElement>{
 
     readonly header = new Header()
-    readonly mainForm = new Form()
     // readonly reportSlots: Map<string, ReportSlot> = new Map()
 
     constructor() {
         super(document.body as HTMLBodyElement)
-        this.append(
-            this.header,
-            this.mainForm
-        )
+
+        this.append(this.header, this.createMainForm())
 
         appInfoPromise.then(appInfo => {
-            document.title = appInfo.name
-            this.header.setAppInfo(appInfo)
+            if(appInfo) {
+                document.title = appInfo.name
+                this.header.setAppInfo(appInfo)
+            }
         })
     }
 
-    // private createMainForm(): MainForm {
-    //     const mainForm = new MainForm({target: document.getElementById("main-form") as HTMLFormElement})
-    //     mainForm.confirmButton.subscribe(() => {
-    //         mainForm.confirmButton.disable()
-    //         // The main form apply the "main" report only
-    //         this.reportSlots.get("main").applyNewReportByFieldValues(jsonifyFields(mainForm.fields), mainForm.confirmButton.enable)
-    //     }, false)
-    //     return mainForm
-    // }
+    private createMainForm() : Form | NavigationContainer{
+        if (appConfig.forms) {
+            const formContainer = new NavigationContainer()
+            Object.entries(appConfig.forms).forEach(([formName, formConfig]) =>
+                formContainer.createTab(formName, new Form(formConfig))
+            )
+            return formContainer
+        } else
+            return new Form(appConfig.form)
+    }
 
     // private createReportSlots=(): typeof this.reportSlots => new Map(
     //     [...document.body.querySelectorAll<HTMLDivElement>("div.report")].map(reportSlotElement =>

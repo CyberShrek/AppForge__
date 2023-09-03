@@ -22,6 +22,16 @@ export class Section extends Fragment<HTMLDivElement>{
         form.append(this)
     }
 
+    override hide() {
+        super.hide()
+        this.fields.forEach(field => field.hide())
+    }
+
+    override show() {
+        super.show()
+        this.fields.forEach(field => field.show())
+    }
+
     private createField(config: FieldLabel): Field<any>{
         switch (config.type){
             case "checkbox":   return new CheckboxField(this, config as CheckboxFieldConfig)

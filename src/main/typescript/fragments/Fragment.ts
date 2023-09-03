@@ -30,6 +30,10 @@ export abstract class Fragment<T extends HTMLElement = HTMLElement> {
         this.root.style.display = "none"
     }
 
+    get hidden(): boolean{
+        return this.root.style.display === "none"
+    }
+
     show(){
         this.root.style.display = ""
     }

@@ -18,7 +18,7 @@ interface AppConfig {
 interface FormConfig {
     title?: string
     sections?: { [key: string]: FormSectionConfig }
-    validationPath?: string
+    statementPath?: string
     confirmButtonText?: string
 }
 
