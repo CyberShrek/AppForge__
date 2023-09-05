@@ -1,6 +1,7 @@
-import {Accessor} from "./Accessor"
+import {Accessor} from "./abstract/Accessor"
+import {JsonAccessor} from "./abstract/JsonAccessor";
 
-export class ServiceBankOptionsAccessor extends Accessor<Options>{
+export class ServiceBankOptionsAccessor extends JsonAccessor<Options>{
 
     override path = `${document.location.origin}/servicebank/getdata`
     private properties: ServiceBankConfig["properties"]
@@ -15,7 +16,7 @@ export class ServiceBankOptionsAccessor extends Accessor<Options>{
                         type === "stations" ? "станций" : "опций"}`
     }
 
-    override fetch(properties?: ServiceBankConfig["properties"]): Promise<Options | void> {
+    override fetch(properties?: ServiceBankConfig["properties"]): Promise<Options> {
         this.properties = properties
         return this.type === "carriers" ? this.fetchCarriers() :
             this.type === "countries" ? this.fetchCountries() :
@@ -23,14 +24,14 @@ export class ServiceBankOptionsAccessor extends Accessor<Options>{
                     this.type === "stations" ? this.fetchStations() : null
     }
 
-    private fetchCarriers(): Promise<Options | void>{
+    private fetchCarriers(): Promise<Options>{
         this.setServiceBankBody("perList")
         return this.fetchServiceBankOptions(
             item => [`${item["gos"]}.${item["skp"]}`, item["nazvp"]]
         )
     }
 
-    private fetchCountries(): Promise<Options | void>{
+    private fetchCountries(): Promise<Options>{
         this.setServiceBankBody("gosList")
         return this.fetchServiceBankOptions(
             item => [item["g_kod"], item["g_name"]],
@@ -38,14 +39,14 @@ export class ServiceBankOptionsAccessor extends Accessor<Options>{
         )
     }
 
-    private fetchRoads(): Promise<Options | void>{
+    private fetchRoads(): Promise<Options>{
         this.setServiceBankBody("dorList", ...this.properties?.countries?.map(code => {return {"gos": code}}))
         return this.fetchServiceBankOptions(
             item => [`${item["g_kod"]}.${item["d_kod"]}`, item["d_name"]]
         )
     }
 
-    private fetchStations(): Promise<Options | void>{
+    private fetchStations(): Promise<Options>{
         this.setServiceBankBody("stanList", ...roadCodesToBodies(this.properties.roads))
         return this.fetchServiceBankOptions(
             item => [item["stan"], item["pnazv"]]
@@ -64,7 +65,7 @@ export class ServiceBankOptionsAccessor extends Accessor<Options>{
     }
 
     private fetchServiceBankOptions(parseItemToOptionFn: (items: any) => [OptionKey, OptionLabel],
-                                    filter?: (item: any) => boolean): Promise<Options | void> {
+                                    filter?: (item: any) => boolean): Promise<Options> {
         return super.fetch().then(json =>
             // The only first item is approved
             new Map((json[Object.keys(json as any)[0]] as Array<any>)

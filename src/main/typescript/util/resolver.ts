@@ -8,3 +8,9 @@ export function resolveCSS(name: string){
         headElement.appendChild(styleEl)
     }
 }
+
+export function resolveJS(name: string) {
+    return import(`/appforge/js/${name}.js`)
+}
+    // document.body.insertAdjacentHTML("beforeend",
+    //     `<script type="module" src="/appforge/js/${name}.js"></script>`)

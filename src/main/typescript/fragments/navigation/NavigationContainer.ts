@@ -1,6 +1,6 @@
 import {Fragment} from "../Fragment"
-import {NavigationBar} from "./NavigationBar";
-import {NavigationBody} from "./NavigationBody";
+import {NavigationBar} from "./NavigationBar"
+import {NavigationBody} from "./NavigationBody"
 
 export class NavigationContainer extends Fragment{
 

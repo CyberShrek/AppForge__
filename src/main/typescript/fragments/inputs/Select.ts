@@ -1,8 +1,9 @@
-import {resolveCSS} from "../../util/resolver"
+import {resolveCSS, resolveJS} from "../../util/resolver"
 import {compareMaps, valueOrDefault} from "../../util/data"
 import {Fragment} from "../Fragment"
 
 resolveCSS("third-party/virtual-select")
+const virtualSelectModulePromise = resolveJS("third-party/virtual-select.min")
 
 export default class Select extends Fragment{
 
@@ -12,7 +13,7 @@ export default class Select extends Fragment{
 
     constructor(config: SelectConfig, onPick: (pickedOptions: Options) => void) {
         super(`<div class="select"></div>`)
-        applyVirtualSelect(this.root, config)
+        virtualSelectModulePromise.then(() => applyVirtualSelect(this.root, config))
 
         this.listen("change", event => {
             const value = event.currentTarget// @ts-ignore !!! Resolved by html import !!!
@@ -37,32 +38,36 @@ export default class Select extends Fragment{
     }
 
     set options(options: Options){
-        this._options = options
-        if(options && options.size > 0) {
-            this.root// @ts-ignore !!! Resolved by html import !!!
-                .setOptions(mapToVirtualSelectOptions(options))
-            this.pickOptions(valueOrDefault(this.pickedKeys, this.defaultKeys))
-            this.root// @ts-ignore !!! Resolved by html import !!!
-                .enable()
-        } else {
-            this.root// @ts-ignore !!! Resolved by html import !!!
-                .disable()
-            this.root// @ts-ignore !!! Resolved by html import !!!
-                .reset()
-            this.root.blur()
-        }
+        virtualSelectModulePromise.then(() => {
+            this._options = options
+            if(options && options.size > 0) {
+                this.root// @ts-ignore !!! Resolved by html import !!!
+                    .setOptions(mapToVirtualSelectOptions(options))
+                this.pickOptions(valueOrDefault(this.pickedKeys, this.defaultKeys))
+                this.root// @ts-ignore !!! Resolved by html import !!!
+                    .enable()
+            } else {
+                this.root// @ts-ignore !!! Resolved by html import !!!
+                    .disable()
+                this.root// @ts-ignore !!! Resolved by html import !!!
+                    .reset()
+                this.root.blur()
+            }
+        })
     }
 
     pickOptions(keys: OptionKey[]){
-        // @ts-ignore !!! Resolved by html import !!!
-        this.root.setValue(keys)
+        virtualSelectModulePromise.then(() => {
+            // @ts-ignore !!! Resolved by html import !!!
+            this.root.setValue(keys)
+        })
     }
 
     findOptions=(keys: OptionKey[]): Options =>
         new Map(keys.map(key => [key, this.options.get(key)]))
 
     get pickedKeys(): OptionKey[]{
-        return Array.from(this.pickedOptions?.keys())
+        return this.pickedOptions ? Array.from(this.pickedOptions.keys()) : []
     }
 
     get defaultKeys(): OptionKey[]{

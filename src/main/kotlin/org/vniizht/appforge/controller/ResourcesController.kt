@@ -1,16 +1,22 @@
 package org.vniizht.appforge.controller
 
+import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 import org.vniizht.appforge.model.AppInfo
 import org.vniizht.prilinfo.PrilInfoRemote
 import javax.naming.InitialContext
 
-@RestController
+@Controller
 class ResourcesController {
 
+    @GetMapping("/manual")
+    fun getManual() = "manual.md"
+
     @GetMapping("/info")
+    @ResponseBody
     fun getApplicationInfo(@RequestHeader(required = true) code: String): AppInfo {
         val prilInfo = (InitialContext()
             .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote)

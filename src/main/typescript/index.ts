@@ -1,9 +1,3 @@
-import {resolveCSS} from "./util/resolver"
-import {ForgedApplication} from "./fragments/applicatons/ForgedApplication"
+import {IndexApplication} from "./fragments/applicatons/IndexApplication"
 
-
-
-document.onreadystatechange = () => {
-    if (document.readyState === "complete")
-        new ForgedApplication()
-}
+new IndexApplication()

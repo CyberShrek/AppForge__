@@ -1,6 +1,6 @@
-import {Accessor} from "./Accessor"
+import {JsonAccessor} from "./abstract/JsonAccessor";
 
-export class FormStatementAccessor extends Accessor<FormStatement> {
+export class FormStatementAccessor extends JsonAccessor<FormStatement> {
     constructor(override path: string) {
         super()
         this.method = "POST"

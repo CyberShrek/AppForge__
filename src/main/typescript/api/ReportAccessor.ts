@@ -1,6 +1,6 @@
-import {Accessor} from "./Accessor"
+import {JsonAccessor} from "./abstract/JsonAccessor"
 
-export class ReportAccessor extends Accessor<ReportModel>{
+export class ReportAccessor extends JsonAccessor<ReportModel>{
 
     constructor(override path: string) {
         super()

@@ -10,7 +10,7 @@ import {FormStatementAccessor} from "../../api/FormStatementAccessor"
 
 resolveCSS("main-form")
 
-export default class Form extends Fragment<HTMLFormElement>{
+export default class Form extends Fragment<HTMLFormElement> {
 
     readonly sections = new Map<string, Section>
 

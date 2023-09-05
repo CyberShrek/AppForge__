@@ -4,14 +4,12 @@ import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
 import commonjs from '@rollup/plugin-commonjs'
 
-let crap
-
 export default  {
 
-    input: `./src/main/typescript/index.ts`,
+    input: [`./src/main/typescript/index.ts`, `./src/main/typescript/forge.ts`, `./src/main/typescript/debug.ts`],
     output: [
         {
-            dir: "./src/main/resources/static/js/build",
+            dir: "./src/main/resources/static/js/built",
             format: "es",
             sourcemap: true,
             manualChunks:{

@@ -1,7 +1,8 @@
 import wretch from "wretch"
-import {jsonify, mapToJson} from "../util/data"
-import {removeCursorLoader, addCursorLoader} from "../util/domWizard"
-import {popupHttpDataError} from "../util/modal";
+import {jsonify, mapToJson} from "../../util/data"
+import {removeCursorLoader, addCursorLoader} from "../../util/domWizard"
+import {popupHttpDataError} from "../../util/modal";
+import {blob, text} from "stream/consumers";
 
 
 export abstract class Accessor<RESOURCE> {
@@ -12,12 +13,16 @@ export abstract class Accessor<RESOURCE> {
     body: any
     errorMessage: string = "Ошибка получения ресурса"
 
-    fetch(body?: any): Promise<RESOURCE | void> {
+
+    fetch(body?: any): Promise<RESOURCE> {
         addCursorLoader()
         if(body) this.body = body
         return this.request
             .catch(error => popupHttpDataError(error, this.errorMessage))
             .finally(() => removeCursorLoader())
+            .then(entity => {
+                if (entity) return entity as RESOURCE
+            })
     }
 
     protected get requestInit(){
@@ -28,8 +33,5 @@ export abstract class Accessor<RESOURCE> {
         return (this.method === "GET" ? requestInit.get() : requestInit.post())
     }
 
-    protected get request(){
-        return this.requestInit
-            .json((resource: RESOURCE) => resource)
-    }
+    protected abstract get request(): Promise<RESOURCE>
 }

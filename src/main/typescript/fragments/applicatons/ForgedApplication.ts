@@ -1,7 +1,7 @@
 import Header from "../main/Header"
 import {resolveCSS} from "../../util/resolver"
 import {Fragment} from "../Fragment"
-import {appInfoPromise} from "../../store/appInfo";
+import {appInfoPromise} from "../../store/appInfo"
 import Form from "../form/Form";
 import {appConfig} from "../../store/appConfig";
 import {NavigationContainer} from "../navigation/NavigationContainer";
@@ -12,13 +12,13 @@ resolveCSS("states")
 resolveCSS("third-party/animate")
 resolveCSS("misc")
 
-export class ForgedApplication extends Fragment<HTMLBodyElement>{
+export class ForgedApplication extends Fragment{
 
     readonly header = new Header()
     // readonly reportSlots: Map<string, ReportSlot> = new Map()
 
-    constructor() {
-        super(document.body as HTMLBodyElement)
+    constructor(root = document.body) {
+        super(root)
 
         this.append(this.header, this.createMainForm())
 
