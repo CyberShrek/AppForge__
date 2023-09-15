@@ -11,9 +11,11 @@ export default class Header extends Fragment<HTMLHeadingElement>{
 
     groupLink = create<HTMLLinkElement>(`<a></a>`)
     appName = create<HTMLParagraphElement>(`<p></p>`)
-    resetButton = new Button({className: "frameless reset", image: "reset.svg", hint: "Сброс"}, location.reload)
-    infoButton  = new Button({className: "frameless info",  image: "info.svg",  hint: "Информация о приложении"})
-    helpButton  = new Button({className: "frameless help",  image: "help.svg",  hint: "Руководство пользователя"})
+    resetButton = new Button({className: "frameless reset", image: "reset.svg", hint: "Сброс"}, () => location.reload())
+    infoButton  = new Button({className: "frameless info",  image: "info.svg",  hint: "Информация о приложении"}, () => this.showAppInfo())
+    helpButton  = new Button({className: "frameless help",  image: "help.svg",  hint: "Руководство пользователя"}, () => this.showHelpDownloader())
+
+    private appInfo: AppInfo
 
     constructor() {
         super(`<header id="header"></header>`)
@@ -22,31 +24,29 @@ export default class Header extends Fragment<HTMLHeadingElement>{
     }
 
     setAppInfo(appInfo: AppInfo){
+        this.appInfo = appInfo
         this.groupLink.href        = appInfo.groupPath
         this.groupLink.textContent = appInfo.groupName
         this.appName.textContent   = appInfo.name
-
-        this.infoButton.subscribe(() => this.showAppInfo(appInfo))
-        this.helpButton.subscribe(() => this.showHelpDownloader(appInfo.instructionPath))
     }
 
-    private showAppInfo(appInfo: AppInfo){
+    private showAppInfo(){
         popupList(
             "Информация",
             [
-                {icon: "🛈", text: "Версия программы: " + appInfo.version},
-                {icon: "🗓", text: "Дата обновления: "  + valueOrDefault(appConfig.info.updateDate, appInfo.updateDate)},
-                {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
+                {icon: "🛈", text: "Версия программы: " + this.appInfo.version},
+                {icon: "🗓", text: "Дата обновления: "  + valueOrDefault(appConfig.info?.updateDate, this.appInfo.updateDate)},
+                {icon: "👤", text: "Технолог: "        + this.appInfo.technologistName}
             ],
-            appConfig.info.additional
+            appConfig.info?.additional
         )
     }
 
-    private showHelpDownloader(helpPath: string){
+    private showHelpDownloader(){
         popupTimeoutAction(
             "Руководство",
             "Скачать инструкцию",
-            () => downloadUserManual(helpPath)
+            () => downloadUserManual(this.appInfo.helpPath)
         )
     }
 }

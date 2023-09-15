@@ -1,10 +1,10 @@
 import {JsonAccessor} from "./abstract/JsonAccessor"
 
-export class ReportAccessor extends JsonAccessor<ReportModel>{
+export class ReportAccessor extends JsonAccessor<ReportModels>{
 
     constructor(override path: string) {
         super()
         this.method = "POST"
-        this.errorMessage = "Не удалось загрузить отчёт"
+        this.errorFooter = "Не удалось загрузить отчёт"
     }
 }

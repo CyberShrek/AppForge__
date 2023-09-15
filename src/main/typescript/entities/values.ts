@@ -1,4 +1,4 @@
-type DateRange = [string, string]
+type DateRange = [string, string?]
 
 type OptionKey = string
 type OptionLabel = string

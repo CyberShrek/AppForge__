@@ -1,12 +1,18 @@
+const resolvedCssNames = new Set<string>()
+
 export function resolveCSS(name: string){
-    const source = `/appforge/css/${name}.css`
-    const headElement = document.querySelector("head")
-    if(headElement.querySelector(`link[href="${source}"]`) === null) {
-        const styleEl = document.createElement("link")
-        styleEl.setAttribute("rel", "stylesheet")
-        styleEl.setAttribute("href", source)
-        headElement.appendChild(styleEl)
-    }
+    if(resolvedCssNames.has(name))
+        return Promise.resolve()
+
+    resolvedCssNames.add(name)
+    return new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel     = 'stylesheet'
+        link.href    = `/appforge/css/${name}.css`
+        link.onload  = resolve
+        link.onerror = reject
+        document.head.appendChild(link)
+    })
 }
 
 export function resolveJS(name: string) {

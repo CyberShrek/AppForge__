@@ -1,67 +1,130 @@
+import {setAppConfig} from "./store/appConfig"
 import {ForgedApplication} from "./fragments/applicatons/ForgedApplication"
-import {create} from "./util/domWizard"
 
-new ForgedApplication()
+setAppConfig({
+    code: "SUBURB",
+    salesForm: {
+        title: "Отчёт по итогам продаж по пригороду",
+        periodSection: {
+            dateField: {
+                type: "datepicker",
+                range: true,
+                label: "Период продаж"
+            }
+        },
+        salesSection: {
+            carriersField: {
+                label: "Перевозчик",
+                type: "select",
+                search: true
+            },
+            roadsField: {
+                label: "Дорога продажи",
+                type: "select",
+                search: true
+            },
+            regionsField: {
+                label: "Субъект продажи",
+                type: "select",
+                search: true
+            }
+        },
+        toggleSection: {
+            switchField: {
+                type: "switch",
+                label: "Дополнительные параметры"
+            },
+        },
+        additionalSection: {
+            calculationTypeField: {
+                type: "select",
+                label: "Вид расчёта"
+            },
+            travelTypesField: {
+                type: "select",
+                multiple: true,
+                label: "Виды проездных документов"
+            },
+            shippingTypesField: {
+                type: "select",
+                multiple: true,
+                label: "Виды перевозочных документов"
+            },
+            operationTypeField: {
+                type: "select",
+                label: "Вид операции"
+            }
+        },
+        submitText: "🔍︎ Поиск"
+    },
+    departuresForm: {
+        title: "Отчёт по итогам отправления по пригороду",
+        periodSection: {
+            dateField: {
+                type: "datepicker",
+                range: true,
+                label: "Период отправления"
+            }
+        },
+        departuresSection: {
+            carriersField: {
+                label: "Перевозчик",
+                type: "select",
+                search: true
+            },
+            roadsField: {
+                label: "Дорога отправления",
+                type: "select",
+                search: true
+            }
+        },
+        toggleSection: {
+            switchField: {
+                type: "switch",
+                label: "Дополнительные параметры"
+            },
+        },
+        additionalSection: {
+            trainCategoryField: {
+                type: "select",
+                label: "Категория поезда"
+            }
+        },
+        submitText: "🔍︎ Поиск"
+    },
+    reportSlot: {
+        title: "Результат поиска"
+    }
+})
 
+const app = new ForgedApplication()
 
-
-// reportSlot.applyNewReport({
-//     charts: [
-//     //     {
-//     //     data: {a: 123, b: 444, c: 3334},
-//     //     config: {
-//     //         title: "Debug",
-//     //         graphs: [
-//     //             {
-//     //                 type: "bar",
-//     //                 color: "red",
-//     //                 name: "debug"
-//     //             }
-//     //         ]
-//     //     }
-//     // },{
-//     //     data: {a: 344, b: 4244, c: 23, d: 4, e: 1233},
-//     //     config: {
-//     //         title: "Debug",
-//     //         graphs: [
-//     //             {
-//     //                 type: "bar",
-//     //                 color: "blue",
-//     //                 name: "debug"
-//     //             }
-//     //         ]
-//     //     }
-//     // },
-//         {
-//         title: "Debug",
-//         diagram: [
-//             {
-//                 type: "line",
-//                 name: "debug"
-//             },
-//             {
-//                 type: "pie",
-//                 name: "debug2"
-//             }
-//         ],
-//         data: {a: [344, 44], b: [244, 51], c: [23, 134], d: [4, 100], e: [233, 10]}
-//     }],
+// app.reportSlots.get("reportSlot").applyReport({
+//     title: "Debug",
 //     table: {
 //         data: createTableData(2, 5, 100),
-//         total: [],
 //         head: [
 //             [{text: "Primary", colspan: 2}, {text: "Values", colspan: 5}],
 //             [{text: "1", addFilter: true},{text: "2", addFilter: true},
 //                 {text: "1"}, {text: "2"}, {text: "3"}, {text: "4"}, {text: "5"}]
 //         ],
 //         primaryColumnsNumber: 2,
-//         groupedColumnsNumber: 1,
-//         xlsxExport: null
+//         groupedColumnsNumber: 1
+//     },
+//     context: {
+//         fields: {
+//             "Поле контекста 1": "none",
+//             "Поле контекста 2": "none",
+//             "Поле контекста 3": "none"
+//         }
 //     }
-// })
+// }, {
+//
+// }
+// )
 
-function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): TableData {
-    const tableData: TableData = []
+function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): TableArrayData {
+    const tableData: TableArrayData = []
     for(let i : number = 0; i < tableHeight; i++){
         const primaryCells: string[] = [];
         for(let j : number = 0; j < primaryCellsSize; j++) {

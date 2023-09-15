@@ -1,40 +1,28 @@
-import {ExistedFragment} from "../abstract/ExistedFragment"
-import {emptyElement} from "../../util/domWizard";
-import {Button} from "../inputs/Button";
-import {getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../util/domWizard";
+import {Button} from "../inputs/Button"
+import {getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../util/domWizard"
 import ReportSlot from "./ReportSlot"
 import {Loader} from "../misc/Loader"
+import {InlineFragment} from "../InlineFragment"
+import {popupTimeoutAction} from "../../util/modal";
 
-export class Head extends ExistedFragment{
+export class Head extends InlineFragment<ReportSlot>{
 
-    readonly loading: Loader
-
+    private readonly titleElement = this.select("p")
     private readonly originTitleText: string
-    private readonly titleElement: HTMLParagraphElement
-    private readonly buttonsElement: HTMLDivElement
 
+    toTopButton: Button = this.createToTopButton()
     private chartsButton: Button
-    private exportButton: Button
-    private collapseButton: Button
-    private fullscreenButton: Button
-    private toTopButton: Button
+    private exportButton: Button = this.createXlsxExportButton()
+    private collapseButton: Button = this.createCollapseButton()
+    private fullscreenButton: Button = this.createFullscreenButton()
 
-    constructor(core: HTMLDivElement, private readonly parentReportSlot: ReportSlot) {
-        super(core)
-        this.titleElement = core.querySelector("p")
-        this.originTitleText = this.titleElement.textContent
-        this.buttonsElement = core.querySelector("div.buttons")
-
-        this.loading = new Loader({target: this.titleElement, position: "afterend"})
-        this.loading.hide()
-
-        // Change fullscreenButton on fullscreenchange
-        addEventListener("fullscreenchange", event => {
-            if (!!this.fullscreenButton) {
-                this.fullscreenButton.remove()
-                this.addFullscreenButton()
-            }
-        })
+    constructor(reportSlot: ReportSlot, title: string) {
+        super(reportSlot, `
+            <div class="head"><p>${title}</p></div>
+        `)
+        this.originTitleText = title
+        this.append(this.toTopButton, this.exportButton, this.collapseButton, this.fullscreenButton)
+        this.hideButtons()
     }
 
     set title(text: string){
@@ -44,69 +32,89 @@ export class Head extends ExistedFragment{
         return this.titleElement.textContent
     }
 
-    addChartsButton() {
-        this.chartsButton = this.createButton(() => this.parentReportSlot.body.toggleCharts(),
-            "img/graph.svg", "Графическое представление")
+    showButtons(){
+        this.toTopButton.show()
+        this.exportButton.show()
+        this.collapseButton.show()
+        this.fullscreenButton.show()
     }
 
-    addCollapseButton() {
-        this.collapseButton = this.createToggleableButton(
+    hideButtons(){
+        this.toTopButton.hide()
+        this.exportButton.hide()
+        this.collapseButton.hide()
+        this.fullscreenButton.hide()
+    }
+
+    // addChartsButton(){
+    //     this.chartsButton = this.createButton(
+    //         {text: "Графическое представление", image: "img/graph.svg"},
+    //         () => this.reportSlot.body.toggleCharts())
+    // }
+
+    private createToTopButton(): Button{
+        return new Button(
+            {hint:  "Наверх", image: "to_top_blue.svg"},
+            () => scrollIntoElement(document.body)
+        )
+    }
+
+    private createXlsxExportButton(): Button {
+        return new Button({hint: "Экспортировать", image: "download.svg"},
+            () => popupTimeoutAction("Экспортировать таблицу в .xlsx?", "Подтвердить",
+                () => this.parent.body.table.xlsxAccessor.fetch()))
+    }
+
+    private createCollapseButton(): Button{
+        return createToggleableButton(
+            {hint: "Свернуть", image: "collapse.svg"},
+            {hint: "Развернуть", image: "collapse.svg"},
             () => {
-                this.parentReportSlot.body.collapse()
+                this.parent.body.collapse()
                 this.chartsButton?.disable()
                 this.fullscreenButton?.disable()
             },
             () => {
-                this.parentReportSlot.body.expand()
+                this.parent.body.expand()
                 this.chartsButton?.enable()
                 this.fullscreenButton?.enable()
-            },
-            "img/collapse.svg", "Свернуть",
-            "img/collapse.svg", "Развернуть")
+            })
     }
 
-    addFullscreenButton() {
-        const fullscreenMode = !!getFullscreenElement()
-        this.fullscreenButton = this.createButton(() => toggleFullscreen(this.parentReportSlot.core),
-            fullscreenMode ? "img/exit.svg" : "img/expand.svg",
-            fullscreenMode ? "Выйти из полноэкранного режима" : "Развернуть на весь экран"
-        )
-    }
-
-    addToTopButton() {
-        this.toTopButton = this.createButton(() => scrollIntoElement(document.body), "img/to_top_blue.svg", "Наверх")
-    }
-
-    private createToggleableButton(actionA: () => void,
-                                   actionB: () => void,
-                                   imageA: string, hintA: string,
-                                   imageB: string, hintB: string): Button{
-        let toggled = false
-        const button = this.createButton(() => {
-            if(toggled === false){
-                if(imageA !== imageB) button.image = imageB
-                button.hint = hintB
-                actionA()
-            }else {
-                if(imageA !== imageB) button.image = imageA
-                button.hint = hintA
-                actionB()
-            }
-            toggled = !toggled
-        }, imageA, hintA)
+    private createFullscreenButton(): Button {
+        const defaultConfig = {hint: "Развернуть на весь экран", image: "expand.svg"}
+        const button = new Button(defaultConfig, () => toggleFullscreen(this.parent.root))
+        // Change fullscreenButton on fullscreenchange
+        addEventListener("fullscreenchange", () => {
+            const fullscreenMode = !!getFullscreenElement()
+            button.hint = fullscreenMode ? "Выйти из полноэкранного режима" : defaultConfig.hint
+            button.image = fullscreenMode ? "exit.svg" : defaultConfig.image
+        })
         return button
     }
 
-    private createButton(action: () => void, image: string, hint: string): Button {
-        const button = new Button({target: this.buttonsElement, position: "beforeend"})
-        button.onValueChange(() => action())
-        button.image = image
-        button.hint = hint
-        return button
+    setTitleOrDefault(title: string) {
+        this.title = title ? title : this.originTitleText
     }
+}
 
-    reset(){
-        this.title = this.originTitleText
-        emptyElement(this.buttonsElement)
-    }
+function createToggleableButton(configA: ButtonConfig,
+    configB: ButtonConfig,
+    onClickA: () => void,
+    onClickB: () => void)
+{
+    let toggled = false
+    const button = new Button(configA, () => {
+        if(toggled === false){
+            if(configA.image !== configB.image) button.image = configB.image
+            button.hint = configB.hint
+            onClickA()
+        }else {
+            if(configA.image !== configB.image) button.image = configA.image
+            button.hint = configA.hint
+            onClickB()
+        }
+        toggled = !toggled
+    })
+    return button
 }

@@ -3,41 +3,34 @@ import {Field} from "./field/Field"
 import {valueOrDefault} from "chart.js/helpers"
 import Form from "../Form"
 import {DatepickerField} from "./field/DatepickerField"
-import {CheckboxField} from "./field/CheckboxField"
+import {SwitchField} from "./field/SwitchField"
 import {SelectField} from "./field/SelectField"
+import {create} from "../../../util/domWizard";
+import {InlineFragment} from "../../InlineFragment";
 
-export class Section extends Fragment<HTMLDivElement>{
+export class Section extends InlineFragment<Form>{
 
     readonly fields = new Map<string, Field<any>>()
 
     getField = (fieldKey: string) => this.fields.get(fieldKey)
 
-    constructor(readonly form: Form, config: FormSectionConfig) {
-        super(`<div class="section"><p>${valueOrDefault(config.title, "")}</p><slot></slot></div>`)
-        
-        for (const fieldKey in config.fields) {
-            this.fields.set(fieldKey, this.createField(config.fields[fieldKey]))
+    constructor(parent: Form, config: FormSectionConfig) {
+        super(parent, `<div class="section"></div>`)
+        if (config.title)
+            this.append(create(`<p>${config.title}</p>`))
+
+        // Determining fields
+        for (const key in config) {
+            if(key.endsWith("Field"))
+                this.fields.set(key, this.createField(config[key] as FieldConfig))
         }
-
-        form.append(this)
     }
 
-    override hide() {
-        super.hide()
-        this.fields.forEach(field => field.hide())
-    }
-
-    override show() {
-        super.show()
-        this.fields.forEach(field => field.show())
-    }
-
-    private createField(config: FieldLabel): Field<any>{
+    private createField(config: FieldConfig): Field<any>{
         switch (config.type){
-            case "checkbox":   return new CheckboxField(this, config as CheckboxFieldConfig)
-            case "switch":   return new CheckboxField(this, config as SwitchFieldConfig)
-            case "datepicker": return new DatepickerField(this, config as DatepickerFieldConfig)
-            case "select":     return new SelectField(this, config as SelectFieldConfig)
+            case "switch":     return new SwitchField(this, config)
+            case "datepicker": return new DatepickerField(this, config)
+            case "select":     return new SelectField(this, config)
         }
     }
 }

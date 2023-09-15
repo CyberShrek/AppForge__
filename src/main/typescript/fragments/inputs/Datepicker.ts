@@ -1,61 +1,70 @@
 import {resolveCSS} from "../../util/resolver"
-import {stringifyDate} from "../../util/data"
+import {stringifyDate, valueOrDefault} from "../../util/data"
 import {easepick} from "@easepick/core"
 import {AmpPlugin} from "@easepick/amp-plugin"
 import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {DateTime} from "@easepick/datetime"
 import {Fragment} from "../Fragment"
-
-resolveCSS("third-party/easepick")
+import {Button} from "./Button";
 
 export default class Datepicker extends Fragment{
 
-    pickedDateRange: DateRange = this.config.defaultRange
+    pickedDateRange: DateRange
+
+    pickDateRange(range: DateRange){
+        if(this.config.range && this.easepick){
+            this.easepick.setStartDate(range[0])
+            this.easepick.setEndDate(range[1])
+        }else
+            this.easepick.setDate(range[0])
+    }
+
+    private easepick: easepick.Core
 
     constructor(private config: DatepickerConfig, onPick: (range: DateRange) => void) {
-        super(`
-            <div class="datepicker"></div>
+        super(`    
+            <div class="datepicker"><input></div>
         `)
 
-        if(!config.defaultRange)
-            config.defaultRange = [stringifyDate(new Date()), stringifyDate(new Date())]
+        const inputElement = this.root.querySelector("input")
 
-        applyPicker(this.root, config, dateRange => {
-            this.pickedDateRange = dateRange
-            onPick(dateRange)
-        })
+        this.append(new Button({text: "📅"}, () => inputElement.click()))
+
+        this.onMount( () =>
+            this.easepick = createPicker(inputElement, config, dateRange => {
+                this.pickedDateRange = dateRange
+                onPick(dateRange)
+            })
+        )
     }
 }
 
-function applyPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (dateRange: DateRange) => void){
-    new easepick.create({
+function createPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (dateRange: DateRange) => void) {
+    return new easepick.create({
         element: core,
-        format: "DD.MM.YYYY",
-        calendars: 2,
+        calendars: config.range ? 2 : 1,
         grid: 2,
         zIndex: 100,
-        plugins: [AmpPlugin, RangePlugin, LockPlugin],
+        plugins: [config.range ? RangePlugin : null, AmpPlugin, LockPlugin],
         lang: 'ru',
-        AmpPlugin: {
-            darkMode: false,
-            resetButton: true,
-            dropdown: {
-                minYear: 2010, maxYear: null, months: true, years: true
-            }
-        },
-        RangePlugin: {
-            startDate: new DateTime(config.defaultRange[0]),
-            endDate: new DateTime(config.defaultRange[1]),
+        RangePlugin: config.range ? {
             locale: {
                 one: 'день',
                 few: 'дня',
                 many: 'дней'
             },
             delimiter: " - "
+        } : null,
+        AmpPlugin: {
+            darkMode: false,
+            resetButton: true,
+            dropdown: {
+                minYear: valueOrDefault(config.minYear, 2010), maxYear: config.maxYear, months: true, years: true
+            }
         },
         LockPlugin: {
-            minDays: 1,
+            minDays: config.minDays,
             maxDays: config.maxDays
         },
         css: [
@@ -63,7 +72,11 @@ function applyPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (dat
         ],
         setup(picker) {
             picker.on("select", (e) => {
-                onSelect([stringifyDate(e.detail.start), stringifyDate(e.detail.end)])
+                onSelect(
+                    config.range
+                        ? [stringifyDate(e.detail.start), stringifyDate(e.detail.end)]
+                        : [stringifyDate(e.detail.date)]
+                )
                 setTimeout(() => picker.hide(), 10)
             })
         }

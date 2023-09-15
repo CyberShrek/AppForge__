@@ -13,7 +13,10 @@ export class Button extends Fragment<HTMLButtonElement>{
         this.image = config.image
         this.hint = config.hint
 
-        this.listen("click", onClick)
+        this.listen("click", event => {
+            event.preventDefault()
+            onClick()
+        })
     }
 
     set isAvailable(available: boolean){
@@ -32,7 +35,8 @@ export class Button extends Fragment<HTMLButtonElement>{
     }
 
     set hint(hint: string){
-        this.root.setAttribute("title", hint)
+        if(!!hint)
+            this.root.setAttribute("title", hint)
     }
 
     set text(text: string){

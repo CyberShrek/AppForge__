@@ -3,12 +3,16 @@
 	--secondary-color: #d2e0fa;
 	--solid-color: whitesmoke;
 	--negative-color: DarkRed;
-	--border: thin solid var(--primary-color);
+	--border: thin solid steelblue;
 	--light-border: thin solid lightsteelblue;
 	--indent: 10px;
 	--light-indent: 5px;
+	--strong-indent: 15px;
 	--border-radius: calc(var(--indent)/2);
+	--outer-border-radius: var(--indent);
 	--shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.3);
+	--light-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.3);
+	--inner-shadow: inset var(--shadow);
 	
 	accent-color: var(--primary-color);
 }
@@ -25,14 +29,11 @@
 
 body {
 	display: grid;
-	row-gap: calc(var(--indent) * 2);
 	align-content: start;
-	justify-items: center;
-	padding: var(--indent);
+  row-gap: calc(var(--indent) * 3);
 	margin: var(--indent);
 	margin-bottom: 50vh;
 	min-height: 100vh;
-	overflow-y: scroll;
 	background-color: #E9F3FF;
 }
 

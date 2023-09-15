@@ -16,7 +16,7 @@ export default  {
                 wretch: ["wretch"],
                 domtoimage: ["dom-to-image"],
                 sweetAlert2: ["sweetalert2"],
-                easePick: ["@easepick/amp-plugin", "@easepick/core", "@easepick/lock-plugin", "@easepick/range-plugin"]
+                easepick: ["@easepick/amp-plugin", "@easepick/core", "@easepick/lock-plugin", "@easepick/range-plugin"]
             }
         }
     ],

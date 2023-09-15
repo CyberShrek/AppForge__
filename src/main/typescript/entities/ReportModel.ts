@@ -1,7 +1,10 @@
+type ReportModels = {[reportKey: string]: ReportModel}
+
 interface ReportModel {
     title?: string
     charts?: ChartModel[]
     table?: TableModel
+    context?: ContextModelConfig
 }
 
 ///////////
@@ -10,11 +13,7 @@ interface ReportModel {
 interface ChartModel {
     title?: string
     diagram?: DiagramConfig|DiagramConfig[],
-    data: ChartDatasets,
-    jpegExport?: {
-        name: string
-        context: {[fieldName: string]: FieldKey}
-    }
+    data: ChartDatasets
 }
 type ChartDatasets = {[label: string]: ChartData }
 type ChartData = number|number[]
@@ -32,12 +31,7 @@ interface TableModel {
     head: TableHead
     primaryColumnsNumber: number
     groupedColumnsNumber?: number
-    data: TableData
-    total?: RowData,
-    xlsxExport: {
-        name: string
-        context: {[fieldName: string]: FieldKey}
-    }
+    data: TableArrayData
 }
 type HeadCell = CompleteCell & {
     addFilter?: boolean
@@ -48,12 +42,12 @@ type CompleteCell = {
     colspan?: number
 }
 type CompleteRow = CompleteCell[]
-type TableData = RowData[]
+type TableArrayData = RowData[]
+type TableMapData = Map<PrimaryCellData[], CellData[]>
 type RowData = CellData[]
 type CellData = number|string
 type PrimaryCellData = string
 type TableHead = HeadCell[][]
-type TableMap = Map<PrimaryCellData[], CellData[]>
 
 //////////
 // XLSX //
@@ -65,4 +59,12 @@ interface XlsxTableModel {
     header: CompleteRow[]
     body: CompleteRow[]
     total: CompleteRow
+}
+
+/////////////
+// CONTEXT //
+/////////////
+
+interface ContextModelConfig {
+    fields?: {[label: string]: string } // Value is field key
 }

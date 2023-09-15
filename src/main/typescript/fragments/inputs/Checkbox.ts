@@ -1,17 +1,16 @@
-import {generateUniqueId} from "../../util/domWizard"
 import {Fragment} from "../Fragment"
+import {valueOrDefault} from "../../util/data";
 
-export default class Checkbox extends Fragment<HTMLDivElement>{
+export default class Checkbox extends Fragment<HTMLLabelElement>{
 
     private checkboxElement: HTMLInputElement
 
     constructor(config: CheckboxConfig, onToggle: (checked: boolean) => void) {
-        const id = generateUniqueId("checkbox")
         super(`
-            <div class="checkbox">
-                <input type="checkbox" id="${id}">
-                <label for="${id}">${config.label}</label>
-            </div>`
+            <label class="checkbox">
+                <input type="checkbox">
+                ${valueOrDefault(config.label, "")}
+            </label>`
         )
         this.checkboxElement = this.select("input")
         this.listen("change", () => onToggle(this.checked))
@@ -20,4 +19,5 @@ export default class Checkbox extends Fragment<HTMLDivElement>{
     get checked(): boolean{
         return this.checkboxElement.checked
     }
+
 }

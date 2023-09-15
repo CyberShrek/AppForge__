@@ -18,13 +18,15 @@ export class NavigationContainer extends Fragment{
     createTab(tabName: string, ...content: (Fragment | Element | string)[]){
         const naviBody = new NavigationBody(...content)
         this.naviBodies.push(naviBody)
-        this.naviBar.add(tabName, () => {
-            this.naviBodies.forEach(body => body.hide())
-            naviBody.show()
-        })
+        this.append(naviBody)
+        this.naviBar.add(tabName,
+            () => {
+                this.naviBodies.forEach(body => body.hide())
+                naviBody.show()
+            })
     }
 
-    pickTab(tabName){
+    pickTab(tabName: string){
         this.naviBar.pick(tabName)
     }
 }

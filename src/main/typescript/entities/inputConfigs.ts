@@ -27,6 +27,9 @@ interface TextInputConfig {
 }
 
 interface DatepickerConfig {
+    minYear?: number
+    maxYear?: number
+    minDays?: number
     maxDays?: number
-    defaultRange?: DateRange
+    range?:  boolean
 }

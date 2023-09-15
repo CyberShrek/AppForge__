@@ -41,5 +41,5 @@ class IndexController {
     }
 
     @GetMapping("/debug")
-    fun debug() = ModelAndView("debug")
+    fun debug() = "debug.html"
 }

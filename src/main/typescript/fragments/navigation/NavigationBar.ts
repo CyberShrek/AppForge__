@@ -15,18 +15,23 @@ export class NavigationBar extends Fragment{
     }
 
     add(tabName: string, tabAction: () => void){
+        const action = () => {
+            tabAction()
+            this.pick(tabName)
+        }
         const tabButton = new Button({
             className: "tab",
             text: tabName
-        }, () => {
-            tabAction()
-            this.pick(tabName)
-        })
+        }, () => action())
         this.tabButtons.set(tabName, tabButton)
         this.append(tabButton)
+
+        // Pick the first tab
+        if(this.tabButtons.size === 1)
+            action()
     }
 
-    pick(tabName){
+    pick(tabName: string){
         this.tabButtons.forEach((button, name) => {
             button.removeClass("active")
             if(name === tabName)

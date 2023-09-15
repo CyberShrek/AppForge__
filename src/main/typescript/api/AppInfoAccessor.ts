@@ -1,8 +1,13 @@
 import {appConfig} from "../store/appConfig"
-import {JsonAccessor} from "./abstract/JsonAccessor";
+import {JsonAccessor} from "./abstract/JsonAccessor"
+import {valueOrDefault} from "../util/data"
 
 export class AppInfoAccessor extends JsonAccessor<AppInfo>{
-    override path = "info"
-    override headers = { Code: appConfig.code }
-    override errorMessage = "Не удалось загрузить информацию о приложении"
+    override path = "/appforge/info"
+    override errorFooter = "Не удалось загрузить информацию о приложении"
+
+    override fetch(): Promise<AppInfo> {
+        this.headers = {Code: valueOrDefault(appConfig.code, "")}
+        return super.fetch()
+    }
 }

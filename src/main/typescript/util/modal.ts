@@ -34,15 +34,13 @@ export function popupTimeoutAction(text?: string, confirmButtonText?: string, on
     })
 }
 
-export function popupError(title?: string, text?: string){
-    popupSweetModal({title, text, icon: "error"})
+export function popupError(title?: string, error?: Error, footer?: string){
+    popupSweetModal({title, text: error.message, icon: "error", footer})
+    throw error
 }
 
-export function popupHttpDataError(html?: string, footer?: string){
-    popupSweetModal({
-        title: "Ошибка получения данных",
-        icon: "error", html, footer
-    })
+export function popupHttpDataError(error?: Error, footer?: string){
+    popupError("Ошибка получения данных", error, footer)
 }
 
 function popupSweetModal(options: SweetAlertOptions): Promise<SweetAlertResult>{

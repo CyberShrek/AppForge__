@@ -1,9 +1,18 @@
 import {JsonAccessor} from "./abstract/JsonAccessor";
 
 export class FormStatementAccessor extends JsonAccessor<FormStatement> {
-    constructor(override path: string) {
+
+    override path: string
+    constructor() {
         super()
         this.method = "POST"
-        this.errorMessage = "Ошибка получения состояния формы"
+        this.errorFooter = "Ошибка получения состояния формы"
+    }
+
+    override fetch(body?: any, triggerFieldKey?: string): Promise<FormStatement> {
+        if(triggerFieldKey)
+            this.headers = {"TriggerField": triggerFieldKey}
+
+        return super.fetch(body)
     }
 }

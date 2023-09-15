@@ -1,81 +1,37 @@
-import {Fragment} from "../Fragment"
-import {fetchReport} from "../../api/reportsAPI"
 import {Head} from "./Head"
 import {Body} from "./Body"
 import {resolveCSS} from "../../util/resolver"
 import {popupMessage} from "../../util/modal"
 import {scrollIntoElement} from "../../util/domWizard"
+import {InlineFragment} from "../InlineFragment"
+import {ForgedApplication} from "../applicatons/ForgedApplication";
 
 resolveCSS("report")
 
-export default class ReportSlot extends Fragment{
+export default class ReportSlot extends InlineFragment<ForgedApplication>{
 
-    readonly isModal: boolean
-    readonly head: Head
-    readonly body: Body
-    protected readonly path: string
+    readonly head = new Head(this, this.config.title)
+    readonly body = new Body(this)
 
     jsonFieldValues: JsonProperties
-    reportModel: ReportModel
+    reportModelCache: ReportModel
 
-    constructor(public location: FragmentLocation) {
-        super(location)
-        this.core = location.target
-        this.path = this.core.getAttribute("path")
-        this.head = new Head(this.core.querySelector(".head"), this)
-        this.body = new Body(this.core.querySelector(".body"), this)
-        this.isModal = this.core.getAttribute("modal") === "true"
+    constructor(parent: ForgedApplication, private readonly config: ReportSlotConfig) {
+        super(parent, `<div class="report"></div>`)
     }
 
-    applyNewReport(model: ReportModel){
+    applyReport(model: ReportModel, jsonFieldValues: JsonProperties){
         if(model.table.data === null || model.table.data.length === 0)
             popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
 
-        if(!model.title)
-            model.title = this.head.title
+        this.jsonFieldValues = jsonFieldValues
 
-        this.report = model
-    }
+        this.reportModelCache = model
 
-    applyNewReportByFieldValues(values: JsonProperties, onLoad?: () => {}){
-        this.head.loading.show()
-        fetchReport(this.path, values).then(model => {
-            this.head.loading.hide()
-            onLoad()
-            this.reset()
-            this.jsonFieldValues = values
-            this.applyNewReport(model)
-            scrollIntoElement(this.core)
-        })
-    }
+        this.head.setTitleOrDefault(model.title)
+        this.head.showButtons()
+        this.body.setReport(model)
 
-    private set report(model: ReportModel){
-        this.reset()
-        this.reportModel = model
-        if(model.title)
-            this.head.title = model.title
-        if(model.table)
-            this.body.createTable(model.table)
-        if(model.charts) {
-            this.body.createCharts(model.charts)
-            // Hide by default
-            // this.body.toggleCharts()
-        }
-
-        this.applyButtons(!!model.charts)
-    }
-
-    private applyButtons(hasCharts: boolean){
-        if(hasCharts)
-            this.head.addChartsButton()
-        if(!this.isModal)
-            this.head.addToTopButton()
-        this.head.addCollapseButton()
-        this.head.addFullscreenButton()
-    }
-
-    private reset(){
-        this.head.reset()
-        this.body.reset()
+        scrollIntoElement(this.root)
     }
 }

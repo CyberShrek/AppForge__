@@ -1,0 +1,44 @@
+#demos{
+  width: 100%;
+}
+
+#demos > .head{
+  display: grid;
+  grid-template-columns: 1fr 1fr 3fr auto;
+  grid-template-rows: repeat(3, auto);
+  grid-gap: var(--indent);
+  max-width: 1000px;
+  margin: auto;
+}
+
+#demos > .head > p{
+  margin: auto;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#demos > .head > .select{
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+#demos > .head > .textarea{
+  grid-row-start: 1;
+  grid-row-end: 4;
+}
+
+#demos > .head > button.confirm{
+  grid-column: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+#demos > .body{
+  border-top: var(--border);
+  width: 100%;
+  margin: var(--indent) 0;
+}
+
+/* #demos > .head > .confirm{
+  align-self: end;
+} */

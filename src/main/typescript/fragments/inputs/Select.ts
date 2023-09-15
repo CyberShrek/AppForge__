@@ -9,7 +9,7 @@ export default class Select extends Fragment{
 
     static readonly defaultKeyName = "default"
 
-    pickedOptions: Options
+    pickedOptions: Options = new Map()
 
     constructor(config: SelectConfig, onPick: (pickedOptions: Options) => void) {
         super(`<div class="select"></div>`)
@@ -19,15 +19,15 @@ export default class Select extends Fragment{
             const value = event.currentTarget// @ts-ignore !!! Resolved by html import !!!
                 .value
 
-            const pickedOptions = value.length > 0 ? this.findOptions(
+            const pickedOptions: Options = value.length > 0 ? this.findOptions(
                 typeof value === "object" ? value : [value]
-            ) : null
+            ) : new Map()
 
             // Need for check real changes to prevent callback doubling after options setting
-            if(!compareMaps(this.pickedOptions, pickedOptions))
+            if(!compareMaps(this.pickedOptions, pickedOptions)) {
                 this.pickedOptions = pickedOptions
-
-            onPick(this.pickedOptions)
+                onPick(this.pickedOptions)
+            }
         })
     }
 
@@ -67,7 +67,7 @@ export default class Select extends Fragment{
         new Map(keys.map(key => [key, this.options.get(key)]))
 
     get pickedKeys(): OptionKey[]{
-        return this.pickedOptions ? Array.from(this.pickedOptions.keys()) : []
+        return Array.from(this.pickedOptions.keys())
     }
 
     get defaultKeys(): OptionKey[]{
@@ -90,6 +90,7 @@ function applyVirtualSelect(target: HTMLElement, config: SelectConfig){
         hasOptionDescription: config.showCodes,
         disableSelectAll: config.disableSelectAll,
         maxValues: config.maxValues,
+        maxWidth: "100%",
 
         placeholder: "",
         noOptionsText: "Варианты не найдены",

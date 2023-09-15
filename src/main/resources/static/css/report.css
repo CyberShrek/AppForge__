@@ -1,19 +1,15 @@
 :root{
     --report-header-button-height: 35px;
-    --report-header-height: calc(var(--report-header-button-height) + var(--indent) * 2);
 }
 
 .report {
-    display: flex;
-    flex-direction: column;
-    color: black;
+    margin: 0 var(--indent);
     min-height: var(--report-header-height);
-    width: 100%;
     background: white;
     height: min-content;
     overflow-x: hidden;
-    border-radius: calc(var(--border-radius) + 2px);
-    box-shadow: var(--shadow);
+    border-radius: var(--outer-border-radius);
+    box-shadow: var(--light-shadow);
 }
 
 .report.windowed{
@@ -22,18 +18,26 @@
 }
 .report .head {
     display:flex;
-    height: var(--report-header-height);
+    height: var(--report-header-button-height);
     align-items: center;
-    padding: var(--indent)
+    padding: var(--indent);
+    padding-left: calc(var(--report-header-button-height)/2);
 }
 .report .head p {
     font-size: larger;
-    margin: 0 var(--indent);
+    margin: auto auto auto 0;
 }
 
-.report .buttons{
-    margin-left: auto;
-    display: flex;
+.report .body{
+    display: grid;
+    grid-gap: var(--strong-indent);
+}
+
+.report .context{
+    margin: 0;
+    padding: 0 calc(var(--report-header-button-height)/2);
+    list-style-type: none;
+    line-height: var(--report-header-button-height);
 }
 
 .report button{

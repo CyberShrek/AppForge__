@@ -1,10 +1,11 @@
 import {Field} from "./Field"
 import Select from "../../../inputs/Select"
 import {Section} from "../Section"
-import {concatMaps, jsonifyFields} from "../../../../util/data"
+import {concatMaps, jsonifyFields, valueOrDefault} from "../../../../util/data"
 import {EndpointOptionsAccessor} from "../../../../api/EndpointOptionsAccessor"
 import {ServiceBankOptionsAccessor} from "../../../../api/ServiceBankOptionsAccessor"
 import Form from "../../Form"
+import {create} from "../../../../util/domWizard"
 
 export class SelectField extends Field<Options>{
 
@@ -12,53 +13,55 @@ export class SelectField extends Field<Options>{
 
     constructor(section: Section, private config: SelectFieldConfig) {
         const select = new Select(config, options => this.triggerValueChange(options))
-        super(section, `<p>${config.label}</p>`, select)
+        super(section, new Map())
+        if(config.label) this.append(create(`<p>${config.label}</p>`))
+        this.append(select)
         this.selectFragment = select
     }
 
-    startOptionsRetrieving(){
-        let endpointOptions: Options = new Map(),
-            serviceBankOptions: Options = new Map()
-        const update=() => this.selectFragment.options = concatMaps(endpointOptions, serviceBankOptions),
-            form = this.section.form,
-            endpointConfig = this.config.optionsSources?.endpoint,
-            serviceBankConfig = this.config.optionsSources?.serviceBank
-
-        if(endpointConfig)
-            setupEndpointRetrieving(form, endpointConfig, options => {endpointOptions = options; update()})
-        if(serviceBankConfig)
-            setupServiceBankRetrieving(form, serviceBankConfig, options => {serviceBankOptions = options; update()})
+    override triggerValueChange(newValue: Options | OptionKey[]) {
+        if(newValue instanceof Map)
+            super.triggerValueChange(newValue)
+        else {
+            this.selectFragment.pickOptions(newValue)
+            super.triggerValueChange()
+        }
     }
 
+    setOptions(options: Options){
+        this.selectFragment.options = options
+    }
 
-}
-function setupEndpointRetrieving(form: Form, config: EndpointOptionsConfig, onFetch: (options: Options) => void){
-    const sourceFields = form.findFields(config.propertiesSources)
-    const optionsAccessor = new EndpointOptionsAccessor(config.path)
-    subscribeToFields(sourceFields, () => optionsAccessor
-        .fetch(jsonifyFields(sourceFields))
-        .then(options => options ? onFetch(options) : options))
+    setupServiceBank(setup: ServiceBankSetup) {
+        setupServiceBankRetrieving(this.parent.parent, setup, options => this.setOptions(options))
+    }
 }
 
-function setupServiceBankRetrieving(form: Form, config: ServiceBankConfig, onFetch: (options: Options) => void){
-    const sourceFields = form.findFields(Array.from(Object.values(config.propertiesSources)))
+function setupServiceBankRetrieving(form: Form, config: ServiceBankSetup, onFetch: (options: Options) => void){
+    const sourceFields = config.propertiesSources ? form.findFields(Array.from(Object.values(config.propertiesSources))) : null
     const optionsAccessor = new ServiceBankOptionsAccessor(config.type)
     subscribeToFields(sourceFields, () => {
         const properties: typeof config.properties = {...config.properties}
         // Remapping
-        Object.entries(config.propertiesSources).forEach(entry =>
-            properties[entry[0]] = sourceFields.get(entry[1])
-        )
+        Object.entries(config.propertiesSources).forEach(entry => {
+            const sourceField = sourceFields?.get(entry[1])
+            if (sourceField) {
+                const json = sourceField.jsonValue
+                properties[entry[0]] = sourceField instanceof SelectField && json !== null ? Object.keys(json) : json
+            }
+        })
         optionsAccessor
             .fetch(properties)
             .then(options => options ? onFetch(options) : options)
     })
 }
 
-function subscribeToFields(fieldsMap: Map<string, Field<any>> | Field<any>[], onChange: () => void){
-    fieldsMap.forEach(field =>
+function subscribeToFields(fieldsMap: Map<string, Field<any>> | Field<any>[], onChange: () => void, runAfter = true){
+    fieldsMap?.forEach(field =>
         field.onValueChange(() => {
             onChange()
         })
     )
+    if(runAfter)
+        onChange()
 }

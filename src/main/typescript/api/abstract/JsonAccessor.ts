@@ -1,8 +1,8 @@
 import {Accessor} from "./Accessor"
 
-export abstract class JsonAccessor<RESOURCE> extends Accessor<RESOURCE>{
+export abstract class JsonAccessor<RESOURCE = any> extends Accessor<RESOURCE>{
 
      override get request(): Promise<RESOURCE> {
-        return this.requestInit.json()
+        return this.requestInit.text().then(text => {if(text) return JSON.parse(text)})
     }
 }

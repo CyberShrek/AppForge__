@@ -4,23 +4,23 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
 import org.vniizht.appforge.model.AppInfo
 import org.vniizht.prilinfo.PrilInfoRemote
 import javax.naming.InitialContext
 
 @Controller
-class ResourcesController {
+class InfoController {
+
+    private val prilInfoRemote = InitialContext()
+        .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote
 
     @GetMapping("/manual")
     fun getManual() = "manual.md"
 
     @GetMapping("/info")
     @ResponseBody
-    fun getApplicationInfo(@RequestHeader(required = true) code: String): AppInfo {
-        val prilInfo = (InitialContext()
-            .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote)
-            .info(code)
+    fun getApplicationInfo(@RequestHeader(required = true, name = "Code") code: String): AppInfo {
+        val prilInfo = prilInfoRemote.info(code)
 
         fun find(key: String) = (prilInfo[key] ?: "") as String
         fun findAll(key: String) = (prilInfo[key] ?: arrayOf("")) as Array<String>

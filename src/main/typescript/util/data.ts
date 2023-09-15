@@ -23,7 +23,9 @@ export function numberOf(word: string|number): number {
 // Returns a Map consisting of the vararg Maps
 export function concatMaps(...maps: Map<any, any>[]): Map<any, any>{
     const buffer = []
-    maps.forEach(map => buffer.push(...map.entries()))
+    maps.forEach(map => {
+        buffer.push(...map.entries())
+    })
     return new Map(buffer)
 }
 
@@ -104,23 +106,21 @@ export function jsonify<T>(value: T|null):  any{
 export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonProperties{
     const json: { [key: string]: object } = {}
     fields.forEach((field, key) => {
-        if(!field.hidden)
+        if(!field.hidden) {
             json[key] = field.jsonValue
+        }
     })
     return json
 }
-
 export function stringifyDate(date: Date): string {
     const year = date.getFullYear(),
         month = date.getMonth() + 1,
         day = date.getDate()
     return `${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`
 }
-
 export function javaSetToSet(javaSet: string): Set<string>{
     return setOf(...splitJavaCollection(javaSet))
 }
-
 export function javaMapToMap(javaMap: string): Map<string, string>{
     return mapOf(
         ...splitJavaCollection(javaMap)
@@ -130,7 +130,6 @@ export function javaMapToMap(javaMap: string): Map<string, string>{
         })
     )
 }
-
 export function splitJavaCollection(javaCollection: string): string[]{
     return javaCollection
         .slice(1, -1) // Removing '{' and '}' in the both sides of the string

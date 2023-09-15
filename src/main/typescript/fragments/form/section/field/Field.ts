@@ -1,14 +1,22 @@
 import {Fragment} from "../../../Fragment"
 import {jsonify} from "../../../../util/data"
 import {Section} from "../Section"
+import {InlineFragment} from "../../../InlineFragment";
 
-export abstract class Field<VALUE> extends Fragment<HTMLDivElement>{
+export abstract class Field<VALUE> extends InlineFragment<Section>{
 
     private _value: VALUE
 
     get value(){
         return this._value
     }
+
+    // Need to be called by implementations on each value change to set actual value and trigger onValueChangeCallbacks
+    triggerValueChange(newValue?: VALUE){
+        this._value = newValue
+        this.onValueChangeCallbacks.forEach(callback => callback(this._value))
+    }
+
     get jsonValue(){
         return jsonify(this._value)
     }
@@ -25,18 +33,13 @@ export abstract class Field<VALUE> extends Fragment<HTMLDivElement>{
     }
 
     protected constructor(
-        readonly section: Section,
+        readonly parent: Section,
+        initValue: VALUE,
         ...content: (string | Element | Fragment)[])
     {
-        super(`<div class="field"></div>`)
+        super(parent, `<div class="field"></div>`)
         this.append(...content)
-        section.append(this)
-    }
-
-    // Need to be called by implementations on each value change to set actual value and trigger onValueChangeCallbacks
-    protected triggerValueChange(newValue: VALUE){
-        this._value = newValue
-        this.onValueChangeCallbacks.forEach(callback => callback(newValue))
+        this._value = initValue
     }
 
     private onValueChangeCallbacks: ((value?: VALUE) => void)[] = []

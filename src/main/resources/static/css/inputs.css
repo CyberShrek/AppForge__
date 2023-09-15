@@ -1,13 +1,19 @@
+:root{
+    --input-height: 45px;
+    --switch-width: 45px;
+    --switch-height: 25px;
+}
+
 /* COMMONS */
 input, button{
-    padding: var(--light-indent);
     color: var(--primary-color);
     border-radius: var(--border-radius);
     border: var(--border);
 }
 
 button.confirm{
-    padding: var(--indent);
+    padding: 0 calc(var(--input-height)/2);
+    height: var(--input-height);
     font-size: large;
     color: white;
     background: var(--primary-color);
@@ -58,24 +64,124 @@ button.negative{
 :is(option, button):active {
     filter: contrast(60%)
 }
-
-.field.text {
+/* SWITCH */
+.switch {
+    display: flex;
+    position: relative;
+    margin-left: var(--switch-width);
+    font-weight: bold;
+    font-size: large;
+    justify-content: start;
+    align-items: center;
 }
 
-.field.text input[type=text] {
-    width: 100px;
-}
-.field.text.empty input[type=text] {
-    width: 25px;
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
-.field.text button.reset {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: auto;
-    transform: translateX(-150%);
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: var(--switch-height);
+    border-radius: var(--border-radius);
+    width: var(--switch-width);
+    height: var(--switch-height);
+    transform: translateX(-100%);
 }
-.field.text.empty button.reset {
-    display: none;
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: calc(var(--switch-height) - 6px);
+    width: calc(var(--switch-height) - 6px);
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .2s;
+    border-radius: var(--border-radius);
 }
+.switch input:hover + .slider {
+    background: var(--secondary-color);
+}
+
+.switch input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+.switch input:focus + .slider {
+    box-shadow: 0 0 1px var(--primary-color);
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(calc(var(--switch-width) - var(--switch-height)));
+}
+
+/* TEXTAREA */
+.textarea {
+    border: var(--light-border);
+    padding: var(--indent);
+    min-width: 200px;
+    white-space: pre;
+    background: white;
+    cursor: text;
+    overflow: auto;
+}
+.textarea, .textarea *{
+    font-family: Monospace;
+}
+
+/* MULTISELECT */
+.multiselect{
+    height: calc(var(--input-height) + 2px);
+    width: 100%;
+    color: var(--primary-color);
+}
+
+.multiselect, .multiselect *:not(.vscomp-option) {
+    border-radius: var(--border-radius);
+}
+.vscomp-wrapper.focused .vscomp-toggle-button, .vscomp-wrapper:focus .vscomp-toggle-button{
+    box-shadow: none;
+}
+.multiselect .vscomp-dropbox-container {
+    box-shadow: var(--shadow); 
+}
+.multiselect > .vscomp-toggle-button{
+   padding: var(--indent);
+}
+.multiselect:not(.has-no-options) > .vscomp-toggle-button{
+    border: var(--border);
+}
+
+/* DATEPICKER */
+.datepicker {
+    display: flex;
+    height: var(--input-height);
+    border: var(--border);
+    width: 100%;
+    border-radius: var(--border-radius);
+} 
+.datepicker :is(input, button){
+    border: none;
+    background: transparent;
+    font-size: medium;
+    padding: var(--indent);
+}
+.datepicker input{
+    width: 100%;
+    font-size: medium;
+    text-align: center;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.datepicker button{
+    font-size: large;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+

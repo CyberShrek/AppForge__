@@ -2,20 +2,16 @@ import {create} from "../util/domWizard"
 
 export abstract class Fragment<T extends HTMLElement = HTMLElement> {
 
-    protected root: T
+    root: T
 
     protected constructor(root: string|T) {
         this.root = root instanceof HTMLElement ? root : create(root)
     }
 
-    // Inserts elements into "slot" tag. Or into root if there are no slots
     append(...items: (Fragment | Element | string)[]){
-        let target: HTMLElement = this.root.querySelector("slot")
-        if(!target)
-            target = this.root
-
         items.forEach(item =>
-            this.root.append((item instanceof Fragment) ? item.root : item)
+            this.root.append((item instanceof Fragment) ? item.root :
+                item)
         )
     }
 
@@ -26,16 +22,17 @@ export abstract class Fragment<T extends HTMLElement = HTMLElement> {
         return this.root.querySelectorAll<T>(selectors)
     }
 
+    get hidden() {
+        return !!this.root.hidden
+    }
+
     hide(){
         this.root.style.display = "none"
+        this.root.hidden = true
     }
-
-    get hidden(): boolean{
-        return this.root.style.display === "none"
-    }
-
     show(){
         this.root.style.display = ""
+        this.root.hidden = false
     }
 
     remove(){
@@ -55,7 +52,8 @@ export abstract class Fragment<T extends HTMLElement = HTMLElement> {
         return this.root.classList.contains(token)
     }
     set className(className: string){
-        this.root.className = className
+        if(!!className)
+            this.root.className = className
     }
     get className(){
         return this.root.className
@@ -63,5 +61,18 @@ export abstract class Fragment<T extends HTMLElement = HTMLElement> {
 
     listen(event: keyof HTMLElementEventMap, onEvent: (event?: Event) => void){
         this.root.addEventListener(event, onEvent)
+    }
+
+    onMount(callback: () => void) {
+        const observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.target === this.root || mutation.target.contains(this.root)) {
+                    callback()
+                    observer.disconnect()
+                    break
+                }
+            }
+        })
+        observer.observe(document.documentElement, { childList: true, subtree: true })
     }
 }

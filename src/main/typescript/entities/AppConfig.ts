@@ -1,41 +1,37 @@
-interface AppConfig {
+type AppConfig = {
     code: string
-
-    form?: FormConfig
-    forms?: { [key: string]: FormConfig }
-
-    reportSlot?: ReportSlotConfig
-    reportSlots?: { [key: string]: ReportSlotConfig }
-
     info?: {
         updateDate?: string
         additional?: string
     }
-
-    debug?: boolean
+} | {
+    // contentName should ends with either "Form" or "Slot" word to determine what is what
+    [contentName: string]: FormConfig | ReportSlotConfig
 }
 
-interface FormConfig {
+type FormConfig = {
     title?: string
-    sections?: { [key: string]: FormSectionConfig }
+    submitText?: string
+    submitPath?: string
     statementPath?: string
-    confirmButtonText?: string
+} & {
+    // sectionName should ends with the "Section" word
+    [sectionName: string]: FormSectionConfig
 }
 
-interface FormSectionConfig {
+type FormSectionConfig = {
     title?: string
-    fields?: { [key: string]: FieldConfig }
+} & {
+    // fieldName should ends with the "Field" word
+    [fieldName: string]: FieldConfig
 }
 
-type FieldConfig = CheckboxFieldConfig | SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig
+
+type FieldConfig = SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig
 
 interface FieldLabel {
     label?: string
-    type: "checkbox" | "switch" | "datepicker" | "select"
-}
-
-interface CheckboxFieldConfig extends FieldLabel, CheckboxConfig{
-    type: "checkbox"
+    type: "switch" | "datepicker" | "select"
 }
 
 interface SwitchFieldConfig extends FieldLabel, SwitchConfig{
@@ -48,42 +44,11 @@ interface DatepickerFieldConfig extends FieldLabel, DatepickerConfig{
 
 interface SelectFieldConfig extends FieldLabel, SelectConfig{
     type: "select"
-    optionsSources?: OptionsSourcesConfig
 }
 
-interface OptionsSourcesConfig {
-    endpoint?: EndpointOptionsConfig
-    serviceBank?: ServiceBankConfig
-}
 
-interface EndpointOptionsConfig {
-    path: string
-    // Trigger field locations. Should be written as sectionName.fieldName
-    propertiesSources: string[]
-}
-
-interface ServiceBankConfig {
-    type: "carriers" | "countries" | "roads" | "stations"
-    // Works like Endpoint.propertiesSources but with field locations as values
-    propertiesSources: {
-        postSoviet: string,
-        date: string,
-        carriers: string,
-        countries: string,
-        roads: string
-    }
-    properties?: {
-        postSoviet: boolean,
-        date: string,
-        carriers: string[],
-        countries: string[],
-        roads: string[],
-        [custom: string]: any
-    }
-}
 
 interface ReportSlotConfig {
     title: string
     isModal?: boolean
-    path: string
 }

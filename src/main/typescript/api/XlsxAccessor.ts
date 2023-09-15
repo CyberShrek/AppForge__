@@ -5,10 +5,13 @@ export class XlsxAccessor extends BlobAccessor {
 
     override path = "appforge/converter/xlsx"
     override method: "POST" = "POST"
-    override errorMessage = "Ошибка экспорта таблицы"
+    override errorFooter = "Ошибка экспорта таблицы"
 
-    override fetch(tableModel: XlsxTableModel){
-        this.body = tableModel
+    constructor(override body: XlsxTableModel) {
+        super()
+    }
+
+    override fetch(){
         return super.fetch().then(blob => {
             const aElement = document.createElement('a')
             aElement.setAttribute('download', this.body.name + ".xlsx")
