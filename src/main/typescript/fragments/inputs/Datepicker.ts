@@ -8,9 +8,17 @@ import {DateTime} from "@easepick/datetime"
 import {Fragment} from "../Fragment"
 import {Button} from "./Button";
 
+const defaultDateTime = new DateTime()
+
 export default class Datepicker extends Fragment{
 
-    pickedDateRange: DateRange
+    pickedDateRange: DateRange = easepickDetailToDateRange({
+            date: defaultDateTime,
+            start: defaultDateTime,
+            end: defaultDateTime
+        },
+        this.config.range
+    )
 
     pickDateRange(range: DateRange){
         if(this.config.range && this.easepick){
@@ -31,12 +39,12 @@ export default class Datepicker extends Fragment{
 
         this.append(new Button({text: "📅"}, () => inputElement.click()))
 
-        this.onMount( () =>
+        this.onMount( () => {
             this.easepick = createPicker(inputElement, config, dateRange => {
                 this.pickedDateRange = dateRange
                 onPick(dateRange)
             })
-        )
+        })
     }
 }
 
@@ -48,7 +56,10 @@ function createPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (da
         zIndex: 100,
         plugins: [config.range ? RangePlugin : null, AmpPlugin, LockPlugin],
         lang: 'ru',
+        date: defaultDateTime,
         RangePlugin: config.range ? {
+            startDate: defaultDateTime,
+            endDate: defaultDateTime,
             locale: {
                 one: 'день',
                 few: 'дня',
@@ -72,13 +83,15 @@ function createPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (da
         ],
         setup(picker) {
             picker.on("select", (e) => {
-                onSelect(
-                    config.range
-                        ? [stringifyDate(e.detail.start), stringifyDate(e.detail.end)]
-                        : [stringifyDate(e.detail.date)]
-                )
+                onSelect(easepickDetailToDateRange(e.detail, config.range))
                 setTimeout(() => picker.hide(), 10)
             })
         }
     })
+}
+
+function easepickDetailToDateRange(detail: any, range: boolean): DateRange{
+    return range
+        ? [stringifyDate(detail.start), stringifyDate(detail.end)]
+        : [stringifyDate(detail.date)]
 }

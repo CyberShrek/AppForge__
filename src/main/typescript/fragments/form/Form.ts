@@ -22,13 +22,13 @@ export default class Form extends Fragment<HTMLFormElement> {
 
     private statementAccessor: FormStatementAccessor
 
-    constructor(protected config: FormConfig, public onSubmit?: (jsonValues: {[field: string]: any}) => void) {
-        super(`<form></form>`)
+    constructor(protected readonly config: FormConfig, public onSubmit?: (jsonFieldValues: JsonProperties) => void) {
+        super(`<form class="${config.gridLayout ? config.gridLayout : 'horizontal'}"></form>`)
 
         // Determining sections
         for (const key in config) {
             if(key.endsWith("Section")) {
-                const section = new Section(this, config[key] as FormSectionConfig)
+                const section = new Section(this, config.gridLayout, config.gridSize, config[key] as FormSectionConfig)
                 this.sections.set(key, section)
                 section.fields.forEach((field, fieldKey) =>
                     this.fields.set(`${key}.${fieldKey}`, field))
@@ -57,7 +57,7 @@ export default class Form extends Fragment<HTMLFormElement> {
         this.statementAccessor = new FormStatementAccessor()
         this.hide()
         this.onMount(() =>
-            this.manageFieldsStatement().then(
+            this.manageFieldsStatement("initial").then(
                 () => this.show())
         )
         this.fields.forEach((field, key) => {
@@ -67,19 +67,21 @@ export default class Form extends Fragment<HTMLFormElement> {
     }
 
     // TODO refactor
-    private manageFieldsStatement(triggerFieldKey?: string){
+    private manageFieldsStatement(trigger: string){
         this.submitButton.disable()
         this.statementAccessor.path = this.config.statementPath
-        return this.statementAccessor.fetch(this.jsonValues, triggerFieldKey).then(statement => {
+        return this.statementAccessor.fetch(this.jsonValues, trigger).then(statement => {
             if(!!statement){
-                if(statement.wrong) {
-                    this.fields.forEach((field, fieldKey) => {
-                        if (statement.wrong.find(wrongFieldKey => fieldKey === wrongFieldKey))
-                            field.makeInvalid()
-                        else
-                            field.makeValid()
-                    })
-                } else this.submitButton.enable()
+                if (statement.wrong)
+                    this.submitButton.disable()
+                else
+                    this.submitButton.enable()
+
+                this.fields.forEach((field, fieldKey) => {
+                    field.makeValid()
+                    if(statement.wrong?.find(wrongFieldKey => fieldKey === wrongFieldKey))
+                        field.makeInvalid()
+                })
                 if(statement.setOptions){
                     Object.entries(statement.setOptions).forEach(([fieldKey, options]) => {
                         const field = this.fields.get(fieldKey)
@@ -90,8 +92,12 @@ export default class Form extends Fragment<HTMLFormElement> {
                 if(statement.setupServiceBank){
                     Object.entries(statement.setupServiceBank).forEach(([fieldKey, setup]) => {
                         const field = this.fields.get(fieldKey)
-                        if(field && field instanceof SelectField)
-                            field.setupServiceBank(setup)
+                        if(field && field instanceof SelectField) {
+                            const initValues = statement.setValues
+                                ? Object.entries(statement.setValues).find(entry => entry[0] === fieldKey)?.[1]
+                                : undefined
+                            field.setupServiceBank(setup, initValues)
+                        }
                     })
                 }
                 if(statement.setValues){

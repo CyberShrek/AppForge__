@@ -12,8 +12,11 @@ import org.vniizht.appforge.model.AppConfig
 @Controller
 class IndexController {
 
-    @GetMapping
-    fun getIndex() = "index.html"
+//    @GetMapping
+//    fun getIndex() = "index.html"
+
+//    @GetMapping("/debug")
+//    fun debug() = "debug.html"
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody(required = true) config: AppConfig): ModelAndView {
@@ -39,7 +42,4 @@ class IndexController {
     fun deleteApp(@PathVariable appName: String){
         forgedAppsCache.remove(appName)
     }
-
-    @GetMapping("/debug")
-    fun debug() = "debug.html"
 }

@@ -1,5 +1,5 @@
 import wretch from "wretch"
-import {jsonify, mapToJson} from "../../util/data"
+import {jsonify, jsonToMap, mapToJson} from "../../util/data"
 import {removeCursorLoader, addCursorLoader} from "../../util/domWizard"
 import {popupHttpDataError} from "../../util/modal"
 
@@ -8,6 +8,7 @@ export abstract class Accessor<RESOURCE> {
 
     abstract path: string
     method: "GET" | "POST" = "GET"
+    params: Map<string, string> | {[param: string] : string}
     headers: Map<string, string> | {[header: string] : string}
     body: any
     errorFooter: string = "Ошибка получения ресурса"
@@ -25,7 +26,7 @@ export abstract class Accessor<RESOURCE> {
     }
 
     protected get requestInit(){
-        const requestInit = wretch(this.path)
+        const requestInit = wretch(this.path + (this.params ? "?" + Object.entries(jsonify(this.params)).map(entry => entry[0]+"="+entry[1]).join("&") : ""))
             .headers({
                 "Content-Type": "application/json;charset=UTF-8",
                 ...jsonify(this.headers)

@@ -9,7 +9,7 @@
     height: min-content;
     overflow-x: hidden;
     border-radius: var(--outer-border-radius);
-    box-shadow: var(--light-shadow);
+/*     box-shadow: var(--light-shadow); */
 }
 
 .report.windowed{

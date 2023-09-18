@@ -21,7 +21,7 @@ export class Table extends InlineFragment<Body>{
 
     readonly xlsxAccessor: XlsxAccessor
 
-    constructor(body: Body, private model: TableModel) {
+    constructor(body: Body, data: MatrixData, private model: TableModel) {
         super(body, `
             <div class="table">
                 <table>
@@ -34,12 +34,15 @@ export class Table extends InlineFragment<Body>{
         this.thead = this.select("thead")
         this.tbody = this.select("tbody")
         this.tfoot = this.select("tfoot")
-        this.tableMapData = new Map(model.data.map(rowData => [
-            rowData.slice(0, model.primaryColumnsNumber).map(cellData => stringify(cellData)),
-            rowData.slice(model.primaryColumnsNumber)
-        ]))
-        this.head = model.head
-        this.total = this.calculateTotal()
+        if(model.head) this.head = model.head
+        if(data) {
+            this.tableMapData = new Map(data.map(rowData => [
+                rowData.slice(0, model.primaryColumnsNumber).map(cellData => stringify(cellData)),
+                rowData.slice(model.primaryColumnsNumber)
+            ]))
+            if(data.length > 1)
+                this.total = this.calculateTotal()
+        }
         this.xlsxAccessor = new XlsxAccessor({
             name:    this.parent.parent.head.title,
             context: this.parent.context?.visibleValues,
@@ -52,16 +55,17 @@ export class Table extends InlineFragment<Body>{
 
     private set head(head: TableHead){
         emptyElement(this.thead)
-        head.forEach(headRow =>
-            this.thead.innerHTML += `
-                <tr>${headRow.map(headCell => `
-                    <th rowspan="${headCell.rowspan}"
-                        colspan="${headCell.colspan}"
-                        ${headCell.addFilter ? 'class="filter"' : ''}>
-                        ${headCell.text}
-                    </th>`).join("")}
-                </tr>`
-            )
+        this.thead.innerHTML += `<tr>${head.map(cellText => `<th>${cellText}</th>`).join('')}</tr>`
+        // head.forEach(headRow =>
+        //     this.thead.innerHTML +=
+        //         `<tr>${headRow.map(headCell => `
+        //             <th rowspan="${headCell.rowspan}"
+        //                 colspan="${headCell.colspan}"
+        //                 ${headCell.addFilter ? 'class="filter"' : ''}>
+        //                 ${headCell.text}
+        //             </th>`).join("")}
+        //         </tr>`
+        //     )
     }
 
     private set tableMapData(tableData: TableMapData){

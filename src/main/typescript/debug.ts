@@ -34,16 +34,22 @@ setAppConfig({
                 type: "switch",
                 label: "Дополнительные параметры"
             },
+            textField: {
+                type: "text",
+                label: "Ввод текста"
+            }
         },
         additionalSection: {
             calculationTypeField: {
                 type: "select",
-                label: "Вид расчёта"
+                label: "Вид расчёта",
+                size: 3
             },
             travelTypesField: {
                 type: "select",
                 multiple: true,
-                label: "Виды проездных документов"
+                label: "Виды проездных документов",
+                size: 2
             },
             shippingTypesField: {
                 type: "select",
@@ -55,7 +61,9 @@ setAppConfig({
                 label: "Вид операции"
             }
         },
-        submitText: "🔍︎ Поиск"
+        // gridLayout: "vertical",
+        submitText: "🔍︎ Поиск",
+        submitPath: "sales/report"
     },
     departuresForm: {
         title: "Отчёт по итогам отправления по пригороду",
@@ -82,7 +90,7 @@ setAppConfig({
             switchField: {
                 type: "switch",
                 label: "Дополнительные параметры"
-            },
+            }
         },
         additionalSection: {
             trainCategoryField: {
@@ -90,7 +98,9 @@ setAppConfig({
                 label: "Категория поезда"
             }
         },
-        submitText: "🔍︎ Поиск"
+        gridLayout: "horizontal",
+        submitText: "🔍︎ Поиск",
+        submitPath: "departures/report",
     },
     reportSlot: {
         title: "Результат поиска"
@@ -123,8 +133,8 @@ const app = new ForgedApplication()
 // }
 // )
 
-function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): TableArrayData {
-    const tableData: TableArrayData = []
+function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): MatrixData {
+    const tableData: MatrixData = []
     for(let i : number = 0; i < tableHeight; i++){
         const primaryCells: string[] = [];
         for(let j : number = 0; j < primaryCellsSize; j++) {

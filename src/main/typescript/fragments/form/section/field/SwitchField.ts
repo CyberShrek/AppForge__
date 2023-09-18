@@ -6,7 +6,7 @@ import {Switch} from "../../../inputs/Switch"
 export class SwitchField extends Field<boolean>{
 
     constructor(section: Section, config: SwitchFieldConfig) {
-        super(section, false,
+        super(section, config, false, false,
             new Switch(config, toggled => this.triggerValueChange(toggled)))
     }
 }

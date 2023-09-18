@@ -13,7 +13,10 @@ type FormConfig = {
     title?: string
     submitText?: string
     submitPath?: string
+    instantSubmit?: boolean
     statementPath?: string
+    gridLayout?: "horizontal" | "vertical"
+    gridSize?: number
 } & {
     // sectionName should ends with the "Section" word
     [sectionName: string]: FormSectionConfig
@@ -26,24 +29,29 @@ type FormSectionConfig = {
     [fieldName: string]: FieldConfig
 }
 
+type FieldConfig = SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig | TextFieldConfig
 
-type FieldConfig = SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig
-
-interface FieldLabel {
+interface CommonFieldConfig {
     label?: string
-    type: "switch" | "datepicker" | "select"
+    size?: number
+    type: "switch" | "datepicker" | "select" | "text"
 }
 
-interface SwitchFieldConfig extends FieldLabel, SwitchConfig{
+interface SwitchFieldConfig extends CommonFieldConfig, SwitchConfig{
     type: "switch"
 }
 
-interface DatepickerFieldConfig extends FieldLabel, DatepickerConfig{
+interface DatepickerFieldConfig extends CommonFieldConfig, DatepickerConfig{
     type: "datepicker"
 }
 
-interface SelectFieldConfig extends FieldLabel, SelectConfig{
+interface SelectFieldConfig extends CommonFieldConfig, SelectConfig{
     type: "select"
+}
+
+interface TextFieldConfig extends CommonFieldConfig{
+    type: "text"
+    area?: number
 }
 
 

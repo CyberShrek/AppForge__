@@ -3,7 +3,7 @@ import {BlobAccessor} from "./abstract/BlobAccessor"
 
 export class XlsxAccessor extends BlobAccessor {
 
-    override path = "appforge/converter/xlsx"
+    override path = "/appforge/converter/xlsx"
     override method: "POST" = "POST"
     override errorFooter = "Ошибка экспорта таблицы"
 

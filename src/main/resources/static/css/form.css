@@ -1,15 +1,18 @@
-form {
+form.horizontal {
     display: grid;
-    grid-gap: var(--indent);
+    grid-gap: var(--strong-indent);
+}
+
+form.vertical {
+    display: flex;
+    grid-gap: 45px;
 }
 
 form .section {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
     align-items: start;
     background: white;
     grid-gap: var(--indent);
-    border-radius: var(--border-radius);
 }
 
 form .section > p {
@@ -22,58 +25,29 @@ form .field {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 80px;
+    min-height: 70px;
+    min-width: 0;
     border-radius: var(--border-radius);
 }
 
 form .field > p {
-    margin: auto 0;
-    margin-right: var(--indent);
+    margin: 0 0 var(--light-indent) 0;
+    font-weight: bold;
 }
 form .field > p:empty {
     margin: 0;
-}
-
-form .field > div {
-    margin-left: auto;
-    display: flex;
 }
 
 form .field > label:empty {
     width: 1px;
 }
 
-form .field.checkbox > div{
-    margin-left: 0;
-}
-
-form .field.checkbox input{
-    
-    margin: 0;
-    margin-right: var(--indent);
-}
-form .field.checkbox :is(input, label){
-    cursor: pointer;
-}
-
-form .field.date .datepicker{
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-    width: 100%;
-    border: var(--light-border);
-    color: var(--primary-color);
-    padding: 8px;
-    text-align: center;
-}
-form .field.select .vscomp-ele {
-    min-width: 200px;
-}
-form .field.select .vscomp-ele:not([disabled]) .vscomp-toggle-button {
-    border: var(--light-border);
-    color: var(--primary-color);
-}
-
 form button.confirm{
     justify-self: end;
+    white-space: nowrap;
+    align-self: end;
+}
+
+.field.wrong :is(.multiselect){
+    outline: thin solid var(--negative-color);
 }

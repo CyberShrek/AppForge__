@@ -21,7 +21,7 @@ export default class ReportSlot extends InlineFragment<ForgedApplication>{
     }
 
     applyReport(model: ReportModel, jsonFieldValues: JsonProperties){
-        if(model.table.data === null || model.table.data.length === 0)
+        if(!model.data || model.data.length === 0)
             popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
 
         this.jsonFieldValues = jsonFieldValues

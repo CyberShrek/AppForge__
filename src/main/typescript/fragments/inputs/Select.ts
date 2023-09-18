@@ -11,9 +11,11 @@ export default class Select extends Fragment{
 
     pickedOptions: Options = new Map()
 
+    readonly modulePromise = virtualSelectModulePromise
+
     constructor(config: SelectConfig, onPick: (pickedOptions: Options) => void) {
         super(`<div class="select"></div>`)
-        virtualSelectModulePromise.then(() => applyVirtualSelect(this.root, config))
+        this.modulePromise.then(() => applyVirtualSelect(this.root, config))
 
         this.listen("change", event => {
             const value = event.currentTarget// @ts-ignore !!! Resolved by html import !!!
@@ -38,7 +40,7 @@ export default class Select extends Fragment{
     }
 
     set options(options: Options){
-        virtualSelectModulePromise.then(() => {
+        this.modulePromise.then(() => {
             this._options = options
             if(options && options.size > 0) {
                 this.root// @ts-ignore !!! Resolved by html import !!!
@@ -57,7 +59,7 @@ export default class Select extends Fragment{
     }
 
     pickOptions(keys: OptionKey[]){
-        virtualSelectModulePromise.then(() => {
+        this.modulePromise.then(() => {
             // @ts-ignore !!! Resolved by html import !!!
             this.root.setValue(keys)
         })

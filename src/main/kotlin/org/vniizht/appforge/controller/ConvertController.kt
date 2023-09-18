@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 @RestController
 class ConvertController {
 
-    @PostMapping("/appforge/converter/xlsx")
+    @PostMapping("/converter/xlsx")
     fun convertToXlsx(@RequestBody model: XlsxTableModel, response: HttpServletResponse) {
         response.setHeader("Content-disposition", "attachment; filename=${
             URLEncoder.encode(model.name, "UTF-8").replace('+', ' ') + ".xlsx"

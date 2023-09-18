@@ -83,7 +83,7 @@ export function stringify<T>(value: T): string{
     if(value instanceof Set || value instanceof Array)
         return Array.from(value).join(", ")
     if(value instanceof Map)
-        return [...value.entries()].map(([key, value]) => `${value}(${key})`).join(", ")
+        return [...value.entries()].map(([key, value]) => `${value} (${key})`).join(", ")
     if (value instanceof Date)
         return stringifyDate(value)
 

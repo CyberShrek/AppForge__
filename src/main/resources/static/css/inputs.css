@@ -8,7 +8,8 @@
 input, button{
     color: var(--primary-color);
     border-radius: var(--border-radius);
-    border: var(--border);
+    border: var(--light-border);
+    transition: 0.1s;
 }
 
 button.confirm{
@@ -123,16 +124,22 @@ button.negative{
 
 /* TEXTAREA */
 .textarea {
-    border: var(--light-border);
-    padding: var(--indent);
+    padding: var(--light-indent);
+    min-height: calc(var(--input-height) - var(--light-indent) * 2);
     min-width: 200px;
     white-space: pre;
     background: white;
     cursor: text;
     overflow: auto;
+    border: var(--light-border);
+    border-radius: var(--border-radius);
 }
 .textarea, .textarea *{
     font-family: Monospace;
+}
+.textarea:focus{
+    outline: none;
+    box-shadow: var(--shadow)
 }
 
 /* MULTISELECT */
@@ -155,14 +162,14 @@ button.negative{
    padding: var(--indent);
 }
 .multiselect:not(.has-no-options) > .vscomp-toggle-button{
-    border: var(--border);
+    border: var(--light-border);
 }
 
 /* DATEPICKER */
 .datepicker {
     display: flex;
     height: var(--input-height);
-    border: var(--border);
+    border: var(--light-border);
     width: 100%;
     border-radius: var(--border-radius);
 } 

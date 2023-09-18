@@ -59,9 +59,19 @@ export class ForgedApplication extends Fragment {
         const form = new Form(config)
         form.onSubmit = (jsonValues) => {
             form.submitButton.disable()
-            reportAccessor.fetch(jsonValues).then(reportModels => {
-                for (const key in reportModels) {
-                    this.reportSlots.get(key).applyReport(reportModels[key], jsonValues)
+            reportAccessor.fetch(jsonValues).then(report => {
+                // If the report has keys ending with "Slot" word then this is a map of report models.
+                // Else this is a single model which will be applied into the first report slot
+                let reportIsSimple = true
+                for (const key in report as ReportModels) {
+                    if(key.endsWith("Slot")) {
+                        this.reportSlots.get(key).applyReport(report[key], jsonValues)
+                        reportIsSimple = false
+                    }
+                }
+                if(reportIsSimple){
+                    const [firstSlot] = this.reportSlots.values()
+                    firstSlot.applyReport(report as ReportModel, jsonValues)
                 }
                 form.submitButton.enable()})
         }

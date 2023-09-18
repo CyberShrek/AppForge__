@@ -2,9 +2,10 @@ type ReportModels = {[reportKey: string]: ReportModel}
 
 interface ReportModel {
     title?: string
+    data?: MatrixData
     charts?: ChartModel[]
     table?: TableModel
-    context?: ContextModelConfig
+    context?: ContextFields
 }
 
 ///////////
@@ -31,10 +32,6 @@ interface TableModel {
     head: TableHead
     primaryColumnsNumber: number
     groupedColumnsNumber?: number
-    data: TableArrayData
-}
-type HeadCell = CompleteCell & {
-    addFilter?: boolean
 }
 type CompleteCell = {
     text: string,
@@ -42,12 +39,14 @@ type CompleteCell = {
     colspan?: number
 }
 type CompleteRow = CompleteCell[]
-type TableArrayData = RowData[]
+type MatrixData = RowData[]
 type TableMapData = Map<PrimaryCellData[], CellData[]>
 type RowData = CellData[]
 type CellData = number|string
 type PrimaryCellData = string
-type TableHead = HeadCell[][]
+type TableHead = string[]
+    // TODO implement complex header
+    //| string[][] | CompleteCell[][]
 
 //////////
 // XLSX //
@@ -65,6 +64,4 @@ interface XlsxTableModel {
 // CONTEXT //
 /////////////
 
-interface ContextModelConfig {
-    fields?: {[label: string]: string } // Value is field key
-}
+type ContextFields = {[label: string]: string } // Value is field key

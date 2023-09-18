@@ -7,6 +7,7 @@ import {SwitchField} from "./field/SwitchField"
 import {SelectField} from "./field/SelectField"
 import {create} from "../../../util/domWizard";
 import {InlineFragment} from "../../InlineFragment";
+import {TextField} from "./field/TextField";
 
 export class Section extends InlineFragment<Form>{
 
@@ -14,8 +15,11 @@ export class Section extends InlineFragment<Form>{
 
     getField = (fieldKey: string) => this.fields.get(fieldKey)
 
-    constructor(parent: Form, config: FormSectionConfig) {
-        super(parent, `<div class="section"></div>`)
+    constructor(parent: Form, gridLayout: FormConfig["gridLayout"], gridSize: number, config: FormSectionConfig) {
+        super(parent, `
+            <div class="section"
+                 style="${gridLayout === 'vertical' ? 'grid-template-rows' : 'grid-template-columns'}: repeat(${gridSize ? gridSize : 5}, 1fr)">
+            </div>`)
         if (config.title)
             this.append(create(`<p>${config.title}</p>`))
 
@@ -31,6 +35,7 @@ export class Section extends InlineFragment<Form>{
             case "switch":     return new SwitchField(this, config)
             case "datepicker": return new DatepickerField(this, config)
             case "select":     return new SelectField(this, config)
+            case "text":       return new TextField(this, config)
         }
     }
 }

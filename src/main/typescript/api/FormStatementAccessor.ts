@@ -9,10 +9,8 @@ export class FormStatementAccessor extends JsonAccessor<FormStatement> {
         this.errorFooter = "Ошибка получения состояния формы"
     }
 
-    override fetch(body?: any, triggerFieldKey?: string): Promise<FormStatement> {
-        if(triggerFieldKey)
-            this.headers = {"TriggerField": triggerFieldKey}
-
+    override fetch(body: any, trigger?: string): Promise<FormStatement> {
+        this.params = {trigger}
         return super.fetch(body)
     }
 }

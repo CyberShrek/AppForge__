@@ -1,39 +1,54 @@
 import {Field} from "./Field"
 import Select from "../../../inputs/Select"
 import {Section} from "../Section"
-import {concatMaps, jsonifyFields, valueOrDefault} from "../../../../util/data"
-import {EndpointOptionsAccessor} from "../../../../api/EndpointOptionsAccessor"
+import {concatMaps} from "../../../../util/data"
 import {ServiceBankOptionsAccessor} from "../../../../api/ServiceBankOptionsAccessor"
 import Form from "../../Form"
-import {create} from "../../../../util/domWizard"
 
 export class SelectField extends Field<Options>{
 
     protected selectFragment: Select
 
+    private options: Options = new Map()
+    private serviceBankOptions: Options = new Map()
+
     constructor(section: Section, private config: SelectFieldConfig) {
         const select = new Select(config, options => this.triggerValueChange(options))
-        super(section, new Map())
-        if(config.label) this.append(create(`<p>${config.label}</p>`))
+        super(section, config, true, new Map())
         this.append(select)
         this.selectFragment = select
     }
 
     override triggerValueChange(newValue: Options | OptionKey[]) {
-        if(newValue instanceof Map)
-            super.triggerValueChange(newValue)
-        else {
-            this.selectFragment.pickOptions(newValue)
-            super.triggerValueChange()
-        }
+        this.selectFragment.modulePromise.then(() => {
+            if(newValue instanceof Map)
+                super.triggerValueChange(newValue)
+            else {
+                this.selectFragment.pickOptions(newValue)
+                super.triggerValueChange()
+            }
+        })
     }
 
     setOptions(options: Options){
-        this.selectFragment.options = options
+        this.options = options
+        this.updateOptions()
     }
 
-    setupServiceBank(setup: ServiceBankSetup) {
-        setupServiceBankRetrieving(this.parent.parent, setup, options => this.setOptions(options))
+    setupServiceBank(setup: ServiceBankSetup, initValues?: OptionKey[]) {
+        setupServiceBankRetrieving(this.parent.parent, setup,
+                options => {
+                    this.serviceBankOptions = options
+                    this.updateOptions()
+                    if(initValues) {
+                        this.triggerValueChange(initValues)
+                        initValues = null
+                    }
+                })
+    }
+
+    private updateOptions(){
+        this.selectFragment.options = concatMaps(this.options, this.serviceBankOptions)
     }
 }
 

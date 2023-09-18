@@ -3,7 +3,9 @@
     background: transparent;
 }
 
-.wrong { outline: 3px solid var(--negative-color) }
+.wrong { 
+    color: var(--negative-color)
+}
 
 .error, .error * { 
     color: white;
