@@ -109,29 +109,34 @@ setAppConfig({
 
 const app = new ForgedApplication()
 
-// app.reportSlots.get("reportSlot").applyReport({
-//     title: "Debug",
-//     table: {
-//         data: createTableData(2, 5, 100),
-//         head: [
-//             [{text: "Primary", colspan: 2}, {text: "Values", colspan: 5}],
-//             [{text: "1", addFilter: true},{text: "2", addFilter: true},
-//                 {text: "1"}, {text: "2"}, {text: "3"}, {text: "4"}, {text: "5"}]
-//         ],
-//         primaryColumnsNumber: 2,
-//         groupedColumnsNumber: 1
-//     },
-//     context: {
-//         fields: {
-//             "Поле контекста 1": "none",
-//             "Поле контекста 2": "none",
-//             "Поле контекста 3": "none"
-//         }
-//     }
-// }, {
-//
-// }
-// )
+app.reportSlots.get("reportSlot").applyReport({
+    title: "Debug",
+    data: createTableData(3, 4, 500).sort((a, b) => {
+        return [a[0], a[1]] >[b[0], b[1]] ? 1 : 0
+    }),
+    dataFeatures: [
+        {type: "text"},
+        {type: "text"},
+        {type: "text"},
+        {type: "numeric", colored: true},
+        {type: "numeric"},
+        {type: "numeric"},
+        {type: "numeric"}
+    ],
+    table: {
+        head: ["A", "B", "C", "D", "E", "F", "G"],
+        primaryColumnsNumber: 3,
+        groupedColumnsNumber: 3
+    },
+    context: {
+        "Поле контекста 1": "none",
+        "Поле контекста 2": "none",
+        "Поле контекста 3": "none"
+    }
+}, {
+
+}
+)
 
 function createTableData(primaryCellsSize: number, valueCellsSize: number, tableHeight: number): MatrixData {
     const tableData: MatrixData = []

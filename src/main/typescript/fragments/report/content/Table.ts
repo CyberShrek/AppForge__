@@ -1,10 +1,11 @@
-                                                                                                                                                                                                                                                                import {emptyElement, create} from "../../../util/domWizard"
-import {concatMaps, filterMap, numberOf, sortMap, stringify} from "../../../util/data"
+import {create, emptyElement, scrollIntoElement} from "../../../util/domWizard"
+import {filterMap, numberOf} from "../../../util/data"
 import {TextInput} from "../../inputs/TextInput"
 import {resolveCSS} from "../../../util/resolver"
 import {InlineFragment} from "../../InlineFragment"
 import {Body} from "../Body"
 import {XlsxAccessor} from "../../../api/XlsxAccessor";
+import {executeFormulaForRowData} from "../../../util/DANGEROUS";
 
 resolveCSS("table")
 
@@ -14,14 +15,16 @@ export class Table extends InlineFragment<Body>{
     tbody: HTMLTableSectionElement
     tfoot: HTMLTableSectionElement
 
-    protected _tableData: TableMapData = new Map()
-
     // Key is filtrated column, value is filter text value
-    protected filtersMap: Map<number, string> = new Map()
+    private filtersMap: Map<number, string> = new Map()
 
     readonly xlsxAccessor: XlsxAccessor
 
-    constructor(body: Body, data: MatrixData, private model: TableModel) {
+    constructor(body: Body,
+                private readonly data: MatrixData,
+                private readonly colFeatures: DataFeature[],
+                private readonly model: TableModel)
+    {
         super(body, `
             <div class="table">
                 <table>
@@ -35,14 +38,7 @@ export class Table extends InlineFragment<Body>{
         this.tbody = this.select("tbody")
         this.tfoot = this.select("tfoot")
         if(model.head) this.head = model.head
-        if(data) {
-            this.tableMapData = new Map(data.map(rowData => [
-                rowData.slice(0, model.primaryColumnsNumber).map(cellData => stringify(cellData)),
-                rowData.slice(model.primaryColumnsNumber)
-            ]))
-            if(data.length > 1)
-                this.total = this.calculateTotal()
-        }
+        if(data) this.appendData(data)
         this.xlsxAccessor = new XlsxAccessor({
             name:    this.parent.parent.head.title,
             context: this.parent.context?.visibleValues,
@@ -50,6 +46,13 @@ export class Table extends InlineFragment<Body>{
             header:  getCompleteRowsFromElement(this.thead),
             body:    getCompleteRowsFromElement(this.tbody),
             total:   getCompleteRowsFromElement(this.tfoot)[0]
+        })
+
+        // Auto scroll into the table when user scrolls inside of it
+        this.listen("scroll", () => {
+            if(Math.round(this.root.getClientRects().item(0).top) != 0){
+                scrollIntoElement(this.root)
+            }
         })
     }
 
@@ -68,55 +71,81 @@ export class Table extends InlineFragment<Body>{
         //     )
     }
 
-    private set tableMapData(tableData: TableMapData){
-        emptyElement(this.tbody)
-        this._tableData = new Map()
-        this.appendTableMapData(tableData)
-        this.groupPrimaryCells()
-    }
-
-    private appendTableMapData(tableData: TableMapData){
-        this._tableData = concatMaps(this._tableData, tableData)
-        sortMap(this.filtrateTableMap(this._tableData)).forEach((valueCells, primaryCells) =>
-            this.tbody.innerHTML += `
-                <tr>
-                    ${primaryCells.map(data => `<td class="primary">${data}</td>`).concat(
-                        valueCells.map(data => `<td>${data}</td>`)
-                    ).join("")}
-                </tr>`
+    private appendData(data: MatrixData){
+        // Firstly calculate the total data to use it in the formulas
+        let totalRowData: RowData = []
+        data.forEach(rowData => rowData.forEach(
+            (cellData, cellIndex) => {
+                const feature = this.colFeatures[cellIndex]
+                if(typeof cellData === "number" && feature?.type !== "text") {
+                    if(feature.jsFormula)
+                        totalRowData[cellIndex] = 0
+                    else
+                        totalRowData[cellIndex] = totalRowData[cellIndex]
+                            ? numberOf(totalRowData[cellIndex]) + cellData
+                            : cellData
+                }
+                else totalRowData[cellIndex] = ''
+            })
         )
+        totalRowData = this.applyFormulasToRowData(totalRowData)
+
+        // let innerHtml = ""
+        // data.forEach(rowData => innerHtml = innerHtml + this.createHtmlRowText(this.applyFormulasToRowData(rowData)))
+        this.tbody.innerHTML = data.map(rowData => this.createHtmlRowText(this.applyFormulasToRowData(rowData))).join('')
+
+        if(data.length > 1)
+            this.tfoot.innerHTML = this.createHtmlRowText(totalRowData)
+
+        this.groupPrimaryCells()
+        this.spanTotalPrimaryCells()
     }
 
-    private set total(total: CellData[]){
-        this.tfoot.querySelector(".total")?.remove()
-        this.tfoot.innerHTML += `
-            <tr class="total">
-                <td class="primary" 
-                    colspan="${this.tbody.querySelector("tr").querySelectorAll(".primary").length}">
-                    Итого
-                </td>
-                ${total.map(value => `<td>${value}</td>`).join("")}
+    private applyFormulasToRowData(rowData: RowData, totalRowData: RowData = rowData): RowData{
+        this.colFeatures.forEach((feature, index) => {
+            console.log("applyFormulasToRowData "+index)
+            if(feature.type === "numeric" && feature.jsFormula){
+
+                rowData[index] = executeFormulaForRowData(feature.jsFormula, rowData, totalRowData, this.data)
+            }
+        })
+        return rowData
+    }
+
+    private createHtmlRowText(rowData: RowData){
+        return `
+            <tr>${rowData.map(
+                (data, index) => 
+                    this.colFeatures && this.colFeatures[index] 
+                        ? this.createHtmlCellText(index, rowData) 
+                        : `<td>${data}</td>`
+                ).join('')}
             </tr>`
     }
 
-    private calculateTotal(): CellData[]{
-        const total: CellData[] = []
-        this._tableData.forEach(values=> values.forEach((value, i) => {
-            total[i] = total[i] ? numberOf(total[i]) + numberOf(value) : value
-        }))
-        return total
+    private createHtmlCellText(cellIndex: number, rowData: RowData){
+        const feature = this.colFeatures[cellIndex]
+        const cellData = rowData[cellIndex]
+        if(feature){
+            return `
+                <td class="${feature.type}${this.model.primaryColumnsNumber > cellIndex ? ' primary' : ''}" 
+                    ${feature.type === "numeric" && feature.colored
+                        ? `style="color: ${cellData >= 0 ? 'var(--positive-color)' : 'var(--negative-color)'}"`
+                        : ''}>
+                    ${cellData}
+                </td>`
+        }
     }
 
     private applyFilter(htmlHeadCell: HTMLTableCellElement){
         htmlHeadCell.append(
             new TextInput("🔎", value => {
                 this.filtersMap.set(getCellIndexWithSpans(htmlHeadCell), value)
-                this.tableMapData = this._tableData
+                // TODO implement
             }
             ).root
         )
     }
-
 
     private filtrateTableMap(tableMap: TableMapData): TableMapData{
         return filterMap(tableMap, (valueCells, primaryCells) => {
@@ -130,8 +159,17 @@ export class Table extends InlineFragment<Body>{
         })
     }
 
-    // TODO works incorrectly if the size is more than 1
-    private groupPrimaryCells(size: number = this.model.groupedColumnsNumber ? this.model.groupedColumnsNumber : 0,
+    private spanTotalPrimaryCells(){
+        this.tfoot.querySelectorAll<HTMLTableCellElement>("tr td.primary").forEach((td, index) => {
+            if(index === 0) {
+                td.colSpan = this.model.primaryColumnsNumber
+                td.textContent = "Итого"
+            }
+            else td.remove()
+        })
+    }
+
+    private groupPrimaryCells0(size: number = this.model.groupedColumnsNumber ? this.model.groupedColumnsNumber : 0,
                               startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
                               endHtmlRow: HTMLTableRowElement = this.tbody.lastElementChild as HTMLTableRowElement,
                               nesting: number = 0){
@@ -141,17 +179,42 @@ export class Table extends InlineFragment<Body>{
         let nextHtmlRow = startHtmlRow
         do {
             nextHtmlRow = nextHtmlRow.nextElementSibling as HTMLTableRowElement
-            const nextPrimaryHtmlCell = nextHtmlRow.cells[0]
+            const nextPrimaryHtmlCell = nextHtmlRow.cells[nesting]
             if(primaryHtmlCell.textContent === nextPrimaryHtmlCell.textContent){
                 primaryHtmlCell.rowSpan++
                 nextPrimaryHtmlCell.hidden = true
             } else {
-                this.groupPrimaryCells(size, startHtmlRow, nextHtmlRow, nesting + 1)
-                this.groupPrimaryCells(size, nextHtmlRow, endHtmlRow)
+                this.groupPrimaryCells0(size, startHtmlRow, nextHtmlRow, nesting + 1)
+                this.groupPrimaryCells0(size, nextHtmlRow, endHtmlRow)
                 return
             }
         }
         while (nextHtmlRow !== endHtmlRow)
+    }
+
+    private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.querySelector("tr:first-of-type") as HTMLTableRowElement,
+                               endHtmlRow: HTMLTableRowElement = this.tbody.querySelector("tr:last-of-type") as HTMLTableRowElement,
+                               nesting: number = 0){
+
+        let htmlRowMarshall: HTMLTableRowElement
+        let lastPrimaryCell: HTMLTableCellElement
+        const marshallNextNesting=() => {
+            if(lastPrimaryCell && nesting < this.model.groupedColumnsNumber - 1)
+                this.groupPrimaryCells(lastPrimaryCell.parentElement as HTMLTableRowElement, htmlRowMarshall, nesting + 1)
+        }
+        while (htmlRowMarshall !== endHtmlRow){
+            htmlRowMarshall = htmlRowMarshall ? htmlRowMarshall.nextElementSibling as HTMLTableRowElement : startHtmlRow
+            const currentPrimaryCell = htmlRowMarshall.cells[nesting]
+            if(lastPrimaryCell && lastPrimaryCell.textContent === currentPrimaryCell?.textContent){
+                lastPrimaryCell.rowSpan++
+                currentPrimaryCell.hidden = true
+            }
+            else {
+                marshallNextNesting()
+                lastPrimaryCell = htmlRowMarshall.querySelectorAll<HTMLTableCellElement>("td.primary")[nesting]
+            }
+        }
+        marshallNextNesting()
     }
 }
 
@@ -187,7 +250,7 @@ function getCellIndexWithSpans(targetCell: HTMLTableCellElement): number  {
 
             for (let k = rowIndex; k < rowIndex + cell.rowSpan; k++) {
                 for (let l = colIndex; l < colIndex + cell.colSpan; l++) {
-                    matrix[k] = matrix[k] || [];
+                     matrix[k] = matrix[k] || [];
                     matrix[k][l] = 1;
                 }
             }

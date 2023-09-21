@@ -16,7 +16,7 @@ export default class ReportSlot extends InlineFragment<ForgedApplication>{
     jsonFieldValues: JsonProperties
     reportModelCache: ReportModel
 
-    constructor(parent: ForgedApplication, private readonly config: ReportSlotConfig) {
+    constructor(parent: ForgedApplication, readonly config: ReportSlotConfig) {
         super(parent, `<div class="report"></div>`)
     }
 

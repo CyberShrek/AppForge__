@@ -54,9 +54,8 @@ interface TextFieldConfig extends CommonFieldConfig{
     area?: number
 }
 
-
-
 interface ReportSlotConfig {
     title: string
     isModal?: boolean
+    associatedWith?: string
 }

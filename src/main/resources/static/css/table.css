@@ -1,23 +1,13 @@
 .report .table {
-    overflow-y: hidden;
     margin-bottom: var(--border-radius);
     border-top: var(--light-border);
     border-bottom: var(--light-border);
-}
-.report .table button{
-    margin: var(--indent);
-    margin-left: auto;
-}
-.report :is(table-container.scrollable, table-container.windowed) { overflow-y: auto }
-.report table-container.scrollable{
+    overflow: auto;
     max-height: 100vh;
 }
+
 .report:fullscreen table-container{
     overflow-y: unset;
-}
-.report:not(:fullscreen) table-container.windowed{
-    max-height: calc(95vh - 50px);
-    max-width: 95vw;
 }
 
 .report table {
@@ -28,12 +18,12 @@
     border-top: var(--light-border);
 }
 
-.report:not(:fullscreen) thead {
+.report :is(thead, tfoot) {
     z-index: 10;
     position: sticky;
-    top: 0;
+    top: -1px;
+    bottom: 0;
     transition: none;
-    box-shadow: var(--shadow);
 }
 
 .report th {
@@ -69,7 +59,7 @@
 
 .report td {
     color: var(--primary-color);
-    padding: var(--indent) calc(var(--indent)/2);
+    padding: var(--indent);
     text-align: center;
     vertical-align: top;
     transition: all 0.3s;
@@ -87,23 +77,10 @@
     margin: 0;
     padding: 0;
 }
-.report td.labeled{
-    margin: calc(var(--indent) / 2) var(--indent);
-}
 
 .report table input[type=checkbox]{
     transform: scale(1.5);
     background-color: aqua;
-}
-
-.report table div{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.report table div name{
-    margin-right: auto;
 }
 
 .report table input[type=text]{
@@ -123,3 +100,14 @@
     height: 70px;
 }
 
+.report table :is(.numeric, .text){
+    font-family: monospace;
+    font-size: large;
+}
+
+.report table .numeric, .report table .primary.text {
+    text-align: right;
+}
+.report table tbody .text.text {
+    text-align: left;
+}

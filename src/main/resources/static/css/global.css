@@ -2,7 +2,8 @@
 	--primary-color: #003466;
 	--secondary-color: #d2e0fa;
 	--solid-color: whitesmoke;
-	--negative-color: red;
+	--positive-color: forestgreen;
+	--negative-color: firebrick;
 	--border: thin solid steelblue;
 	--light-border: thin solid lightsteelblue;
 	--indent: 10px;

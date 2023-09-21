@@ -34,24 +34,35 @@ export class ForgedApplication extends Fragment {
         this.append(this.header, this.formContainer)
         this.hide()
 
-        // Determining forms and slots
-        for (const key in appConfig) {
-            let config
-            if(key.endsWith("Form")) {
-                config = appConfig[key] as FormConfig
-                this.formContainer.createTab(config.title, this.createForm(config))
-            } else if(key.endsWith("Slot")) {
-                config = appConfig[key] as ReportSlotConfig
-                this.reportSlots.set(key, new ReportSlot(this, config))
-            }
-        }
-
+        // Applying appInfo
         appInfoPromise.then(appInfo => {
             if (appInfo) {
                 document.title = appInfo.name
                 this.header.setAppInfo(appInfo)
             }
         })
+        let firstTabTitle: string
+
+        // Determining forms and slots
+        for (const key in appConfig) {
+            let config
+            if(key.endsWith("Form")) {
+                config = appConfig[key] as FormConfig
+                firstTabTitle = firstTabTitle ? firstTabTitle : config.title
+                this.formContainer.createTab(config.title,
+                    () => this.selectSlotsAssociatedWithForm(key),
+                    this.createForm(config)
+                )
+            } else if(key.endsWith("Slot")) {
+                config = appConfig[key] as ReportSlotConfig
+                const reportSlot = new ReportSlot(this, config)
+                this.reportSlots.set(key, reportSlot)
+                if(config.associatedWith)
+                    reportSlot.hide()
+            }
+        }
+        // Pick the first tab
+        this.formContainer.pickTab(firstTabTitle)
     }
 
     private createForm(config: FormConfig) : Form{
@@ -59,22 +70,19 @@ export class ForgedApplication extends Fragment {
         const form = new Form(config)
         form.onSubmit = (jsonValues) => {
             form.submitButton.disable()
-            reportAccessor.fetch(jsonValues).then(report => {
-                // If the report has keys ending with "Slot" word then this is a map of report models.
-                // Else this is a single model which will be applied into the first report slot
-                let reportIsSimple = true
-                for (const key in report as ReportModels) {
-                    if(key.endsWith("Slot")) {
-                        this.reportSlots.get(key).applyReport(report[key], jsonValues)
-                        reportIsSimple = false
-                    }
-                }
-                if(reportIsSimple){
-                    const [firstSlot] = this.reportSlots.values()
-                    firstSlot.applyReport(report as ReportModel, jsonValues)
-                }
+            reportAccessor.fetch(jsonValues).then(reportModel => {
+                this.reportSlots.get(reportModel.slot)?.applyReport(reportModel as ReportModel, jsonValues)
                 form.submitButton.enable()})
         }
         return form
+    }
+
+    private selectSlotsAssociatedWithForm(formKey: string){
+        Array.from(this.reportSlots.values()).forEach(slot => {
+            if(slot.config.associatedWith === formKey || !slot.config.associatedWith)
+                slot.show()
+            else
+                slot.hide()
+        })
     }
 }

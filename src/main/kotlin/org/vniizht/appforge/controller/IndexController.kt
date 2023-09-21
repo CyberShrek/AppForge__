@@ -15,8 +15,8 @@ class IndexController {
 //    @GetMapping
 //    fun getIndex() = "index.html"
 
-//    @GetMapping("/debug")
-//    fun debug() = "debug.html"
+    @GetMapping("/debug")
+    fun debug() = "debug.html"
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createApp(@RequestBody(required = true) config: AppConfig): ModelAndView {

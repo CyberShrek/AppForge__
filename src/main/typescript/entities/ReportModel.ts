@@ -1,11 +1,11 @@
-type ReportModels = {[reportKey: string]: ReportModel}
-
 interface ReportModel {
     title?: string
     data?: MatrixData
+    dataFeatures?: DataFeature[]
     charts?: ChartModel[]
     table?: TableModel
     context?: ContextFields
+    slot?: string
 }
 
 ///////////
@@ -30,8 +30,9 @@ interface DiagramConfig {
 ///////////
 interface TableModel {
     head: TableHead
-    primaryColumnsNumber: number
+    primaryColumnsNumber?: number
     groupedColumnsNumber?: number
+    hiddenColumns?: number[] // TODO implement
 }
 type CompleteCell = {
     text: string,
@@ -45,8 +46,6 @@ type RowData = CellData[]
 type CellData = number|string
 type PrimaryCellData = string
 type TableHead = string[]
-    // TODO implement complex header
-    //| string[][] | CompleteCell[][]
 
 //////////
 // XLSX //
@@ -60,8 +59,26 @@ interface XlsxTableModel {
     total: CompleteRow
 }
 
+
 /////////////
 // CONTEXT //
 /////////////
-
 type ContextFields = {[label: string]: string } // Value is field key
+
+
+///////////
+// TYPES //
+///////////
+type DataFeature = {
+    type: string
+} & (TextColumn | NumericColumn)
+
+interface TextColumn {
+    type: "text"
+}
+
+interface NumericColumn {
+    type: "numeric"
+    colored?: boolean
+    jsFormula?: string
+}
