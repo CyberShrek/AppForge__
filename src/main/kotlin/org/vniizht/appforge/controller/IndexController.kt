@@ -10,7 +10,7 @@ import org.vniizht.appforge.store.forgedAppsCache
 import org.vniizht.appforge.model.AppConfig
 
 @Controller
-class IndexController {
+class IndexController (){
 
 //    @GetMapping
 //    fun getIndex() = "index.html"

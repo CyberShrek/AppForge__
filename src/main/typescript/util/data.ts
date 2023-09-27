@@ -75,7 +75,7 @@ export function setToArray<T>(set: Set<T>): T[] {
     return [...set]
 }
 
-export function stringify<T>(value: T): string{
+export function prettify<T>(value: T): string{
     if(value === null || value === undefined)
         return ""
     if(typeof value !== "object")
@@ -87,7 +87,7 @@ export function stringify<T>(value: T): string{
     if (value instanceof Date)
         return stringifyDate(value)
 
-    return stringify(jsonToMap(value))
+    return prettify(jsonToMap(value))
 }
 
 export function jsonify<T>(value: T|null):  any{

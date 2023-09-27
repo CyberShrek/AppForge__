@@ -18,17 +18,17 @@ export default class Form extends Fragment<HTMLFormElement> {
     readonly submitButton = new Button({
         className: "confirm",
         text: valueOrDefault(this.config?.submitText, "")
-    }, () => this.onSubmit(this.jsonValues))
+    }, () => this.onSubmit(this.jsonFieldValues, this.prettyFieldValues))
 
     private statementAccessor: FormStatementAccessor
 
-    constructor(protected readonly config: FormConfig, public onSubmit?: (jsonFieldValues: JsonProperties) => void) {
-        super(`<form class="${config.gridLayout ? config.gridLayout : 'horizontal'}"></form>`)
+    constructor(protected readonly config: FormConfig, public onSubmit?: (jsonFieldValues: JsonProperties, fullFieldValues: Map<FieldKey, any>) => void) {
+        super(`<form class="${config.layout ? config.layout : 'horizontal'}"></form>`)
 
         // Determining sections
         for (const key in config) {
             if(key.endsWith("Section")) {
-                const section = new Section(this, config.gridLayout, config.gridSize, config[key] as FormSectionConfig)
+                const section = new Section(this, config.layout, config[key] as FormSectionConfig)
                 this.sections.set(key, section)
                 section.fields.forEach((field, fieldKey) =>
                     this.fields.set(`${key}.${fieldKey}`, field))
@@ -39,14 +39,21 @@ export default class Form extends Fragment<HTMLFormElement> {
         this.append(this.submitButton)
     }
 
-    get jsonValues(){
+    get jsonFieldValues(){
         return jsonifyFields(this.fields)
+    }
+
+    get prettyFieldValues(){
+        const prettyFieldValues = new Map<FieldKey, any>
+        this.fields.forEach((field, key) => {
+            prettyFieldValues.set(key, field.prettyValue)
+        })
+        return prettyFieldValues
     }
 
     // Return fields with specific locations or all fields
     findFields(fieldLocations: string[]): Map<string, Field<any>>{
         const fieldsMap: Map<string, Field<any>> = new Map()
-
         fieldLocations.forEach(location =>
             fieldsMap.set(location, this.fields.get(location)))
 
@@ -70,7 +77,7 @@ export default class Form extends Fragment<HTMLFormElement> {
     private manageFieldsStatement(trigger: string){
         this.submitButton.disable()
         this.statementAccessor.path = this.config.statementPath
-        return this.statementAccessor.fetch(this.jsonValues, trigger).then(statement => {
+        return this.statementAccessor.fetch(this.jsonFieldValues, trigger).then(statement => {
             if(!!statement){
                 if (statement.wrong)
                     this.submitButton.disable()
@@ -100,11 +107,13 @@ export default class Form extends Fragment<HTMLFormElement> {
                         }
                     })
                 }
-                if(statement.setValues){
-                    Object.entries(statement.setValues).forEach(([fieldKey, value]) => {
-                        this.fields.get(fieldKey)?.triggerValueChange(value)
+                if(statement.setValues) Object.entries(statement.setValues).forEach(
+                    ([fieldKey, value]) => {
+                        const field = this.fields.get(fieldKey)
+                        if (field && !(field instanceof SelectField && field.awaitingForServiceBankOptions))
+                            field.triggerValueChange(value)
                     })
-                }
+
                 statement.show?.forEach(key => {
                     if(key.includes(".")) this.fields.get(key).show()
                     else this.sections.get(key).show()

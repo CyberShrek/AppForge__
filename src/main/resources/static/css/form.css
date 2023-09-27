@@ -1,3 +1,8 @@
+:root{
+    --form-cell-width: 360px;
+    --form-cell-height: 70px;
+}
+
 form.horizontal {
     display: grid;
     grid-gap: var(--strong-indent);
@@ -9,9 +14,11 @@ form.vertical {
 }
 
 form .section {
-    display: grid;
-    align-items: start;
+    display: flex;
+/*     grid-template-columns: repeat(auto-fill, minmax(var(--form-cell-width), 1fr));
+    grid-template-rows: repeat(auto-fill, var(--form-cell-height)); */
     background: white;
+    flex-wrap: wrap;
     grid-gap: var(--indent);
 }
 
@@ -25,13 +32,15 @@ form .field {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 70px;
-    min-width: 0;
+    min-height: var(--form-cell-height);
+    width: var(--form-cell-width);
     border-radius: var(--border-radius);
+    grid-column: span 2;
 }
 
 form .field > p {
     margin: 0 0 var(--light-indent) 0;
+    white-space: nowrap;
     font-weight: bold;
 }
 form .field > p:empty {
@@ -48,6 +57,11 @@ form button.confirm{
     align-self: end;
 }
 
-.field.wrong :is(.multiselect){
+form .field.switch-field.field{
+    width: 100%;
+}
+
+
+form .field.wrong :is(.multiselect){
     outline: thin solid var(--negative-color);
 }

@@ -4,9 +4,9 @@ type AppConfig = {
         updateDate?: string
         additional?: string
     }
-} | {
+} & {
     // contentName should ends with either "Form" or "Slot" word to determine what is what
-    [contentName: string]: FormConfig | ReportSlotConfig
+    [contentName: string]: FormConfig | ReportSlotConfig | any
 }
 
 type FormConfig = {
@@ -15,8 +15,7 @@ type FormConfig = {
     submitPath?: string
     instantSubmit?: boolean
     statementPath?: string
-    gridLayout?: "horizontal" | "vertical"
-    gridSize?: number
+    layout?: "horizontal" | "vertical"
 } & {
     // sectionName should ends with the "Section" word
     [sectionName: string]: FormSectionConfig
@@ -47,6 +46,7 @@ interface DatepickerFieldConfig extends CommonFieldConfig, DatepickerConfig{
 
 interface SelectFieldConfig extends CommonFieldConfig, SelectConfig{
     type: "select"
+    returnMap?: boolean
 }
 
 interface TextFieldConfig extends CommonFieldConfig{

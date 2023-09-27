@@ -5,6 +5,7 @@ import {popupMessage} from "../../util/modal"
 import {scrollIntoElement} from "../../util/domWizard"
 import {InlineFragment} from "../InlineFragment"
 import {ForgedApplication} from "../applicatons/ForgedApplication";
+import Form from "../form/Form";
 
 resolveCSS("report")
 
@@ -13,18 +14,16 @@ export default class ReportSlot extends InlineFragment<ForgedApplication>{
     readonly head = new Head(this, this.config.title)
     readonly body = new Body(this)
 
-    jsonFieldValues: JsonProperties
+    associatedFormSnapshot: Form
     reportModelCache: ReportModel
 
     constructor(parent: ForgedApplication, readonly config: ReportSlotConfig) {
         super(parent, `<div class="report"></div>`)
     }
 
-    applyReport(model: ReportModel, jsonFieldValues: JsonProperties){
-        if(!model.data || model.data.length === 0)
-            popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
+    applyReport(model: ReportModel, associatedFormSnapshot: Form){
 
-        this.jsonFieldValues = jsonFieldValues
+        this.associatedFormSnapshot = associatedFormSnapshot
 
         this.reportModelCache = model
 
@@ -32,6 +31,9 @@ export default class ReportSlot extends InlineFragment<ForgedApplication>{
         this.head.showButtons()
         this.body.setReport(model)
 
-        scrollIntoElement(this.root)
+        if(!model.data || model.data.length === 0)
+            popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
+        else
+            scrollIntoElement(this.root)
     }
 }

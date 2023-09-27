@@ -4,7 +4,7 @@ import {Chart} from "./content/Chart"
 import {Button} from "../inputs/Button"
 import {popupTimeoutAction} from "../../util/modal"
 import ReportSlot from "./ReportSlot"
-import {stringify} from "../../util/data"
+import {prettify} from "../../util/data"
 import {Context} from "./content/Context"
 import {InlineFragment} from "../InlineFragment"
 

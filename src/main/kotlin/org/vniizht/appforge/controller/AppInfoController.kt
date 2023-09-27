@@ -9,7 +9,7 @@ import org.vniizht.prilinfo.PrilInfoRemote
 import javax.naming.InitialContext
 
 @Controller
-class InfoController {
+class AppInfoController {
 
     private val prilInfoRemote = InitialContext()
         .lookup("global/prilinfo-1.0/PrilInfo!org.vniizht.prilinfo.PrilInfoRemote") as PrilInfoRemote

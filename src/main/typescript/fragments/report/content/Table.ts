@@ -1,11 +1,12 @@
-import {create, emptyElement, scrollIntoElement} from "../../../util/domWizard"
+import {emptyElement, scrollIntoElement} from "../../../util/domWizard"
 import {filterMap, numberOf} from "../../../util/data"
 import {TextInput} from "../../inputs/TextInput"
 import {resolveCSS} from "../../../util/resolver"
 import {InlineFragment} from "../../InlineFragment"
 import {Body} from "../Body"
-import {XlsxAccessor} from "../../../api/XlsxAccessor";
-import {executeFormulaForRowData} from "../../../util/DANGEROUS";
+import {XlsxAccessor} from "../../../api/XlsxAccessor"
+import {executeFormulaForRowData} from "../../../util/DANGEROUS"
+import {SelectField} from "../../form/section/field/SelectField"
 
 resolveCSS("table")
 
@@ -38,7 +39,7 @@ export class Table extends InlineFragment<Body>{
         this.tbody = this.select("tbody")
         this.tfoot = this.select("tfoot")
         if(model.head) this.head = model.head
-        if(data) this.appendData(data)
+        if(data && data.length > 0) this.appendData(data)
         this.xlsxAccessor = new XlsxAccessor({
             name:    this.parent.parent.head.title,
             context: this.parent.context?.visibleValues,
@@ -48,12 +49,7 @@ export class Table extends InlineFragment<Body>{
             total:   getCompleteRowsFromElement(this.tfoot)[0]
         })
 
-        // Auto scroll into the table when user scrolls inside of it
-        this.listen("scroll", () => {
-            if(Math.round(this.root.getClientRects().item(0).top) != 0){
-                scrollIntoElement(this.root)
-            }
-        })
+        this.addScrollHelper()
     }
 
     private set head(head: TableHead){
@@ -76,9 +72,9 @@ export class Table extends InlineFragment<Body>{
         let totalRowData: RowData = []
         data.forEach(rowData => rowData.forEach(
             (cellData, cellIndex) => {
-                const feature = this.colFeatures[cellIndex]
+                const feature = this.colFeatures?.[cellIndex]
                 if(typeof cellData === "number" && feature?.type !== "text") {
-                    if(feature.jsFormula)
+                    if(feature?.formula)
                         totalRowData[cellIndex] = 0
                     else
                         totalRowData[cellIndex] = totalRowData[cellIndex]
@@ -88,11 +84,9 @@ export class Table extends InlineFragment<Body>{
                 else totalRowData[cellIndex] = ''
             })
         )
-        totalRowData = this.applyFormulasToRowData(totalRowData)
+        totalRowData = this.applyFeaturesToRowData(totalRowData)
 
-        // let innerHtml = ""
-        // data.forEach(rowData => innerHtml = innerHtml + this.createHtmlRowText(this.applyFormulasToRowData(rowData)))
-        this.tbody.innerHTML = data.map(rowData => this.createHtmlRowText(this.applyFormulasToRowData(rowData))).join('')
+        this.tbody.innerHTML = data.map(rowData => this.createHtmlRowText(this.applyFeaturesToRowData(rowData))).join('')
 
         if(data.length > 1)
             this.tfoot.innerHTML = this.createHtmlRowText(totalRowData)
@@ -101,12 +95,16 @@ export class Table extends InlineFragment<Body>{
         this.spanTotalPrimaryCells()
     }
 
-    private applyFormulasToRowData(rowData: RowData, totalRowData: RowData = rowData): RowData{
-        this.colFeatures.forEach((feature, index) => {
-            console.log("applyFormulasToRowData "+index)
-            if(feature.type === "numeric" && feature.jsFormula){
-
-                rowData[index] = executeFormulaForRowData(feature.jsFormula, rowData, totalRowData, this.data)
+    private applyFeaturesToRowData(rowData: RowData, totalRowData: RowData = rowData): RowData{
+        this.colFeatures?.forEach((feature, index) => {
+            if(feature.type === "numeric" && feature.formula){
+                rowData[index] = executeFormulaForRowData(feature.formula, rowData, totalRowData, this.data)
+            } else if(feature.type === "text"){
+                feature.replaceWithLabels?.fields?.forEach(fieldKey => {
+                    const field = this.parent.parent.associatedFormSnapshot.fields.get(fieldKey)
+                    const fieldValue = field ? (field as SelectField).options.get(rowData[index] as string) : undefined
+                    if(fieldValue) rowData[index] = fieldValue
+                })
             }
         })
         return rowData
@@ -169,29 +167,6 @@ export class Table extends InlineFragment<Body>{
         })
     }
 
-    private groupPrimaryCells0(size: number = this.model.groupedColumnsNumber ? this.model.groupedColumnsNumber : 0,
-                              startHtmlRow: HTMLTableRowElement = this.tbody.firstElementChild as HTMLTableRowElement,
-                              endHtmlRow: HTMLTableRowElement = this.tbody.lastElementChild as HTMLTableRowElement,
-                              nesting: number = 0){
-        if(startHtmlRow === endHtmlRow || size === nesting) return
-        const primaryHtmlCell= startHtmlRow.cells[nesting]
-        if(!primaryHtmlCell?.classList?.contains("primary")) return
-        let nextHtmlRow = startHtmlRow
-        do {
-            nextHtmlRow = nextHtmlRow.nextElementSibling as HTMLTableRowElement
-            const nextPrimaryHtmlCell = nextHtmlRow.cells[nesting]
-            if(primaryHtmlCell.textContent === nextPrimaryHtmlCell.textContent){
-                primaryHtmlCell.rowSpan++
-                nextPrimaryHtmlCell.hidden = true
-            } else {
-                this.groupPrimaryCells0(size, startHtmlRow, nextHtmlRow, nesting + 1)
-                this.groupPrimaryCells0(size, nextHtmlRow, endHtmlRow)
-                return
-            }
-        }
-        while (nextHtmlRow !== endHtmlRow)
-    }
-
     private groupPrimaryCells(startHtmlRow: HTMLTableRowElement = this.tbody.querySelector("tr:first-of-type") as HTMLTableRowElement,
                                endHtmlRow: HTMLTableRowElement = this.tbody.querySelector("tr:last-of-type") as HTMLTableRowElement,
                                nesting: number = 0){
@@ -215,6 +190,19 @@ export class Table extends InlineFragment<Body>{
             }
         }
         marshallNextNesting()
+    }
+
+    private addScrollHelper(){
+        let mouseIsInside = false
+        // Auto scroll into the table when user scrolls inside of it
+        this.listen("scroll", () => {
+            if(mouseIsInside && Math.round(this.root.getClientRects().item(0).top) != 0){
+                scrollIntoElement(this.root)
+            }
+        })
+
+        this.listen("mouseenter", () => mouseIsInside = true)
+        this.listen("mouseleave", () => mouseIsInside = false)
     }
 }
 

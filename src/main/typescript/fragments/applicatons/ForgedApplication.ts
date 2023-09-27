@@ -1,14 +1,14 @@
 import Header from "../main/Header"
 import {resolveCSS} from "../../util/resolver"
 import {Fragment} from "../Fragment"
-import {appInfoPromise, retrieveAppInfo} from "../../store/appInfo"
+import {appInfo} from "../../store/appInfo"
 import Form from "../form/Form";
 import {appConfig} from "../../store/appConfig";
 import {NavigationContainer} from "../navigation/NavigationContainer"
-import {ReportAccessor} from "../../api/ReportAccessor";
-import ReportSlot from "../report/ReportSlot";
+import {Report} from "../../api/Report"
+import ReportSlot from "../report/ReportSlot"
 
-
+// Must be loaded only once
 const cssPromises = Promise.all([
     resolveCSS("global"),
     resolveCSS("navigation"),
@@ -27,20 +27,14 @@ export class ForgedApplication extends Fragment {
     readonly reportSlots: Map<string, ReportSlot> = new Map()
 
     constructor(root = document.body) {
-        retrieveAppInfo()
-        cssPromises.then(() => this.show())
-
         super(root)
-        this.append(this.header, this.formContainer)
         this.hide()
+        cssPromises.then(() => this.show())
+        this.append(this.header, this.formContainer)
 
         // Applying appInfo
-        appInfoPromise.then(appInfo => {
-            if (appInfo) {
-                document.title = appInfo.name
-                this.header.setAppInfo(appInfo)
-            }
-        })
+        document.title = appInfo.name
+        this.header.setAppInfo(appInfo)
         let firstTabTitle: string
 
         // Determining forms and slots
@@ -66,13 +60,15 @@ export class ForgedApplication extends Fragment {
     }
 
     private createForm(config: FormConfig) : Form{
-        const reportAccessor = new ReportAccessor(config.submitPath)
+        const reportAccessor = new Report(config.submitPath)
         const form = new Form(config)
-        form.onSubmit = (jsonValues) => {
+        form.onSubmit = (jsonValues, prettyValues) => {
             form.submitButton.disable()
+            const formSnapshot = {...form} as Form
             reportAccessor.fetch(jsonValues).then(reportModel => {
-                this.reportSlots.get(reportModel.slot)?.applyReport(reportModel as ReportModel, jsonValues)
-                form.submitButton.enable()})
+                this.reportSlots.get(reportModel.slot)?.applyReport(reportModel as ReportModel, formSnapshot)
+                form.submitButton.enable()
+            })
         }
         return form
     }

@@ -1,4 +1,10 @@
-import {IndexApplication} from "./fragments/applicatons/IndexApplication"
+import {UserCheck} from "./api/UserCheck"
 
 
-new IndexApplication()
+new UserCheck().fetch().then(() => {
+        import("./fragments/applicatons/IndexApplication").then(IndexApplication =>
+            // @ts-ignore
+            new IndexApplication())
+    }
+)
+

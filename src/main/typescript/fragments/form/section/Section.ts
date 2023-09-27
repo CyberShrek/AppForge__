@@ -15,10 +15,10 @@ export class Section extends InlineFragment<Form>{
 
     getField = (fieldKey: string) => this.fields.get(fieldKey)
 
-    constructor(parent: Form, gridLayout: FormConfig["gridLayout"], gridSize: number, config: FormSectionConfig) {
+    constructor(parent: Form, gridLayout: FormConfig["layout"], config: FormSectionConfig) {
         super(parent, `
             <div class="section"
-                 style="${gridLayout === 'vertical' ? 'grid-template-rows' : 'grid-template-columns'}: repeat(${gridSize ? gridSize : 5}, 1fr)">
+                 style="${gridLayout}">
             </div>`)
         if (config.title)
             this.append(create(`<p>${config.title}</p>`))

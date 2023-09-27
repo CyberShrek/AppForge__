@@ -59,26 +59,30 @@ interface XlsxTableModel {
     total: CompleteRow
 }
 
-
 /////////////
 // CONTEXT //
 /////////////
-type ContextFields = {[label: string]: string } // Value is field key
+interface ContextFields {
+    [label: string]: string
+} // Value is field key
 
-
-///////////
-// TYPES //
-///////////
+/////////////
+// FEATURE //
+/////////////
 type DataFeature = {
     type: string
 } & (TextColumn | NumericColumn)
 
 interface TextColumn {
     type: "text"
+    replaceWithLabels?: {
+        fields?: FieldKey[]
+        includeCode?: boolean
+    }
 }
 
 interface NumericColumn {
     type: "numeric"
     colored?: boolean
-    jsFormula?: string
+    formula?: string
 }

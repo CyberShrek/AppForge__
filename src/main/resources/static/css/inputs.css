@@ -66,23 +66,24 @@ button.negative{
     filter: contrast(60%)
 }
 /* SWITCH */
-.switch {
+label.switch {
     display: flex;
-    position: relative;
     margin-left: var(--switch-width);
     font-weight: bold;
     font-size: large;
+    min-width: min-content;
+    max-width: max-content;
     justify-content: start;
     align-items: center;
 }
 
-.switch input {
+label.switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.switch .slider {
+label.switch .slider {
     position: absolute;
     cursor: pointer;
     background-color: #ccc;
@@ -95,7 +96,7 @@ button.negative{
     transform: translateX(-100%);
 }
 
-.switch .slider:before {
+label.switch .slider:before {
     position: absolute;
     content: "";
     height: calc(var(--switch-height) - 6px);
@@ -106,19 +107,19 @@ button.negative{
     transition: .2s;
     border-radius: var(--border-radius);
 }
-.switch input:hover + .slider {
+label.switch input:hover + .slider {
     background: var(--secondary-color);
 }
 
-.switch input:checked + .slider {
+label.switch input:checked + .slider {
     background-color: var(--primary-color);
 }
 
-.switch input:focus + .slider {
+label.switch input:focus + .slider {
     box-shadow: 0 0 1px var(--primary-color);
 }
 
-.switch input:checked + .slider:before {
+label.switch input:checked + .slider:before {
     transform: translateX(calc(var(--switch-width) - var(--switch-height)));
 }
 
@@ -149,9 +150,15 @@ button.negative{
     color: var(--primary-color);
 }
 
-.multiselect, .multiselect *:not(.vscomp-option) {
+.multiselect, .multiselect *:not(:is(.vscomp-option, .vscomp-option-text, .vscomp-search-container)) {
     border-radius: var(--border-radius);
 }
+.multiselect .vscomp-options-container {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+
 .vscomp-wrapper.focused .vscomp-toggle-button, .vscomp-wrapper:focus .vscomp-toggle-button{
     box-shadow: none;
 }
@@ -165,8 +172,16 @@ button.negative{
     border: var(--light-border);
 }
 
+.multiselect .vscomp-option-text{
+    
+}
+
+.multiselect :is(.vscomp-option:hover, .vscomp-option.selected) .vscomp-option-text{
+   white-space: normal;
+}
+
 /* DATEPICKER */
-.datepicker {
+.datepicker{
     display: flex;
     height: var(--input-height);
     border: var(--light-border);
@@ -182,7 +197,6 @@ button.negative{
 .datepicker input{
     width: 100%;
     font-size: medium;
-    text-align: center;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }

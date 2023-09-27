@@ -6,8 +6,8 @@ export class AppInfoAccessor extends JsonAccessor<AppInfo>{
     override path = "/appforge/info"
     override errorFooter = "Не удалось загрузить информацию о приложении"
 
-    override fetch(): Promise<AppInfo> {
+    constructor() {
+        super()
         this.headers = {Code: valueOrDefault(appConfig.code, "")}
-        return super.fetch()
     }
 }

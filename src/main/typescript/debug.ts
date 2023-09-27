@@ -42,14 +42,12 @@ setAppConfig({
         additionalSection: {
             calculationTypeField: {
                 type: "select",
-                label: "Вид расчёта",
-                size: 3
+                label: "Вид расчёта"
             },
             travelTypesField: {
                 type: "select",
                 multiple: true,
-                label: "Виды проездных документов",
-                size: 2
+                label: "Виды проездных документов"
             },
             shippingTypesField: {
                 type: "select",
@@ -95,7 +93,8 @@ setAppConfig({
         additionalSection: {
             trainCategoryField: {
                 type: "select",
-                label: "Категория поезда"
+                label: "Категория поезда",
+                size: 2
             }
         },
         gridLayout: "horizontal",
@@ -104,6 +103,9 @@ setAppConfig({
     },
     reportSlot: {
         title: "Результат поиска"
+    },
+    info: {
+        additional: "Чё-то там"
     }
 })
 

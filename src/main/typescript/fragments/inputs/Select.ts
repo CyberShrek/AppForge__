@@ -7,13 +7,11 @@ const virtualSelectModulePromise = resolveJS("third-party/virtual-select.min")
 
 export default class Select extends Fragment{
 
-    static readonly defaultKeyName = "default"
-
-    pickedOptions: Options = new Map()
+    pickedKeys: OptionKey[] = []
 
     readonly modulePromise = virtualSelectModulePromise
 
-    constructor(config: SelectConfig, onPick: (pickedOptions: Options) => void) {
+    constructor(private config: SelectConfig, onPick: (pickedOptions: OptionKey[]) => void) {
         super(`<div class="select"></div>`)
         this.modulePromise.then(() => applyVirtualSelect(this.root, config))
 
@@ -21,31 +19,31 @@ export default class Select extends Fragment{
             const value = event.currentTarget// @ts-ignore !!! Resolved by html import !!!
                 .value
 
-            const pickedOptions: Options = value.length > 0 ? this.findOptions(
+            const pickedKeys: typeof this.pickedKeys = value.length > 0 ? (
                 typeof value === "object" ? value : [value]
-            ) : new Map()
+            ) : []
 
             // Need for check real changes to prevent callback doubling after options setting
-            if(!compareMaps(this.pickedOptions, pickedOptions)) {
-                this.pickedOptions = pickedOptions
-                onPick(this.pickedOptions)
+            if (this.pickedKeys.sort().toString() !== pickedKeys.sort().toString()) {
+                this.pickedKeys = pickedKeys
+                onPick(this.pickedKeys)
             }
         })
     }
 
-    private _options: Options
+    private options: Options = new Map()
 
-    get options(): Options{
-        return this._options
-    }
-
-    set options(options: Options){
-        this.modulePromise.then(() => {
-            this._options = options
+    updateOptions(options: Options){
+        if(compareMaps(this.options, options)) return
+        const pickedKeysBuffer = [...this.pickedKeys]
+        return this.modulePromise.then(() => {
             if(options && options.size > 0) {
+                this.options = options
                 this.root// @ts-ignore !!! Resolved by html import !!!
                     .setOptions(mapToVirtualSelectOptions(options))
-                this.pickOptions(valueOrDefault(this.pickedKeys, this.defaultKeys))
+
+                this.pickOptions(pickedKeysBuffer)
+
                 this.root// @ts-ignore !!! Resolved by html import !!!
                     .enable()
             } else {
@@ -67,14 +65,6 @@ export default class Select extends Fragment{
 
     findOptions=(keys: OptionKey[]): Options =>
         new Map(keys.map(key => [key, this.options.get(key)]))
-
-    get pickedKeys(): OptionKey[]{
-        return Array.from(this.pickedOptions.keys())
-    }
-
-    get defaultKeys(): OptionKey[]{
-        return this.options.get(Select.defaultKeyName)?.split(",")
-    }
 }
 
 function applyVirtualSelect(target: HTMLElement, config: SelectConfig){
@@ -87,12 +77,13 @@ function applyVirtualSelect(target: HTMLElement, config: SelectConfig){
         markSearchResults: true,
         zIndex: 100,
         optionsCount: 6,
-        multiple: config.multiple,
-        search: config.search,
-        hasOptionDescription: config.showCodes,
-        disableSelectAll: config.disableSelectAll,
+        multiple: !!config.multiple,
+        search: !!config.search,
+        hasOptionDescription: !!config.showCodes,
+        disableSelectAll: !!config.disableSelectAll,
         maxValues: config.maxValues,
         maxWidth: "100%",
+        position: "bottom",
 
         placeholder: "",
         noOptionsText: "Варианты не найдены",
@@ -108,7 +99,6 @@ function applyVirtualSelect(target: HTMLElement, config: SelectConfig){
 }
 
 function mapToVirtualSelectOptions(map: Map<string, string>): any[]{
-    map.delete(Select.defaultKeyName)
     return [...map.entries()].map(entry => {
         return {
             label: entry[1],

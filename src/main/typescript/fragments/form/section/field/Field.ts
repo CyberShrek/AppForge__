@@ -1,5 +1,5 @@
 import {Fragment} from "../../../Fragment"
-import {jsonify} from "../../../../util/data"
+import {jsonify, prettify} from "../../../../util/data"
 import {Section} from "../Section"
 import {InlineFragment} from "../../../InlineFragment";
 import {create} from "../../../../util/domWizard";
@@ -16,6 +16,10 @@ export abstract class Field<VALUE> extends InlineFragment<Section>{
 
     get jsonValue(){
         return jsonify(this.value)
+    }
+
+    get prettyValue(){
+        return prettify(this.value)
     }
 
     makeValid(){
@@ -36,7 +40,7 @@ export abstract class Field<VALUE> extends InlineFragment<Section>{
         initValue: VALUE,
         ...content: (string | Element | Fragment)[])
     {
-        super(parent, `<div class="field" style="grid-column: span ${config.size ? config.size : 1}"></div>`)
+        super(parent, `<div class="${config.type}-field field" ${config.size ? `style="grid-column: span ${config.size}` : ''}"></div>`)
 
         if(createParagraph && config.label)
             this.append(create(`<p>${config.label}</p>`))
@@ -44,6 +48,5 @@ export abstract class Field<VALUE> extends InlineFragment<Section>{
         this.append(...content)
         this.value = initValue
     }
-
     private onValueChangeCallbacks: ((value?: VALUE) => void)[] = []
 }
