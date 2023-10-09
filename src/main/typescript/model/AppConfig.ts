@@ -49,7 +49,7 @@ interface SelectFieldConfig extends CommonFieldConfig, SelectConfig{
     returnMap?: boolean
 }
 
-interface TextFieldConfig extends CommonFieldConfig{
+interface TextFieldConfig extends CommonFieldConfig, TextInputConfig{
     type: "text"
     area?: number
 }
@@ -58,4 +58,33 @@ interface ReportSlotConfig {
     title: string
     isModal?: boolean
     associatedWith?: string
+}
+
+interface CheckboxConfig{
+    label?: string
+}
+
+interface SwitchConfig extends CheckboxConfig{
+
+}
+
+interface SelectConfig {
+    multiple?: boolean
+    search?: boolean
+    showCodes?: boolean
+    disableSelectAll?: boolean
+    maxValues?: number
+}
+
+interface TextInputConfig {
+    title?: string
+    placeholder?: string
+}
+
+interface DatepickerConfig {
+    minYear?: number
+    maxYear?: number
+    minDays?: number
+    maxDays?: number
+    range?:  boolean
 }

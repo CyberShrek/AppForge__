@@ -26,7 +26,6 @@ interface ServiceBankSetup {
         roads?: string[],
         [custom: string]: any
     }
-    permitAll?: boolean
 }
 
 type Fields = {[name: string]: FieldKey}

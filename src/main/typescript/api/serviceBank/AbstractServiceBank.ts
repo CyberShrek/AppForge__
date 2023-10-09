@@ -29,13 +29,13 @@ export abstract class AbstractServiceBank extends JsonAccessor{
         errorMessageEnding: string
     }
 
-    constructor(protected permitAll: boolean) {
+    constructor() {
         super()
         this.method = "POST"
     }
 
     override fetch(properties?: ServiceBankSetup["properties"]): Promise<Options> {
-        this.properties = properties
+        this.properties  = properties
         this.errorFooter = "Не удалось загрузить список " + this.responseStep.errorMessageEnding
         if(this.mainConditions.find(conditionCallback => conditionCallback() === false))
             return new Promise(resolve => resolve(new Map()))
@@ -44,7 +44,7 @@ export abstract class AbstractServiceBank extends JsonAccessor{
                 this.setServiceBankBody(this.requestStep.listName, this.requestStep.specificBodiesFn?.())
                 return this.fetchServiceBankOptions(this.responseStep.parseItemToOptionFn, this.responseStep.filterFn)
             }
-            if(!this.permitAll && !userInfo.isAdmin && this.userCheckPermission){
+            if(!(userInfo.isSuperUser || !this.userCheckPermission)){
                 this.properties[this.userCheckPermission.propertyName] = this.userCheckPermission.propertyValue
             }
             return fetchCallback()

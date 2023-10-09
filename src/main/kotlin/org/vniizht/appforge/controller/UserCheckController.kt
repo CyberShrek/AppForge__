@@ -16,12 +16,15 @@ class UserCheckController(val userCheck: UserCheck) {
     @GetMapping
     fun applyCode(@RequestParam code: String): UserInfo {
         userCheck.createOrContinueSession(code)
-        return UserInfo(
-            isAdmin = userCheck.ejb!!.isSysAdmin,
-            carrier = userCheck.ejb!!.skp,
-            country = userCheck.ejb!!.userGos!!,
-            road    = userCheck.ejb!!.userDor,
-            agent   = userCheck.ejb!!.agent
-        )
+        with(userCheck.ejb!!){
+            fun hasPermissionTo(vararg permissions: String) = permissions.find { permission -> getParamI(permission) == 0 } == null
+            return UserInfo(
+                isSuperUser = true,//hasPermissionTo("create", "read", "update", "delete", "load", "download"),
+                carrier     = skp,
+                country     = userGos,
+                road        = userDor,
+                agent       = agent
+            )
+        }
     }
 }

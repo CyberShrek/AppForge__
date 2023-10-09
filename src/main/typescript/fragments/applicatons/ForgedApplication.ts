@@ -64,7 +64,7 @@ export class ForgedApplication extends Fragment {
         const form = new Form(config)
         form.onSubmit = (jsonValues, prettyValues) => {
             form.submitButton.disable()
-            const formSnapshot = {...form} as Form
+            const formSnapshot = form
             reportAccessor.fetch(jsonValues).then(reportModel => {
                 this.reportSlots.get(reportModel.slot)?.applyReport(reportModel as ReportModel, formSnapshot)
                 form.submitButton.enable()

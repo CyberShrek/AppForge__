@@ -17,6 +17,8 @@ export class SelectField extends Field<OptionKey[]> {
     protected selectFragment: Select
 
     options: Options = new Map()
+
+    private staticOptions: Options = new Map()
     private serviceBankOptions: Options = new Map()
 
     awaitingForServiceBankOptions: boolean = false
@@ -40,8 +42,8 @@ export class SelectField extends Field<OptionKey[]> {
         return prettify(this.selectFragment.findOptions(this.value))
     }
 
-    setOptions(options: Options) {
-        this.options = options
+    setStaticOptions(options: Options) {
+        this.staticOptions = options
         this.updateOptions()
     }
 
@@ -59,7 +61,8 @@ export class SelectField extends Field<OptionKey[]> {
        }
 
     private updateOptions() {
-        return this.selectFragment.updateOptions(concatMaps(this.options, this.serviceBankOptions))
+        this.options = concatMaps(this.staticOptions, this.serviceBankOptions)
+        return this.selectFragment.updateOptions(this.options)
     }
 }
 
@@ -83,11 +86,11 @@ function setupServiceBankRetrieving(form: Form, config: ServiceBankSetup, onFetc
 }
 
 function createServiceBankAccessor(config: ServiceBankSetup): AbstractServiceBank {
-    const accessor = config.type === "carriers" ? new CarriersServiceBank(config.permitAll) :
-        config.type === "countries" ? new CountriesServiceBank(config.permitAll) :
-            config.type === "regions" ? new RegionsServiceBank(config.permitAll) :
-                config.type === "roads" ? new RoadsServiceBank(config.permitAll) :
-                    config.type === "stations" ? new StationsServiceBank(config.permitAll)
+    const accessor = config.type === "carriers" ? new CarriersServiceBank() :
+        config.type === "countries" ? new CountriesServiceBank() :
+            config.type === "regions" ? new RegionsServiceBank() :
+                config.type === "roads" ? new RoadsServiceBank() :
+                    config.type === "stations" ? new StationsServiceBank()
                         : new Error("Cannot resolve ServiceBank type: " + config.type)
 
     if(accessor instanceof Error)

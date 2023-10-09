@@ -44,7 +44,7 @@ export default class Form extends Fragment<HTMLFormElement> {
     }
 
     get prettyFieldValues(){
-        const prettyFieldValues = new Map<FieldKey, any>
+        const prettyFieldValues = new Map<FieldKey, any>()
         this.fields.forEach((field, key) => {
             prettyFieldValues.set(key, field.prettyValue)
         })
@@ -93,7 +93,7 @@ export default class Form extends Fragment<HTMLFormElement> {
                     Object.entries(statement.setOptions).forEach(([fieldKey, options]) => {
                         const field = this.fields.get(fieldKey)
                             if(field && field instanceof SelectField)
-                                field.setOptions(jsonToMap(options))
+                                field.setStaticOptions(jsonToMap(options))
                     })
                 }
                 if(statement.setupServiceBank){
