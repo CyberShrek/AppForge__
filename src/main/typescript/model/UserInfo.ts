@@ -1,5 +1,5 @@
 interface UserInfo {
-    isSuperUser: boolean,
+    superUser: boolean,
     carrier: number,
     country: string,
     road: string,

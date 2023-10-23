@@ -12,5 +12,7 @@ interface AppInfo {
     helpPath: string;
     comment: string;
     tables: string[];
-    instructionPath: string
+    instructionPath: string,
+    description: string
+    additional: string
 }

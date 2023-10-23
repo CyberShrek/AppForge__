@@ -102,7 +102,7 @@ export class Table extends InlineFragment<Body>{
             } else if(feature.type === "text"){
                 feature.replaceWithLabels?.fields?.forEach(fieldKey => {
                     const field = this.parent.parent.associatedFormSnapshot.fields.get(fieldKey)
-                    const fieldValue = field ? (field as SelectField).options.get(rowData[index] as string) : undefined
+                    const fieldValue = field ? (field as SelectField).options.get(`${rowData[index]}`) : undefined
                     if(fieldValue) rowData[index] = fieldValue
                 })
             }

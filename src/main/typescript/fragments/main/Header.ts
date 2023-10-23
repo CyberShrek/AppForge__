@@ -1,5 +1,5 @@
 import {resolveCSS} from "../../util/resolver"
-import {popupList, popupTimeoutAction} from "../../util/modal"
+import {popupAction, popupList, popupTimeoutAction} from "../../util/modal"
 import {appConfig} from "../../store/appConfig"
 import {Fragment} from "../Fragment"
 import {Button} from "../inputs/Button"
@@ -43,8 +43,9 @@ export default class Header extends Fragment<HTMLHeadingElement>{
     }
 
     private showHelpDownloader(){
-        popupTimeoutAction(
+        popupAction(
             "Руководство",
+            valueOrDefault(appConfig.info.description, ""),
             "Скачать инструкцию",
             () => downloadUserManual(this.appInfo.helpPath)
         )

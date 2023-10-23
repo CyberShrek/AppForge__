@@ -44,7 +44,9 @@ export abstract class AbstractServiceBank extends JsonAccessor{
                 this.setServiceBankBody(this.requestStep.listName, this.requestStep.specificBodiesFn?.())
                 return this.fetchServiceBankOptions(this.responseStep.parseItemToOptionFn, this.responseStep.filterFn)
             }
-            if(!(userInfo.isSuperUser || !this.userCheckPermission)){
+            if(!userInfo.superUser && this.userCheckPermission){
+                console.log(userInfo.superUser)
+                console.log(this.userCheckPermission)
                 this.properties[this.userCheckPermission.propertyName] = this.userCheckPermission.propertyValue
             }
             return fetchCallback()

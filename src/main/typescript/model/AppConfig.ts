@@ -2,6 +2,7 @@ type AppConfig = {
     code: string
     info?: {
         updateDate?: string
+        description?: string
         additional?: string
     }
 } & {

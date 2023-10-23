@@ -13,7 +13,10 @@ export default class Select extends Fragment{
 
     constructor(private config: SelectConfig, onPick: (pickedOptions: OptionKey[]) => void) {
         super(`<div class="select"></div>`)
-        this.modulePromise.then(() => applyVirtualSelect(this.root, config))
+        this.modulePromise.then(() => {
+            applyVirtualSelect(this.root, config)
+            // this.root.
+        })
 
         this.listen("change", event => {
             const value = event.currentTarget// @ts-ignore !!! Resolved by html import !!!
@@ -84,6 +87,7 @@ function applyVirtualSelect(target: HTMLElement, config: SelectConfig){
         maxValues: config.maxValues,
         maxWidth: "100%",
         position: "bottom",
+        disableAllOptionsSelectedText: true,
 
         placeholder: "",
         noOptionsText: "Варианты не найдены",

@@ -20,6 +20,8 @@ export default class Form extends Fragment<HTMLFormElement> {
         text: valueOrDefault(this.config?.submitText, "")
     }, () => this.onSubmit(this.jsonFieldValues, this.prettyFieldValues))
 
+    private startValidating = false
+
     private statementAccessor: FormStatementAccessor
 
     constructor(protected readonly config: FormConfig, public onSubmit?: (jsonFieldValues: JsonProperties, fullFieldValues: Map<FieldKey, any>) => void) {
@@ -37,7 +39,14 @@ export default class Form extends Fragment<HTMLFormElement> {
 
         if(this.config.statementPath) this.startStatementRetrieving()
         this.append(this.submitButton)
+        this.submitButton.listen("mouseenter", () => {
+            this.startValidating = true
+            this.submitButton.disable()
+            this.validateFields()
+        })
     }
+
+    private currentStatement: FormStatement
 
     get jsonFieldValues(){
         return jsonifyFields(this.fields)
@@ -75,20 +84,12 @@ export default class Form extends Fragment<HTMLFormElement> {
 
     // TODO refactor
     private manageFieldsStatement(trigger: string){
-        this.submitButton.disable()
         this.statementAccessor.path = this.config.statementPath
         return this.statementAccessor.fetch(this.jsonFieldValues, trigger).then(statement => {
             if(!!statement){
-                if (statement.wrong)
-                    this.submitButton.disable()
-                else
-                    this.submitButton.enable()
+                this.currentStatement = statement
+                this.validateFields()
 
-                this.fields.forEach((field, fieldKey) => {
-                    field.makeValid()
-                    if(statement.wrong?.find(wrongFieldKey => fieldKey === wrongFieldKey))
-                        field.makeInvalid()
-                })
                 if(statement.setOptions){
                     Object.entries(statement.setOptions).forEach(([fieldKey, options]) => {
                         const field = this.fields.get(fieldKey)
@@ -124,5 +125,20 @@ export default class Form extends Fragment<HTMLFormElement> {
                 })
             }
         })
+    }
+
+    private validateFields(){
+        if(this.startValidating){
+            if (this.currentStatement.wrong)
+                this.submitButton.disable()
+            else
+                this.submitButton.enable()
+
+            this.fields.forEach((field, fieldKey) => {
+                field.makeValid()
+                if(this.currentStatement.wrong?.find(wrongFieldKey => fieldKey === wrongFieldKey))
+                    field.makeInvalid()
+            })
+        }
     }
 }

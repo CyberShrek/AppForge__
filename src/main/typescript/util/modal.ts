@@ -19,6 +19,18 @@ export function popupList(title?: string, list?: { icon: string, text: string }[
     })
 }
 
+export function popupAction(title?: string, text?: string, confirmButtonText?: string, onConfirm?: () => void){
+    popupSweetModal({
+        title,
+        text,
+        confirmButtonText,
+        showConfirmButton: true
+    }).then(result => {
+        if(result.isConfirmed)
+            onConfirm()
+    })
+}
+
 export function popupTimeoutAction(text?: string, confirmButtonText?: string, onConfirm?: () => void, radioOptions?: {[key: string]: string}){
     popupSweetModal({
         text, confirmButtonText,

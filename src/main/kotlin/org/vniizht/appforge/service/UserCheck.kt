@@ -15,31 +15,37 @@ class UserCheck(val request: HttpServletRequest) {
     var ejb: UserCheckRemote? = null
 
     fun createOrContinueSession(code: String) {
-        if(ejb == null) {
-            try {
-                val uCheck =
-                    InitialContext().lookup("java:global/UCheck-1.0/UserCheck!com.vniizht.ucheck.UserCheckRemote") as UserCheckRemote
-                uCheck.setUser(request.remoteUser)
-                uCheck.setTaskCode(code)
-                uCheck.setStatTaskCode(code)
-                uCheck.setIp(
-                    if (request.getHeader("X-Real-IP") != null) request.getHeader("X-Real-IP") else if (request.getHeader(
-                            "X-Forwarded-For"
-                        ) != null
-                    ) request.getHeader("X-Forwarded-For") else request.remoteAddr
-                )
-                if (!uCheck.check()) {
-                    throw Exception("Доступ запрещён")
-                }
-                ejb = uCheck
-            } catch (ex: Exception) {
-                throw UserCheckException(ex.message)
+        if (ejb != null){
+            ejb?.SaveTimeExit()
+            ejb?.remove()
+            ejb = null
+        }
+
+        try {
+            val uCheck =
+                InitialContext().lookup("java:global/UCheck-1.0/UserCheck!com.vniizht.ucheck.UserCheckRemote") as UserCheckRemote
+            uCheck.setUser(request.remoteUser)
+            uCheck.setTaskCode(code)
+            uCheck.setStatTaskCode(code)
+            uCheck.setIp(
+                if (request.getHeader("X-Real-IP") != null) request.getHeader("X-Real-IP") else if (request.getHeader(
+                        "X-Forwarded-For"
+                    ) != null
+                ) request.getHeader("X-Forwarded-For") else request.remoteAddr
+            )
+            if (!uCheck.check()) {
+                throw Exception("Доступ запрещён")
             }
+            ejb = uCheck
+            println("created")
+        } catch (ex: Exception) {
+            throw UserCheckException(ex.message)
         }
     }
 
     @PreDestroy
     private fun exit(){
+        println("destroyed")
         ejb?.SaveTimeExit()
         ejb?.remove()
     }

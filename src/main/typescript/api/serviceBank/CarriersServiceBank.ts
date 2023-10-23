@@ -6,10 +6,13 @@ export class CarriersServiceBank extends AbstractServiceBank
     protected mainConditions = [this.dataCondition]
 
     protected requestStep = {
-        listName: "perList"
+        listName: "perList",
+        specificBodiesFn: () => this.properties.countries.map(code => {
+            return {"gos": code}
+        })
     }
     protected responseStep = {
-        parseItemToOptionFn: item => [`${item["gos"]}.${item["skp"]}`, item["nazvp"]] as Option,
+        parseItemToOptionFn: item => [`${this.properties.countries?.length >= 2 ? item["gos"] + '.' : ''}${item["skp"]}`, item["nazvp"]] as Option,
         errorMessageEnding: "перевозчиков"
     }
     protected userCheckPermission = {
@@ -17,5 +20,5 @@ export class CarriersServiceBank extends AbstractServiceBank
         propertyValue: userInfo.carrier
     }
 
-    userAssociatedOptionKeys = [`${userInfo.country}.${userInfo.carrier}`]
+    userAssociatedOptionKeys = [`${userInfo.carrier}`]
 }

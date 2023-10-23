@@ -3,10 +3,12 @@ import resolveNodeJs from '@rollup/plugin-node-resolve'
 import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
 import commonjs from '@rollup/plugin-commonjs'
+import sveltePreprocess from "svelte-preprocess"
+import svelte from "rollup-plugin-svelte";
 
 export default  {
 
-    input: [`./src/main/typescript/index.ts`, `./src/main/typescript/forge.ts`, `./src/main/typescript/debug.ts`],
+    input: [`./src/main/typescript/index.ts`, `./src/main/typescript/forge.ts`, `./src/test/typescript/components_debug/debug.js`],
     output: [
         {
             dir: "./src/main/resources/static/js/built",
@@ -32,7 +34,13 @@ export default  {
             dedupe: ['s']
         }),
         applyTypescript(),
-        applyTerser()
+        applyTerser(),
+        svelte({
+            compilerOptions: {
+
+            },
+            preprocess: sveltePreprocess(),
+        })
     ],
     onwarn: (warning, handle) => {
         // Ignore node_modules warnings
