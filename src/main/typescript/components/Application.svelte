@@ -2,10 +2,11 @@
 
     import {resolveCSS} from "../util/resolver"
     import Header from "./navigation/Header.svelte"
+    import NavContainer from "./navigation/NavContainer.svelte";
 
     export let
         config:    AppConfig,
-        appInfo:   AppInfo,
+        appInfo:   AppInfo = {},
         userInfo:  UserInfo
 
     // Must be loaded only once
@@ -20,4 +21,16 @@
 
 </script>
 
-<Header appInfo></Header>
+<Header {appInfo}></Header>
+
+<!--<NavContainer>-->
+<!--    <div>-->
+<!--        1-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        2-->
+<!--    </div>-->
+<!--    <div>-->
+<!--        3-->
+<!--    </div>-->
+<!--</NavContainer>-->

@@ -12,7 +12,7 @@
         <display-name>Ограничение1</display-name>
         <web-resource-collection>
             <web-resource-name>all</web-resource-name>
-            <description>secure all content</description>
+            <description>secure all data</description>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
