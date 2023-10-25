@@ -43,7 +43,7 @@
 <header id="header">
     <a href="{appInfo.groupPath}">{appInfo.groupName}</a>|<p>{appInfo.name}</p>
 
-    <Button hint="Сброс"                    frameless on:click={() => location.reload()}><Image name="reset.svg"/></Button>
-    <Button hint="Информация о приложении"  frameless on:click={showAppInfo}            ><Image name="info.svg"/></Button>
-    <Button hint="Руководство пользователя" frameless on:click={showHelpDownloader}     ><Image name="help.svg"/></Button>
+    <Button hint="Сброс"                    frameless image="reset.svg" on:click={() => location.reload()}/>
+    <Button hint="Информация о приложении"  frameless image="info.svg"  on:click={showAppInfo}/>
+    <Button hint="Руководство пользователя" frameless image="help.svg"  on:click={showHelpDownloader}/>
 </header>
