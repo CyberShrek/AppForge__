@@ -5,9 +5,9 @@ import Form from "../Form"
 import {DatepickerField} from "./field/DatepickerField"
 import {SwitchField} from "./field/SwitchField"
 import {SelectField} from "./field/SelectField"
-import {create} from "../../../util/domWizard";
-import {InlineFragment} from "../../InlineFragment";
-import {TextField} from "./field/TextField";
+import {create} from "../../../util/domWizard"
+import {InlineFragment} from "../../InlineFragment"
+import {TextField} from "./field/TextField"
 
 export class Section extends InlineFragment<Form>{
 

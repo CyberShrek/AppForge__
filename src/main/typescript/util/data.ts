@@ -149,3 +149,12 @@ export const valueOrError = <T>(value: T | any, errorMessage: string): T =>{
     if(isNullOrUndefined(value)) throw new Error(errorMessage)
     return value
 }
+
+export function extractJsonItemsWithSuffix(json: {}, suffix: string): {}{
+    const items = {}
+    for (const key in json)
+        if(key.endsWith(suffix))
+            items[key] = json[key]
+
+    return items
+}
