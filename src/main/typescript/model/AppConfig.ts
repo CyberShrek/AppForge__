@@ -37,7 +37,7 @@ interface CommonFieldConfig {
     type: "switch" | "datepicker" | "select" | "text"
 }
 
-interface SwitchFieldConfig extends CommonFieldConfig, SwitchConfig{
+interface SwitchFieldConfig extends CommonFieldConfig, CheckboxConfig{
     type: "switch"
 }
 
@@ -63,10 +63,7 @@ interface ReportSlotConfig {
 
 interface CheckboxConfig{
     label?: string
-}
-
-interface SwitchConfig extends CheckboxConfig{
-
+    switch?: boolean
 }
 
 interface SelectConfig {

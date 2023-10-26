@@ -12,7 +12,7 @@ input, button{
     transition: 0.1s;
 }
 
-button.confirm{
+button.submit{
     padding: 0 calc(var(--input-height)/2);
     height: var(--input-height);
     font-size: large;

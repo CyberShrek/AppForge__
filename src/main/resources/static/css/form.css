@@ -3,14 +3,9 @@
     --form-cell-height: 70px;
 }
 
-form.horizontal {
+form {
     display: grid;
     grid-gap: var(--strong-indent);
-}
-
-form.vertical {
-    display: flex;
-    grid-gap: 45px;
 }
 
 form .section {
@@ -51,7 +46,7 @@ form .field > label:empty {
     width: 1px;
 }
 
-form button.confirm{
+form button.submit{
     justify-self: end;
     white-space: nowrap;
     align-self: end;

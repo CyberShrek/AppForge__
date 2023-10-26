@@ -87,7 +87,7 @@ export function prettify<T>(value: T): string{
     if (value instanceof Date)
         return stringifyDate(value)
 
-    return prettify(jsonToMap(value))
+    return JSON.stringify(value, null, 2)
 }
 
 export function jsonify<T>(value: T|null):  any{
