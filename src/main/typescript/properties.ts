@@ -1,3 +1,5 @@
 
 export const
-    imagesLocation = "/appforge/img/"
+    imagesLocation = "/appforge/img/",
+    stylesLocation = "/appforge/css/",
+    modulesLocation = "/appforge/js/"

@@ -3,18 +3,18 @@ import {Field} from "./Field"
 import {Section} from "../Section"
 import {create} from "../../../../util/domWizard";
 
-export class DatepickerField extends Field<DateRange>{
+export class DatepickerField extends Field<FormattedDate>{
 
-    private datepicker = new Datepicker(this.config, range => this.triggerValueChange(range))
+    private calendar = new Datepicker(this.config, range => this.triggerValueChange(range))
 
-    constructor(section: Section, private config: DatepickerFieldConfig) {
+    constructor(section: Section, private config: CalendarFieldConfig) {
         super(section, config, true, null)
-        this.append(this.datepicker)
-        this.value = this.datepicker.pickedDateRange
+        this.append(this.calendar)
+        this.value = this.calendar.pickedDateRange
     }
 
-    override triggerValueChange(newValue?: DateRange) {
-        this.datepicker.pickDateRange(newValue)
+    override triggerValueChange(newValue?: FormattedDate) {
+        this.calendar.pickDateRange(newValue)
         super.triggerValueChange(newValue)
     }
 }

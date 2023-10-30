@@ -13,37 +13,38 @@ const config = {
         submitPath: "submitPath",
         statementPath: "statementPath",
         firstSection: {
-            title: "firstSection",
             firstField: {
-                type: "switch",
+                type: "calendar",
                 label: "firstField"
             },
             secondField: {
-                type: "switch",
-                label: "secondField"
+                type: "calendar",
+                label: "secondField",
+                range: true
             },
             thirdField: {
-                type: "switch",
-                label: "thirdField"
+                type: "calendar",
+                label: "thirdField",
+                range: true,
+                minDays: 5,
+                maxDays: 15
             }
         },
         secondSection: {
-            title: "secondSection",
-            firstField: {
-                type: "switch",
-                label: "firstField"
-            },
-            secondField: {
-                type: "switch",
-                label: "secondField"
-            },
-            thirdField: {
-                type: "switch",
-                label: "thirdField"
-            }
+            // firstField: {
+            //     type: "switch",
+            //     label: "firstField"
+            // },
+            // secondField: {
+            //     type: "switch",
+            //     label: "secondField"
+            // },
+            // thirdField: {
+            //     type: "switch",
+            //     label: "thirdField"
+            // }
         },
         thirdSection: {
-            title: "thirdSection",
             firstField: {
                 type: "switch",
                 label: "firstField"

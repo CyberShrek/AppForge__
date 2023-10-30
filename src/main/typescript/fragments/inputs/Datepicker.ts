@@ -1,4 +1,3 @@
-import {resolveCSS} from "../../util/resolver"
 import {stringifyDate, valueOrDefault} from "../../util/data"
 import {easepick} from "@easepick/core"
 import {AmpPlugin} from "@easepick/amp-plugin"
@@ -6,13 +5,13 @@ import {RangePlugin} from "@easepick/range-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
 import {DateTime} from "@easepick/datetime"
 import {Fragment} from "../Fragment"
-import {Button} from "./Button";
+import {Button} from "./Button"
 
 const defaultDateTime = new DateTime()
 
 export default class Datepicker extends Fragment{
 
-    pickedDateRange: DateRange = easepickDetailToDateRange({
+    pickedDateRange: FormattedDate = easepickDetailToDateRange({
             date: defaultDateTime,
             start: defaultDateTime,
             end: defaultDateTime
@@ -20,17 +19,17 @@ export default class Datepicker extends Fragment{
         this.config.range
     )
 
-    pickDateRange(range: DateRange){
+    pickDateRange(range: FormattedDate){
         if(this.config.range && this.easepick){
             this.easepick.setStartDate(range[0])
             this.easepick.setEndDate(range[1])
-        }else
+        } else
             this.easepick.setDate(range[0])
     }
 
     private easepick: easepick.Core
 
-    constructor(private config: DatepickerConfig, onPick: (range: DateRange) => void) {
+    constructor(private config: CalendarConfig, onPick: (range: FormattedDate) => void) {
         super(`    
             <div class="datepicker"><input></div>
         `)
@@ -48,7 +47,7 @@ export default class Datepicker extends Fragment{
     }
 }
 
-function createPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (dateRange: DateRange) => void) {
+function createPicker(core: HTMLElement, config: CalendarConfig, onSelect: (dateRange: FormattedDate) => void) {
     return new easepick.create({
         element: core,
         calendars: config.range ? 2 : 1,
@@ -90,8 +89,8 @@ function createPicker(core: HTMLElement, config: DatepickerConfig, onSelect: (da
     })
 }
 
-function easepickDetailToDateRange(detail: any, range: boolean): DateRange{
+function easepickDetailToDateRange(detail: any, range: boolean): FormattedDate{
     return range
         ? [stringifyDate(detail.start), stringifyDate(detail.end)]
-        : [stringifyDate(detail.date)]
+        : stringifyDate(detail.date)
 }

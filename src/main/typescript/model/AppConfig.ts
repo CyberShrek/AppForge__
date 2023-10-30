@@ -29,30 +29,12 @@ type FormSectionConfig = {
     [fieldName: string]: FieldConfig
 }
 
-type FieldConfig = SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig | TextFieldConfig
+type FieldConfig = CommonFieldConfig & (CheckboxConfig | CalendarConfig | SelectConfig | TextInputConfig)
 
 interface CommonFieldConfig {
     label?: string
     size?: number
-    type: "switch" | "datepicker" | "select" | "text"
-}
-
-interface SwitchFieldConfig extends CommonFieldConfig, CheckboxConfig{
-    type: "switch"
-}
-
-interface DatepickerFieldConfig extends CommonFieldConfig, DatepickerConfig{
-    type: "datepicker"
-}
-
-interface SelectFieldConfig extends CommonFieldConfig, SelectConfig{
-    type: "select"
-    returnMap?: boolean
-}
-
-interface TextFieldConfig extends CommonFieldConfig, TextInputConfig{
-    type: "text"
-    area?: number
+    type: "switch" | "calendar" | "select" | "text"
 }
 
 interface ReportSlotConfig {
@@ -79,7 +61,7 @@ interface TextInputConfig {
     placeholder?: string
 }
 
-interface DatepickerConfig {
+interface CalendarConfig {
     minYear?: number
     maxYear?: number
     minDays?: number

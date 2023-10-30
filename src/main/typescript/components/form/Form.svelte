@@ -14,15 +14,14 @@
 
 </script>
 
-<form>
+<form on:click={event => event.preventDefault()}>
+
     {#each Object.keys(sectionConfigsObject) as sectionKey}
         <Section config={sectionConfigsObject[sectionKey]}
                  bind:jsonValue={jsonValue[sectionKey]}/>
     {/each}
 
     <Button submit text={config.submitText}
-            on:click={event => {
-                event.preventDefault()
-                alert(prettify(jsonValue))
-            }}/>
+            on:click={() => alert(prettify(jsonValue))}
+    />
 </form>

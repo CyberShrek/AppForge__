@@ -1,4 +1,4 @@
-type DateRange = [string, string?]
+type FormattedDate = [string, string] | string
 
 type OptionKey = string
 type OptionLabel = string

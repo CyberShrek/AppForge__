@@ -1,22 +1,29 @@
-const resolvedCssNames = new Set<string>()
+import {modulesLocation, stylesLocation} from "../properties";
 
-export function resolveCSS(name: string){
-    if(resolvedCssNames.has(name))
-        return Promise.resolve()
+const
+    stylesPromises  = new Map<string, Promise<any>>(),
+    modulesPromises = new Map<string, Promise<any>>()
 
-    resolvedCssNames.add(name)
-    return new Promise((resolve, reject) => {
+export const resolveCSS = (name: string) =>
+    promisePromise(name, stylesPromises, new Promise((resolve, reject) => {
         const link = document.createElement('link')
         link.rel     = 'stylesheet'
-        link.href    = `/appforge/css/${name}.css`
+        link.href    = `${stylesLocation}${name}.css`
         link.onload  = resolve
         link.onerror = reject
         document.head.appendChild(link)
-    })
-}
+    }))
 
-export function resolveJS(name: string) {
-    return import(`/appforge/js/${name}.js`)
+export const resolveJS = (name: string) =>
+    promisePromise(name, modulesPromises, import(`${modulesLocation}${name}.js`))
+
+
+function promisePromise<T>(promiseName: string,
+                           promiseContainer: Map<string, Promise<any>>,
+                           promise: Promise<T>): Promise<T>{
+
+    if(!promiseContainer.has(promiseName))
+        promiseContainer.set(promiseName, promise)
+
+    return promiseContainer.get(promiseName)
 }
-    // document.body.insertAdjacentHTML("beforeend",
-    //     `<script type="module" src="/appforge/js/${name}.js"></script>`)

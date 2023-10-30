@@ -12,6 +12,9 @@
 </script>
 
 <div class="section">
+    {#if config.title}
+        <p>{config.title}</p>
+    {/if}
     {#each Object.keys(fieldConfigsObject) as fieldKey}
         <Field config={fieldConfigsObject[fieldKey]}
                bind:value={jsonValue[fieldKey]}/>
