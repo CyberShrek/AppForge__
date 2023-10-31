@@ -1,13 +1,13 @@
 import {Head} from "./Head"
 import {Body} from "./Body"
-import {resolveCSS} from "../../util/resolver"
+import {resolveStyle} from "../../util/resolver"
 import {popupMessage} from "../../util/modal"
 import {scrollIntoElement} from "../../util/domWizard"
 import {InlineFragment} from "../InlineFragment"
 import {ForgedApplication} from "../applicatons/ForgedApplication";
 import Form from "../form/Form";
 
-resolveCSS("report")
+resolveStyle("report")
 
 export default class ReportSlot extends InlineFragment<ForgedApplication>{
 

@@ -1,8 +1,8 @@
 import swal, {SweetAlertResult} from "sweetalert2"
 import {type SweetAlertOptions, type SweetAlertPosition} from "sweetalert2"
-import {resolveCSS} from "./resolver"
+import {resolveStyle} from "./resolver"
 
-resolveCSS("third-party/sweetalert2")
+resolveStyle("third-party/sweetalert2")
 
 let mouseEvent: MouseEvent
 document.addEventListener("mousemove", event => mouseEvent = event)

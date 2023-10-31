@@ -54,6 +54,35 @@ interface SelectConfig {
     showCodes?: boolean
     disableSelectAll?: boolean
     maxValues?: number
+    sources?: {
+        endpoint?: EndpointOptionsSetup
+        serviceBank?: ServiceBankOptionsSetup
+    }
+}
+
+interface EndpointOptionsSetup {
+    path: string,
+    triggerFields?: string
+}
+
+interface ServiceBankOptionsSetup {
+    type: "carriers" | "countries" | "regions" | "roads" | "stations"
+    // Works like Endpoint.propertiesSources but with field locations as values
+    propertiesTriggerFields: {
+        postSoviet?: string,
+        date?: string,
+        carriers?: string,
+        countries?: string,
+        roads?: string
+    }
+    properties?: {
+        postSoviet?: boolean,
+        date?: string,
+        carriers?: string[],
+        countries?: string[],
+        roads?: string[],
+        [custom: string]: any
+    }
 }
 
 interface TextInputConfig {

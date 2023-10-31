@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {resolveCSS} from "../util/resolver"
+    import {resolveStyle} from "../util/resolver"
     import Header from "./navigation/Header.svelte"
     import Form from "./form/Form.svelte"
     import {extractJsonItemsWithSuffix, valueOrDefault} from "../util/data"
@@ -14,12 +14,12 @@
 
     // Must be loaded only once
     const cssPromises = Promise.all([
-        resolveCSS("global"),
-        resolveCSS("navigation"),
-        resolveCSS("inputs"),
-        resolveCSS("states"),
-        resolveCSS("third-party/animate"),
-        resolveCSS("misc")
+        resolveStyle("global"),
+        resolveStyle("navigation"),
+        resolveStyle("inputs"),
+        resolveStyle("states"),
+        resolveStyle("third-party/animate"),
+        resolveStyle("misc")
     ])
 
     let formConfigsObject = config ? extractJsonItemsWithSuffix(config, "Form") as {[fieldKey: string]: FormConfig} : {}

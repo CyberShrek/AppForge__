@@ -1,11 +1,11 @@
-import {resolveCSS} from "../../util/resolver"
+import {resolveStyle} from "../../util/resolver"
 import {popupAction, popupList, popupTimeoutAction} from "../../util/modal"
 import {appConfig} from "../../store/appConfig"
 import {Fragment} from "../Fragment"
 import {Button} from "../inputs/Button"
 import {create} from "../../util/domWizard"
 import {valueOrDefault} from "../../util/data";
-resolveCSS("header")
+resolveStyle("header")
 
 export default class Header extends Fragment<HTMLHeadingElement>{
 

@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {resolveCSS} from "../../util/resolver"
+    import {resolveStyle} from "../../util/resolver"
     import {extractJsonItemsWithSuffix, prettify} from "../../util/data"
     import Section from "./section/Section.svelte"
     import Button from "../input/Button.svelte"
 
-    resolveCSS("form")
+    resolveStyle("form")
 
     export let
         config: FormConfig,

@@ -4,7 +4,7 @@ const
     stylesPromises  = new Map<string, Promise<any>>(),
     modulesPromises = new Map<string, Promise<any>>()
 
-export const resolveCSS = (name: string) =>
+export const resolveStyle = (name: string) =>
     promisePromise(name, stylesPromises, new Promise((resolve, reject) => {
         const link = document.createElement('link')
         link.rel     = 'stylesheet'
@@ -14,7 +14,7 @@ export const resolveCSS = (name: string) =>
         document.head.appendChild(link)
     }))
 
-export const resolveJS = (name: string) =>
+export const resolveModule = (name: string) =>
     promisePromise(name, modulesPromises, import(`${modulesLocation}${name}.js`))
 
 

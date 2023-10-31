@@ -12,7 +12,7 @@ export class StationsServiceBank extends AbstractServiceBank
         })
     }
     protected responseStep = {
-        parseItemToOptionFn: item => [item["stan"], item["pnazv"]] as Option,
+        parseItemToOptionFn: item => [item["stan"], item["pnazv"]],
         errorMessageEnding: "станций"
     }
     protected userCheckPermission

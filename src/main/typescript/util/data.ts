@@ -103,7 +103,7 @@ export function jsonify<T>(value: T|null):  any{
     return value
 }
 
-export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonProperties{
+export function jsonifyFields(fields: Map<string, Field<any>>): JsonProperties{
     const json: { [key: string]: object } = {}
     fields.forEach((field, key) => {
         if(!field.hidden) {
@@ -158,3 +158,13 @@ export function extractJsonItemsWithSuffix(json: {}, suffix: string): {}{
 
     return items
 }
+
+export const mapToVirtualSelectOptions = (map: Map<string, string>) =>
+    [...map.entries()].map(entry => {
+        return {
+            label: entry[1],
+            value: entry[0],
+            alias: entry[0],
+            description: entry[0]
+        }
+    })

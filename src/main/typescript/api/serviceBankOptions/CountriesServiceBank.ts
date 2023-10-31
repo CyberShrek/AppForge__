@@ -9,7 +9,7 @@ export class CountriesServiceBank extends AbstractServiceBank
         listName: "gosList"
     }
     protected responseStep = {
-        parseItemToOptionFn: (item => [item["g_kod"], item["g_name"]] as Option),
+        parseItemToOptionFn: (item => [item["g_kod"], item["g_name"]]),
         filterFn: ((item) => !!this.properties?.postSoviet ? item["g_prsng"] == "1" : true),
         errorMessageEnding: "государств"
     }

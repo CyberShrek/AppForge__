@@ -1,5 +1,5 @@
 import Header from "../main/Header"
-import {resolveCSS} from "../../util/resolver"
+import {resolveStyle} from "../../util/resolver"
 import {Fragment} from "../Fragment"
 import {appInfo} from "../../store/appInfo"
 import Form from "../form/Form";
@@ -10,12 +10,12 @@ import ReportSlot from "../report/ReportSlot"
 
 // Must be loaded only once
 const cssPromises = Promise.all([
-    resolveCSS("global"),
-    resolveCSS("navigation"),
-    resolveCSS("inputs"),
-    resolveCSS("states"),
-    resolveCSS("third-party/animate"),
-    resolveCSS("misc")
+    resolveStyle("global"),
+    resolveStyle("navigation"),
+    resolveStyle("inputs"),
+    resolveStyle("states"),
+    resolveStyle("third-party/animate"),
+    resolveStyle("misc")
 ])
 
 export class ForgedApplication extends Fragment {

@@ -1,50 +1,68 @@
 <script lang="ts">
 
-    import {resolveCSS, resolveJS} from "../../util/resolver"
+    import {resolveStyle, resolveModule} from "../../util/resolver"
     import {onMount} from "svelte"
+    import {virtualSelectProperties} from "../../properties"
+    import {compareMaps, mapToVirtualSelectOptions} from "../../util/data";
 
-    resolveCSS("third-party/virtual-select")
-    const virtualSelectModulePromise = resolveJS("third-party/virtual-select.min")
+    resolveStyle("third-party/virtual-select")
+    resolveModule("third-party/virtual-select.min").then(() => onMount(() => initVirtualSelect()))
 
     export let
-        config: SelectConfig
+        config: SelectConfig,
+        pickedOptionKeys: string[] = []
 
-    let rootElement: HTMLDivElement
+    let virtualSelectElement: HTMLDivElement,
+        options = new Map<string, string>()
 
-    onMount(() => {
+    $: if(pickedOptionKeys)
+        pickOptions(pickedOptionKeys)
+
+    function initVirtualSelect(){
         // @ts-ignore !!! Resolved by html import !!!
         VirtualSelect.init({
-            ele: rootElement,
-            additionalClasses: "multiselect",
-            disabled: true,
-            autofocus: false,
-            markSearchResults: true,
-            zIndex: 100,
-            optionsCount: 6,
+            ...virtualSelectProperties,
+            ele: virtualSelectElement,
             multiple: !!config.multiple,
             search: !!config.search,
             hasOptionDescription: !!config.showCodes,
             disableSelectAll: !!config.disableSelectAll,
-            maxValues: config.maxValues,
-            maxWidth: "100%",
-            position: "bottom",
-            disableAllOptionsSelectedText: true,
-
-            placeholder: "",
-            noOptionsText: "Варианты не найдены",
-            noSearchResultsText: "Результатов не найдено",
-            selectAllText: "Выбрать все",
-            searchPlaceholderText: "Поиск...",
-            optionsSelectedText: "(выбрано)",
-            optionSelectedText: "вариант выбран",
-            allOptionsSelectedText: "Все",
-            clearButtonText: "Очистить",
-            moreText: "ещё..."
+            maxValues: config.maxValues
         })
-    })
+
+        virtualSelectElement.addEventListener("change", event => {
+            const newValue = event.currentTarget.value
+            pickOptions(newValue.length > 0 ? (typeof newValue === "object" ? newValue : [newValue]) : [])
+        })
+    }
+
+    function setOptions(newOptions: typeof options){
+        if(compareMaps(options, newOptions)) return
+        if(newOptions && newOptions.size > 0) {
+            options = newOptions
+            virtualSelectElement.setOptions(mapToVirtualSelectOptions(newOptions))
+            pickOptions(pickedOptionKeys)
+            virtualSelectElement.enable()
+        } else {
+            virtualSelectElement.disable()
+            virtualSelectElement.reset()
+            virtualSelectElement.blur()
+        }
+    }
+
+    function pickOptions(optionKeys){
+        // Check real changes to prevent callback doubling after options setting
+        if (Array.from(pickedOptionKeys.keys()).sort().toString() !== optionKeys.sort().toString()) {
+            pickedOptionKeys = optionKeys
+            // @ts-ignore !!! Resolved by html import !!!
+            virtualSelectElement?.setValue(pickedOptionKeys)
+        }
+    }
+
+    const findOptions=(keys: string[]): typeof options =>
+        new Map(keys.map(key => [key, this.options.get(key)]))
 
 </script>
 
-<div class="select" bind:this={rootElement}>
-
+<div class="select" bind:this={virtualSelectElement}>
 </div>
