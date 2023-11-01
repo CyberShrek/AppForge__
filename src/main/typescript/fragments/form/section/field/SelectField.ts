@@ -3,12 +3,12 @@ import Select from "../../../inputs/Select"
 import {Section} from "../Section"
 import {concatMaps, prettify} from "../../../../util/data"
 import Form from "../../Form"
-import {AbstractServiceBank} from "../../../../api/serviceBank/AbstractServiceBank";
-import {CarriersServiceBank} from "../../../../api/serviceBank/CarriersServiceBank";
-import {CountriesServiceBank} from "../../../../api/serviceBank/CountriesServiceBank";
-import {RegionsServiceBank} from "../../../../api/serviceBank/RegionsServiceBank";
-import {RoadsServiceBank} from "../../../../api/serviceBank/RoadsServiceBank";
-import {StationsServiceBank} from "../../../../api/serviceBank/StationsServiceBank";
+import {AbstractServiceBank} from "../../../../api/serviceBankOptions/AbstractServiceBank";
+import {CarriersServiceBank} from "../../../../api/serviceBankOptions/CarriersServiceBank";
+import {CountriesServiceBank} from "../../../../api/serviceBankOptions/CountriesServiceBank";
+import {RegionsServiceBank} from "../../../../api/serviceBankOptions/RegionsServiceBank";
+import {RoadsServiceBank} from "../../../../api/serviceBankOptions/RoadsServiceBank";
+import {StationsServiceBank} from "../../../../api/serviceBankOptions/StationsServiceBank";
 
 export class SelectField extends Field<OptionKey[]> {
 
@@ -16,10 +16,10 @@ export class SelectField extends Field<OptionKey[]> {
 
     protected selectFragment: Select
 
-    options: Options = new Map()
+    options: OptionsMap = new Map()
 
-    private staticOptions: Options = new Map()
-    private serviceBankOptions: Options = new Map()
+    private staticOptions: OptionsMap = new Map()
+    private serviceBankOptions: OptionsMap = new Map()
 
     awaitingForServiceBankOptions: boolean = false
 
@@ -42,7 +42,7 @@ export class SelectField extends Field<OptionKey[]> {
         return prettify(this.selectFragment.findOptions(this.value))
     }
 
-    setStaticOptions(options: Options) {
+    setStaticOptions(options: OptionsMap) {
         this.staticOptions = options
         this.updateOptions()
     }
@@ -66,13 +66,13 @@ export class SelectField extends Field<OptionKey[]> {
     }
 }
 
-function setupServiceBankRetrieving(form: Form, config: ServiceBankSetup, onFetch: (options: Options, userAssociatedOptionKeys: OptionKey[]) => void){
-    const sourceFields = config.propertiesSources ? form.findFields(Array.from(Object.values(config.propertiesSources))) : null
+function setupServiceBankRetrieving(form: Form, config: ServiceBankSetup, onFetch: (options: OptionsMap, userAssociatedOptionKeys: OptionKey[]) => void){
+    const sourceFields = config.propertiesTriggerKeys ? form.findFields(Array.from(Object.values(config.propertiesTriggerKeys))) : null
     const optionsAccessor = createServiceBankAccessor(config)
     subscribeToFields(sourceFields, () => {
         const properties: typeof config.properties = {...config.properties}
         // Remapping
-        Object.entries(config.propertiesSources).forEach(entry => {
+        Object.entries(config.propertiesTriggerKeys).forEach(entry => {
             const sourceField = sourceFields?.get(entry[1])
             if (sourceField) {
                 const json = sourceField.jsonValue

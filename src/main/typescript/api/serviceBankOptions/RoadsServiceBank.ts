@@ -12,7 +12,7 @@ export class RoadsServiceBank extends AbstractServiceBank
         })
     }
     protected responseStep = {
-        parseItemToOptionFn: item => [`${item["d_kod"]}`, item["d_name"]] as Option,
+        parseItemToOptionFn: item => [`${item["d_kod"]}`, item["d_name"]],
         errorMessageEnding: "дорог"
     }
 

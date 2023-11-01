@@ -8,7 +8,7 @@ export class RegionsServiceBank extends AbstractServiceBank
         listName: "sfList"
     }
     protected responseStep = {
-        parseItemToOptionFn: item => [item["sf_kod2"], item["sf_name"]] as Option,
+        parseItemToOptionFn: item => [item["sf_kod2"], item["sf_name"]],
         errorMessageEnding: "субъектов"
     }
     protected userCheckPermission

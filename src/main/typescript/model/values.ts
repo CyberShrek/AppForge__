@@ -1,9 +1,7 @@
-type DateRange = [string, string?]
+type FormattedDate = [string, string] | string
 
 type OptionKey = string
 type OptionLabel = string
-
-type Options = Map<OptionKey, OptionLabel>
-type Option = [key: OptionKey, label: OptionLabel]
+type OptionsMap = Map<OptionKey, OptionLabel>
 
 type JsonProperties = { [key: string]: object }

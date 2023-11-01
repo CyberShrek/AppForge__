@@ -1,14 +1,14 @@
 import {emptyElement, scrollIntoElement} from "../../../util/domWizard"
 import {filterMap, numberOf} from "../../../util/data"
 import {TextInput} from "../../inputs/TextInput"
-import {resolveCSS} from "../../../util/resolver"
+import {resolveStyle} from "../../../util/resolver"
 import {InlineFragment} from "../../InlineFragment"
 import {Body} from "../Body"
 import {XlsxAccessor} from "../../../api/XlsxAccessor"
 import {executeFormulaForRowData} from "../../../util/DANGEROUS"
 import {SelectField} from "../../form/section/field/SelectField"
 
-resolveCSS("table")
+resolveStyle("table")
 
 export class Table extends InlineFragment<Body>{
 

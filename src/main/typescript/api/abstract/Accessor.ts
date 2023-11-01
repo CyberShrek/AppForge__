@@ -14,7 +14,7 @@ export abstract class Accessor<RESOURCE> {
     errorFooter: string = "Ошибка получения ресурса"
 
 
-    fetch(body?: any): Promise<RESOURCE> {
+    fetch(body?: object): Promise<RESOURCE> {
         addCursorLoader()
         if(body) this.body = body
         return this.request

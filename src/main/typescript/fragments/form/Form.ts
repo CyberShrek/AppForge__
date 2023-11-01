@@ -1,4 +1,4 @@
-import {resolveCSS} from "../../util/resolver"
+import {resolveStyle} from "../../util/resolver"
 import {Button} from "../inputs/Button"
 import {Field} from "./section/field/Field"
 import {Fragment} from "../Fragment"
@@ -7,7 +7,7 @@ import {jsonifyFields, jsonToMap, valueOrDefault} from "../../util/data"
 import {SelectField} from "./section/field/SelectField"
 import {FormStatementAccessor} from "../../api/FormStatementAccessor"
 
-resolveCSS("form")
+resolveStyle("form")
 
 export default class Form extends Fragment<HTMLFormElement> {
 

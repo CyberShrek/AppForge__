@@ -1,9 +1,7 @@
-import {JsonAccessor} from "../abstract/JsonAccessor"
 import {userInfo} from "../../store/userInfo";
+import {OptionsAccessor} from "../OptionsAccessor"
 
-export abstract class AbstractServiceBank extends JsonAccessor{
-
-    override path = `${document.location.origin}/servicebank/getdata`
+export abstract class AbstractServiceBank extends OptionsAccessor{
 
     abstract userAssociatedOptionKeys: OptionKey[]
 
@@ -24,19 +22,17 @@ export abstract class AbstractServiceBank extends JsonAccessor{
     }
 
     protected abstract responseStep: {
-        parseItemToOptionFn: (items: any) => Option
+        parseItemToOptionFn: (items: any) => string[]
         filterFn?: (item: any) => boolean
         errorMessageEnding: string
     }
 
     constructor() {
-        super()
-        this.method = "POST"
+        super(`${document.location.origin}/servicebank/getdata`)
     }
 
-    override fetch(properties?: ServiceBankSetup["properties"]): Promise<Options> {
+    override fetch(properties?: ServiceBankSetup["properties"]): Promise<OptionsMap> {
         this.properties  = properties
-        this.errorFooter = "Не удалось загрузить список " + this.responseStep.errorMessageEnding
         if(this.mainConditions.find(conditionCallback => conditionCallback() === false))
             return new Promise(resolve => resolve(new Map()))
         else {
@@ -45,8 +41,6 @@ export abstract class AbstractServiceBank extends JsonAccessor{
                 return this.fetchServiceBankOptions(this.responseStep.parseItemToOptionFn, this.responseStep.filterFn)
             }
             if(!userInfo.superUser && this.userCheckPermission){
-                console.log(userInfo.superUser)
-                console.log(this.userCheckPermission)
                 this.properties[this.userCheckPermission.propertyName] = this.userCheckPermission.propertyValue
             }
             return fetchCallback()
@@ -66,8 +60,8 @@ export abstract class AbstractServiceBank extends JsonAccessor{
         }
     }
 
-    private fetchServiceBankOptions(parseItemToOptionFn: (items: any) => Option,
-                                    filter?: (item: any) => boolean): Promise<Options> {
+    private fetchServiceBankOptions(parseItemToOptionFn: (items: any) => string[],
+                                    filter?: (item: any) => boolean): Promise<OptionsMap> {
 
         return super.fetch().then(json =>
             // The only first item is approved
@@ -76,28 +70,9 @@ export abstract class AbstractServiceBank extends JsonAccessor{
                 .map((item) => {
                     const parsed = parseItemToOptionFn(item)
                     parsed[1] = parsed[1].trim()
-                    return parsed
+                    return parsed as [string, string]
                 })
             )
         )
     }
-}
-
-function roadCodesToBodies(codes: string[]): {"gos": string, "dor": string}[]{
-    const bodies = []
-    codes.forEach(fullRoadCode => {
-        const splittedRoadCode = fullRoadCode.split("."),
-            countryCode = splittedRoadCode[0],
-            roadCode = splittedRoadCode[1],
-            lastBody = bodies.length > 0 ? bodies[bodies.length - 1] : null
-
-        if(lastBody){
-            if(lastBody.gos !== countryCode)
-                bodies.push({"gos": countryCode, "dor": roadCode})
-            else
-                lastBody.dor += `,${roadCode}`
-        }
-
-    })
-    return bodies
 }

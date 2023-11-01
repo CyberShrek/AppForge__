@@ -29,30 +29,12 @@ type FormSectionConfig = {
     [fieldName: string]: FieldConfig
 }
 
-type FieldConfig = SwitchFieldConfig | DatepickerFieldConfig | SelectFieldConfig | TextFieldConfig
+type FieldConfig = CommonFieldConfig & (CheckboxConfig | CalendarConfig | SelectConfig | TextInputConfig)
 
 interface CommonFieldConfig {
     label?: string
     size?: number
-    type: "switch" | "datepicker" | "select" | "text"
-}
-
-interface SwitchFieldConfig extends CommonFieldConfig, SwitchConfig{
-    type: "switch"
-}
-
-interface DatepickerFieldConfig extends CommonFieldConfig, DatepickerConfig{
-    type: "datepicker"
-}
-
-interface SelectFieldConfig extends CommonFieldConfig, SelectConfig{
-    type: "select"
-    returnMap?: boolean
-}
-
-interface TextFieldConfig extends CommonFieldConfig, TextInputConfig{
-    type: "text"
-    area?: number
+    type: "switch" | "calendar" | "select" | "text"
 }
 
 interface ReportSlotConfig {
@@ -63,10 +45,7 @@ interface ReportSlotConfig {
 
 interface CheckboxConfig{
     label?: string
-}
-
-interface SwitchConfig extends CheckboxConfig{
-
+    switch?: boolean
 }
 
 interface SelectConfig {
@@ -75,6 +54,34 @@ interface SelectConfig {
     showCodes?: boolean
     disableSelectAll?: boolean
     maxValues?: number
+    endpointSource?: EndpointOptionsSetup
+    serviceBankSource?: ServiceBankSetup
+}
+
+interface EndpointOptionsSetup {
+    path: string,
+    triggerKeys?: string[]
+}
+
+type ServiceBankType = "carriers" | "countries" | "regions" | "roads" | "stations"
+interface ServiceBankSetup {
+    type: ServiceBankType
+    // Works like Endpoint.propertiesSources but with field locations as values
+    propertiesTriggerKeys: {
+        postSoviet?: string,
+        date?: string,
+        carriers?: string,
+        countries?: string,
+        roads?: string
+    }
+    properties?: {
+        postSoviet?: boolean,
+        date?: string,
+        carriers?: string[],
+        countries?: string[],
+        roads?: string[],
+        [custom: string]: any
+    }
 }
 
 interface TextInputConfig {
@@ -82,7 +89,7 @@ interface TextInputConfig {
     placeholder?: string
 }
 
-interface DatepickerConfig {
+interface CalendarConfig {
     minYear?: number
     maxYear?: number
     minDays?: number

@@ -1,9 +1,9 @@
-import {resolveCSS, resolveJS} from "../../util/resolver"
+import {resolveStyle, resolveModule} from "../../util/resolver"
 import {compareMaps, valueOrDefault} from "../../util/data"
 import {Fragment} from "../Fragment"
 
-resolveCSS("third-party/virtual-select")
-const virtualSelectModulePromise = resolveJS("third-party/virtual-select.min")
+resolveStyle("third-party/virtual-select")
+const virtualSelectModulePromise = resolveModule("third-party/virtual-select.min")
 
 export default class Select extends Fragment{
 
@@ -26,7 +26,7 @@ export default class Select extends Fragment{
                 typeof value === "object" ? value : [value]
             ) : []
 
-            // Need for check real changes to prevent callback doubling after options setting
+            // Check real changes to prevent callback doubling after options setting
             if (this.pickedKeys.sort().toString() !== pickedKeys.sort().toString()) {
                 this.pickedKeys = pickedKeys
                 onPick(this.pickedKeys)
@@ -34,9 +34,9 @@ export default class Select extends Fragment{
         })
     }
 
-    private options: Options = new Map()
+    private options: OptionsMap = new Map()
 
-    updateOptions(options: Options){
+    updateOptions(options: OptionsMap){
         if(compareMaps(this.options, options)) return
         const pickedKeysBuffer = [...this.pickedKeys]
         return this.modulePromise.then(() => {
@@ -66,7 +66,7 @@ export default class Select extends Fragment{
         })
     }
 
-    findOptions=(keys: OptionKey[]): Options =>
+    findOptions=(keys: OptionKey[]): OptionsMap =>
         new Map(keys.map(key => [key, this.options.get(key)]))
 }
 

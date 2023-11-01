@@ -12,7 +12,7 @@ class OptionsController {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun fetch(@RequestBody(required = false)fieldsMap: Map<String, Map<String, String>>?): Map<String, String>{
-        if(fieldsMap != null){
+        if(!fieldsMap.isNullOrEmpty()){
             fieldsMap["endpointOptions.options1"]?.apply {
                 val evenMap = mutableMapOf<String, String>()
                 this.keys.forEach{ key ->

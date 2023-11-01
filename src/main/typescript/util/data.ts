@@ -71,6 +71,10 @@ export function compareMaps<K, V>(map1: Map<K, V>|null, map2: Map<K, V>|null): b
     return true
 }
 
+export function compareObjects(a: object, b: object): boolean{
+    return JSON.stringify(valueOrDefault(a, null)) === JSON.stringify(valueOrDefault(b, null))
+}
+
 export function setToArray<T>(set: Set<T>): T[] {
     return [...set]
 }
@@ -87,7 +91,7 @@ export function prettify<T>(value: T): string{
     if (value instanceof Date)
         return stringifyDate(value)
 
-    return prettify(jsonToMap(value))
+    return JSON.stringify(value, null, 2)
 }
 
 export function jsonify<T>(value: T|null):  any{
@@ -103,7 +107,7 @@ export function jsonify<T>(value: T|null):  any{
     return value
 }
 
-export function jsonifyFields(fields: Map<FieldKey, Field<any>>): JsonProperties{
+export function jsonifyFields(fields: Map<string, Field<any>>): JsonProperties{
     const json: { [key: string]: object } = {}
     fields.forEach((field, key) => {
         if(!field.hidden) {
@@ -158,3 +162,13 @@ export function extractJsonItemsWithSuffix(json: {}, suffix: string): {}{
 
     return items
 }
+
+export const mapToVirtualSelectOptions = (map: Map<string, string>) =>
+    [...map.entries()].map(entry => {
+        return {
+            label: entry[1],
+            value: entry[0],
+            alias: entry[0],
+            description: entry[0]
+        }
+    })

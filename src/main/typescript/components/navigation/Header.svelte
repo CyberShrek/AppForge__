@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {resolveCSS} from "../../util/resolver"
+    import {resolveStyle} from "../../util/resolver"
     import Button from "../input/Button.svelte"
     import {popupAction, popupList} from "../../util/modal"
     import {valueOrDefault} from "../../util/data"
     import Image from "../misc/Image.svelte";
-    resolveCSS("header")
+    resolveStyle("header")
 
     export let appInfo: AppInfo
 

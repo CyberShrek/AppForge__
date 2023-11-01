@@ -12,7 +12,7 @@ export class CarriersServiceBank extends AbstractServiceBank
         })
     }
     protected responseStep = {
-        parseItemToOptionFn: item => [`${this.properties.countries?.length >= 2 ? item["gos"] + '.' : ''}${item["skp"]}`, item["nazvp"]] as Option,
+        parseItemToOptionFn: item => [`${this.properties.countries?.length >= 2 ? item["gos"] + '.' : ''}${item["skp"]}`, item["nazvp"]],
         errorMessageEnding: "перевозчиков"
     }
     protected userCheckPermission = {

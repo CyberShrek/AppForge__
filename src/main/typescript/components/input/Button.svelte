@@ -1,10 +1,12 @@
 <script lang="ts">
 
-    import Image from "../misc/Image.svelte";
+    import Image from "../misc/Image.svelte"
 
     export let
         unavailable = false,
         frameless   = false,
+        submit      = false,
+        cancel      = false,
         hint        = "",
         text        = "",
         image       = "",
@@ -14,6 +16,8 @@
 
 <button class:unavailable
         class:frameless
+        class:submit
+        class:cancel
         title="{hint}"
         bind:this={root}
         on:click>
