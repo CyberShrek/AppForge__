@@ -5,7 +5,7 @@ export abstract class AbstractServiceBank extends OptionsAccessor{
 
     abstract userAssociatedOptionKeys: OptionKey[]
 
-    protected properties: ServiceBankOptionsSetup["properties"]
+    protected properties: ServiceBankSetup["properties"]
 
     protected dataCondition = () => this.properties?.date?.length > 0
 
@@ -31,9 +31,8 @@ export abstract class AbstractServiceBank extends OptionsAccessor{
         super(`${document.location.origin}/servicebank/getdata`)
     }
 
-    override fetch(properties?: ServiceBankOptionsSetup["properties"]): Promise<OptionsMap> {
+    override fetch(properties?: ServiceBankSetup["properties"]): Promise<OptionsMap> {
         this.properties  = properties
-        this.errorFooter = "Не удалось загрузить список " + this.responseStep.errorMessageEnding
         if(this.mainConditions.find(conditionCallback => conditionCallback() === false))
             return new Promise(resolve => resolve(new Map()))
         else {
@@ -42,8 +41,6 @@ export abstract class AbstractServiceBank extends OptionsAccessor{
                 return this.fetchServiceBankOptions(this.responseStep.parseItemToOptionFn, this.responseStep.filterFn)
             }
             if(!userInfo.superUser && this.userCheckPermission){
-                console.log(userInfo.superUser)
-                console.log(this.userCheckPermission)
                 this.properties[this.userCheckPermission.propertyName] = this.userCheckPermission.propertyValue
             }
             return fetchCallback()

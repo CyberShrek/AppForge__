@@ -1,2 +1,0 @@
-import{J as s,b as e,U as t}from"./UserCheck-dc22fa2d.js";import{v as a}from"./modal-891a31fc.js";class r extends s{constructor(){super(),this.path="/appforge/info",this.errorFooter="Не удалось загрузить информацию о приложении",this.headers={Code:a(e.code,"")}}}let o={};async function n(){return o=await(new r).fetch()}let c={};async function i(){return c=await(new t).fetch()}export{i as a,o as b,n as r,c as u};
-//# sourceMappingURL=userInfo-33845f2b.js.map

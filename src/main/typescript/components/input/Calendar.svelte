@@ -71,5 +71,5 @@
 
 <div class="datepicker">
     <input bind:this={easepickRoot}>
-    <Button text="📅"/>
+    <Button text="📅" on:click={() => easepickRoot.click()}/>
 </div>

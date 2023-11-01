@@ -31,18 +31,26 @@ const config = {
             }
         },
         secondSection: {
-            // firstField: {
-            //     type: "switch",
-            //     label: "firstField"
-            // },
-            // secondField: {
-            //     type: "switch",
-            //     label: "secondField"
-            // },
-            // thirdField: {
-            //     type: "switch",
-            //     label: "thirdField"
-            // }
+            firstField: {
+                type: "select",
+                label: "firstField"
+            },
+            secondField: {
+                type: "select",
+                label: "secondField",
+                endpointSource: {
+                    path: "demo/options"
+                }
+            },
+            thirdField: {
+                type: "select",
+                label: "thirdField",
+                multiple: true,
+                search: true,
+                endpointSource: {
+                    path: "demo/options"
+                }
+            }
         },
         thirdSection: {
             firstField: {

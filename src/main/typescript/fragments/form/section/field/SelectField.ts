@@ -47,7 +47,7 @@ export class SelectField extends Field<OptionKey[]> {
         this.updateOptions()
     }
 
-    setupServiceBank(setup: ServiceBankOptionsSetup, initValues: OptionKey[] = []) {
+    setupServiceBank(setup: ServiceBankSetup, initValues: OptionKey[] = []) {
         this.awaitingForServiceBankOptions = true
         setupServiceBankRetrieving(this.parent.parent, setup,
             (options, userAssociatedOptionKeys) => {
@@ -66,13 +66,13 @@ export class SelectField extends Field<OptionKey[]> {
     }
 }
 
-function setupServiceBankRetrieving(form: Form, config: ServiceBankOptionsSetup, onFetch: (options: OptionsMap, userAssociatedOptionKeys: OptionKey[]) => void){
-    const sourceFields = config.propertiesTriggerFields ? form.findFields(Array.from(Object.values(config.propertiesTriggerFields))) : null
+function setupServiceBankRetrieving(form: Form, config: ServiceBankSetup, onFetch: (options: OptionsMap, userAssociatedOptionKeys: OptionKey[]) => void){
+    const sourceFields = config.propertiesTriggerKeys ? form.findFields(Array.from(Object.values(config.propertiesTriggerKeys))) : null
     const optionsAccessor = createServiceBankAccessor(config)
     subscribeToFields(sourceFields, () => {
         const properties: typeof config.properties = {...config.properties}
         // Remapping
-        Object.entries(config.propertiesTriggerFields).forEach(entry => {
+        Object.entries(config.propertiesTriggerKeys).forEach(entry => {
             const sourceField = sourceFields?.get(entry[1])
             if (sourceField) {
                 const json = sourceField.jsonValue
@@ -85,7 +85,7 @@ function setupServiceBankRetrieving(form: Form, config: ServiceBankOptionsSetup,
     })
 }
 
-function createServiceBankAccessor(config: ServiceBankOptionsSetup): AbstractServiceBank {
+function createServiceBankAccessor(config: ServiceBankSetup): AbstractServiceBank {
     const accessor = config.type === "carriers" ? new CarriersServiceBank() :
         config.type === "countries" ? new CountriesServiceBank() :
             config.type === "regions" ? new RegionsServiceBank() :

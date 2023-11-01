@@ -3,23 +3,32 @@
     import {resolveStyle, resolveModule} from "../../util/resolver"
     import {onMount} from "svelte"
     import {virtualSelectProperties} from "../../properties"
-    import {compareMaps, mapToVirtualSelectOptions} from "../../util/data";
+    import {compareMaps, mapToVirtualSelectOptions, valueOrDefault} from "../../util/data"
+    import {OptionsAccessor} from "../../api/OptionsAccessor"
+    import {AbstractServiceBank} from "../../api/serviceBankOptions/AbstractServiceBank"
+    import {ServiceBankFactory} from "../../api/serviceBankOptions/ServiceBankFactory"
+    import {compareObjects, concatMaps} from "../../util/data.js";
 
     resolveStyle("third-party/virtual-select")
-    resolveModule("third-party/virtual-select.min").then(() => onMount(() => initVirtualSelect()))
 
     export let
         config: SelectConfig,
-        pickedOptionKeys: string[] = []
+        pickedOptionKeys: string[] = [],
+        scopeValues: object = {}
 
-    let virtualSelectElement: HTMLDivElement,
-        options = new Map<string, string>()
+    let options = new Map<string, string>(),
+        endpointOptions: typeof options,
+        serviceBankOptions: typeof options,
+        optionsSource: {
+            endpoint?: OptionsAccessor,
+            serviceBank?: AbstractServiceBank
+        } = {},
+        oldScopeValues: typeof scopeValues = {},
+        virtualSelectElement: HTMLDivElement
 
-    $: if(pickedOptionKeys)
-        pickOptions(pickedOptionKeys)
 
-    function initVirtualSelect(){
-        // @ts-ignore !!! Resolved by html import !!!
+    onMount(() => resolveModule("third-party/virtual-select.min").then(() => {
+        // Actual initialization
         VirtualSelect.init({
             ...virtualSelectProperties,
             ele: virtualSelectElement,
@@ -30,11 +39,57 @@
             maxValues: config.maxValues
         })
 
+        // Listen changes
         virtualSelectElement.addEventListener("change", event => {
             const newValue = event.currentTarget.value
-            pickOptions(newValue.length > 0 ? (typeof newValue === "object" ? newValue : [newValue]) : [])
+            pickOptions(newValue.length > 0 ? (typeof newValue === "object" ? newValue : [newValue]) : [], false)
         })
+
+        // Setup sources
+        optionsSource.endpoint = config.endpointSource
+            ? new OptionsAccessor(config.endpointSource.path)
+            : null
+        optionsSource.serviceBank = config.serviceBankSource
+            ? ServiceBankFactory.createOptionsAccessor(config.serviceBankSource.type)
+            : null
+
+        // Allow to apply outer changes
+        $: if(pickedOptionKeys)
+            pickOptions(pickedOptionKeys)
+
+        // React to scope changes
+        $: if(scopeValues)
+            updateOptions()
+    }))
+
+    async function updateOptions(){
+        endpointOptions = await retrieveEndpointOptions()
+        serviceBankOptions = await retrieveServiceBankOptions()
+        setOptions(concatMaps(
+            valueOrDefault(endpointOptions, new Map()),
+            valueOrDefault(serviceBankOptions, new Map())
+        ))
     }
+
+    function retrieveEndpointOptions(): Promise<typeof endpointOptions> {
+        if(optionsSource.endpoint) {
+            const endpointProperties = {}
+            let hasTriggerChanges = false
+            config.endpointSource.triggerKeys?.forEach(key => {
+                endpointProperties[key] = scopeValues[key]
+                if(!compareObjects(scopeValues[key], oldScopeValues[key]))
+                    hasTriggerChanges = true
+            })
+            if(hasTriggerChanges || !endpointOptions)
+                return optionsSource.endpoint.fetch(endpointProperties)
+        }
+        return Promise.resolve(endpointOptions)
+    }
+
+    function retrieveServiceBankOptions(): Promise<typeof options> {
+        return Promise.resolve(serviceBankOptions)
+    }
+
 
     function setOptions(newOptions: typeof options){
         if(compareMaps(options, newOptions)) return
@@ -50,12 +105,12 @@
         }
     }
 
-    function pickOptions(optionKeys){
+    function pickOptions(optionKeys, changeElementValue = true){
         // Check real changes to prevent callback doubling after options setting
-        if (Array.from(pickedOptionKeys.keys()).sort().toString() !== optionKeys.sort().toString()) {
+        if (pickedOptionKeys.sort().toString() !== optionKeys.sort().toString()) {
             pickedOptionKeys = optionKeys
-            // @ts-ignore !!! Resolved by html import !!!
-            virtualSelectElement?.setValue(pickedOptionKeys)
+            if(changeElementValue)
+                virtualSelectElement?.setValue(pickedOptionKeys)
         }
     }
 

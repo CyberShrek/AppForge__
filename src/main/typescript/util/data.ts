@@ -71,6 +71,10 @@ export function compareMaps<K, V>(map1: Map<K, V>|null, map2: Map<K, V>|null): b
     return true
 }
 
+export function compareObjects(a: object, b: object): boolean{
+    return JSON.stringify(valueOrDefault(a, null)) === JSON.stringify(valueOrDefault(b, null))
+}
+
 export function setToArray<T>(set: Set<T>): T[] {
     return [...set]
 }

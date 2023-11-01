@@ -16,6 +16,6 @@
     {/if}
     {#if      config.type === "switch"  }<Checkbox config={{switch: true, ...config}} bind:checked={value}/>
     {:else if config.type === "calendar"}<Calendar {config} bind:pickedDate={value}/>
-    {:else if config.type === "select"  }<Select {config}/>
+    {:else if config.type === "select"  }<Select {config} bind:pickedOptionKeys={value}/>
     {/if}
 </div>
