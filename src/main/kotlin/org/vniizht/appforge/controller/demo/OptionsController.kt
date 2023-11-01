@@ -11,22 +11,14 @@ import org.springframework.web.bind.annotation.RestController
 class OptionsController {
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun fetch(@RequestBody(required = false)fieldsMap: Map<String, Map<String, String>>?): Map<String, String>{
-        if(!fieldsMap.isNullOrEmpty()){
-            fieldsMap["endpointOptions.options1"]?.apply {
-                val evenMap = mutableMapOf<String, String>()
-                this.keys.forEach{ key ->
-                    if(key.toInt() % 2 == 0)
-                        evenMap[key] = this[key].toString()
-                }
-                return evenMap
-            }
-            fieldsMap["endpointOptions.options2"]?.apply {
-                return this.toSortedMap(compareBy { -it.toInt() }).mapKeys { key -> key.toString() }
-            }
-            return emptyMap()
-        }
-        return generateOptionsMap()
+    fun fetch(@RequestBody(required = false)fieldsMap: Map<String, Any>?): Map<String, String>{
+
+        val size = fieldsMap?.size ?: 0
+
+
+
+
+        return generateOptionsMap(if( size > 0 ) size else 20 )
     }
 }
 

@@ -20,6 +20,7 @@
         class:cancel
         title="{hint}"
         bind:this={root}
+        on:click={event => event.preventDefault()}
         on:click>
 
     {#if image && image.length > 0}

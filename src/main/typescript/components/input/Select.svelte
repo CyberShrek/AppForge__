@@ -7,7 +7,7 @@
     import {OptionsAccessor} from "../../api/OptionsAccessor"
     import {AbstractServiceBank} from "../../api/serviceBankOptions/AbstractServiceBank"
     import {ServiceBankFactory} from "../../api/serviceBankOptions/ServiceBankFactory"
-    import {compareObjects, concatMaps} from "../../util/data.js";
+    import {compareObjects, concatMaps} from "../../util/data.js"
 
     resolveStyle("third-party/virtual-select")
 
@@ -26,6 +26,16 @@
         oldScopeValues: typeof scopeValues = {},
         virtualSelectElement: HTMLDivElement
 
+    // // Allow to apply outer changes
+    $: if(pickedOptionKeys)
+        console.log(pickedOptionKeys)
+
+    // React to scope changes
+    $: if(scopeValues) {
+        console.log("updateOptions")
+        updateOptions()
+        oldScopeValues = scopeValues
+    }
 
     onMount(() => resolveModule("third-party/virtual-select.min").then(() => {
         // Actual initialization
@@ -53,13 +63,7 @@
             ? ServiceBankFactory.createOptionsAccessor(config.serviceBankSource.type)
             : null
 
-        // Allow to apply outer changes
-        $: if(pickedOptionKeys)
-            pickOptions(pickedOptionKeys)
-
-        // React to scope changes
-        $: if(scopeValues)
-            updateOptions()
+        updateOptions()
     }))
 
     async function updateOptions(){
@@ -90,13 +94,14 @@
         return Promise.resolve(serviceBankOptions)
     }
 
-
     function setOptions(newOptions: typeof options){
         if(compareMaps(options, newOptions)) return
+        console.log("setOptions")
         if(newOptions && newOptions.size > 0) {
+            const pickedOptionsBuffer = [...pickedOptionKeys]
             options = newOptions
             virtualSelectElement.setOptions(mapToVirtualSelectOptions(newOptions))
-            pickOptions(pickedOptionKeys)
+            pickOptions(pickedOptionsBuffer)
             virtualSelectElement.enable()
         } else {
             virtualSelectElement.disable()
@@ -105,13 +110,14 @@
         }
     }
 
-    function pickOptions(optionKeys, changeElementValue = true){
+    function pickOptions(optionKeys, applyToElement = true){
         // Check real changes to prevent callback doubling after options setting
-        if (pickedOptionKeys.sort().toString() !== optionKeys.sort().toString()) {
-            pickedOptionKeys = optionKeys
-            if(changeElementValue)
-                virtualSelectElement?.setValue(pickedOptionKeys)
-        }
+        // if (pickedOptionKeys.sort().toString() !== optionKeys.sort().toString())
+        console.log("pickOptions")
+        pickedOptionKeys = optionKeys
+
+        if(applyToElement)
+            virtualSelectElement?.setValue(optionKeys)
     }
 
     const findOptions=(keys: string[]): typeof options =>

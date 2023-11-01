@@ -8,20 +8,32 @@
 
     export let
         config: FormConfig,
-        jsonValue: {[sectionKey: string]: any} = {}
+        values: {[section_dot_fieldValue: string]: any} = {}
 
-    let sectionConfigsObject = config ? extractJsonItemsWithSuffix(config, "Section") as {[sectionKey: string]: FormSectionConfig} : {}
+    let sectionConfigsObject = config ? extractJsonItemsWithSuffix(config, "Section") as {[sectionKey: string]: FormSectionConfig} : {},
+        sectionValues = {}
+
+    $: if(sectionValues){
+        values = {}
+        for (const sectionKey in sectionValues) {
+            const fieldValues = sectionValues[sectionKey]
+            for (const fieldKey in fieldValues) {
+                values[`${sectionKey}.${fieldKey}`] = fieldValues[fieldKey]
+            }
+        }
+    }
 
 </script>
 
-<form on:click={event => event.preventDefault()}>
+<form>
 
     {#each Object.keys(sectionConfigsObject) as sectionKey}
         <Section config={sectionConfigsObject[sectionKey]}
-                 bind:jsonValue={jsonValue[sectionKey]}/>
+                 bind:values={sectionValues[sectionKey]}
+                 scopeValues={values}/>
     {/each}
 
     <Button submit text={config.submitText}
-            on:click={() => alert(prettify(jsonValue))}
+            on:click={() => alert(prettify(values))}
     />
 </form>

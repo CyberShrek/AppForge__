@@ -39,7 +39,8 @@ const config = {
                 type: "select",
                 label: "secondField",
                 endpointSource: {
-                    path: "demo/options"
+                    path: "demo/options",
+                    triggerKeys: ["firstSection.secondField", "secondSection.thirdField", "thirdSection.thirdField"]
                 }
             },
             thirdField: {

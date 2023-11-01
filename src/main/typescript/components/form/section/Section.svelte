@@ -5,7 +5,8 @@
 
     export let
         config: FormSectionConfig,
-        jsonValue: {[fieldKey: string]: any} = {}
+        values: {[fieldKey: string]: any} = {},
+        scopeValues: {[section_dot_fieldValue: string]: any}
 
     let fieldConfigsObject = config ? extractJsonItemsWithSuffix(config, "Field") as {[fieldKey: string]: FieldConfig} : {}
 
@@ -17,6 +18,7 @@
     {/if}
     {#each Object.keys(fieldConfigsObject) as fieldKey}
         <Field config={fieldConfigsObject[fieldKey]}
-               bind:value={jsonValue[fieldKey]}/>
+               bind:value={values[fieldKey]}
+               {scopeValues}/>
     {/each}
 </div>
