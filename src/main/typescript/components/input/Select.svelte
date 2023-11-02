@@ -3,7 +3,7 @@
     import {resolveStyle, resolveModule} from "../../util/resolver"
     import {onMount} from "svelte"
     import {virtualSelectProperties} from "../../properties"
-    import {compareMaps, mapToVirtualSelectOptions, valueOrDefault} from "../../util/data"
+    import {compareMaps, deepCloneObject, mapToVirtualSelectOptions, valueOrDefault} from "../../util/data"
     import {OptionsAccessor} from "../../api/OptionsAccessor"
     import {AbstractServiceBank} from "../../api/serviceBankOptions/AbstractServiceBank"
     import {ServiceBankFactory} from "../../api/serviceBankOptions/ServiceBankFactory"
@@ -28,14 +28,12 @@
 
     // // Allow to apply outer changes
     $: if(pickedOptionKeys)
-        console.log(pickedOptionKeys)
+        pickOptions(pickedOptionKeys)
 
     // React to scope changes
-    $: if(scopeValues) {
-        console.log("updateOptions")
-        updateOptions()
-        oldScopeValues = scopeValues
-    }
+    $: if(scopeValues)
+        updateOptions().then(() => oldScopeValues = deepCloneObject(scopeValues))
+
 
     onMount(() => resolveModule("third-party/virtual-select.min").then(() => {
         // Actual initialization
@@ -52,7 +50,7 @@
         // Listen changes
         virtualSelectElement.addEventListener("change", event => {
             const newValue = event.currentTarget.value
-            pickOptions(newValue.length > 0 ? (typeof newValue === "object" ? newValue : [newValue]) : [], false)
+            pickedOptionKeys = newValue.length > 0 ? (typeof newValue === "object" ? newValue : [newValue]) : []
         })
 
         // Setup sources
@@ -75,49 +73,88 @@
         ))
     }
 
-    function retrieveEndpointOptions(): Promise<typeof endpointOptions> {
-        if(optionsSource.endpoint) {
-            const endpointProperties = {}
-            let hasTriggerChanges = false
-            config.endpointSource.triggerKeys?.forEach(key => {
-                endpointProperties[key] = scopeValues[key]
-                if(!compareObjects(scopeValues[key], oldScopeValues[key]))
-                    hasTriggerChanges = true
-            })
-            if(hasTriggerChanges || !endpointOptions)
-                return optionsSource.endpoint.fetch(endpointProperties)
-        }
-        return Promise.resolve(endpointOptions)
-    }
+    const retrieveEndpointOptions = (): Promise<typeof endpointOptions> => retrieveOptions(
+        optionsSource.endpoint,
+        {},
+        config.endpointSource.triggerKeys,
+        endpointOptions
+    )
 
-    function retrieveServiceBankOptions(): Promise<typeof options> {
+    function retrieveServiceBankOptions(): Promise<typeof serviceBankOptions> {
+        if(optionsSource.serviceBank){
+            const properties = {...config.endpointSource.properties}
+            let hasTriggerChanges = false
+
+            if(config.serviceBankSource.propertiesTriggerKeys)
+                Object.entries(config.serviceBankSource.propertiesTriggerKeys).forEach((entry: [string, string]) => {
+                    const propertyKey = entry[0],
+                        scopeValueKey = entry[1]
+
+                    properties[propertyKey] = scopeValues[scopeValueKey]
+                    if(!compareObjects(scopeValues[scopeValueKey], oldScopeValues[scopeValueKey])) {
+                        hasTriggerChanges = true
+                    }
+                })
+
+            if(hasTriggerChanges || !endpointOptions) {
+                return optionsSource.serviceBank.fetch(properties)
+            }
+        }
         return Promise.resolve(serviceBankOptions)
     }
 
+    // Common function
+    function retrieveOptions(
+        optionsAccessor: OptionsAccessor,
+        properties: object,
+        propertiesToScopeKeys: string[] | object,
+        defaultOptions: typeof options): Promise<typeof options> {
+
+        if(optionsAccessor){
+            let hasTriggerChanges = false
+
+            const appendPropertyValue = (propertyKey: string, scopeValueKey: string) => {
+                properties[propertyKey] = scopeValues[scopeValueKey]
+                hasTriggerChanges = !compareObjects(scopeValues[scopeValueKey], oldScopeValues[scopeValueKey])
+            }
+
+            if(propertiesToScopeKeys){
+                if(Array.isArray(propertiesToScopeKeys))
+                    propertiesToScopeKeys.forEach(key => appendPropertyValue(key, key))
+                else
+                    Object.entries(propertiesToScopeKeys).forEach((entry: [string, string]) => appendPropertyValue(entry[0], entry[1]))
+            }
+
+            if(hasTriggerChanges || !endpointOptions) {
+                return optionsAccessor.fetch(properties)
+            }
+        }
+        return Promise.resolve(defaultOptions)
+    }
+
     function setOptions(newOptions: typeof options){
-        if(compareMaps(options, newOptions)) return
-        console.log("setOptions")
-        if(newOptions && newOptions.size > 0) {
-            const pickedOptionsBuffer = [...pickedOptionKeys]
-            options = newOptions
-            virtualSelectElement.setOptions(mapToVirtualSelectOptions(newOptions))
-            pickOptions(pickedOptionsBuffer)
-            virtualSelectElement.enable()
-        } else {
-            virtualSelectElement.disable()
-            virtualSelectElement.reset()
-            virtualSelectElement.blur()
+        if(!compareMaps(options, newOptions)) {
+            if (newOptions && newOptions.size > 0) {
+                const pickedOptionsBuffer = [...pickedOptionKeys]
+                options = newOptions
+                virtualSelectElement.setOptions(mapToVirtualSelectOptions(newOptions))
+                pickedOptionKeys = pickedOptionsBuffer
+                virtualSelectElement.enable()
+            } else {
+                virtualSelectElement.disable()
+                virtualSelectElement.reset()
+                virtualSelectElement.blur()
+            }
         }
     }
 
     function pickOptions(optionKeys, applyToElement = true){
         // Check real changes to prevent callback doubling after options setting
-        // if (pickedOptionKeys.sort().toString() !== optionKeys.sort().toString())
-        console.log("pickOptions")
-        pickedOptionKeys = optionKeys
-
-        if(applyToElement)
-            virtualSelectElement?.setValue(optionKeys)
+        if (pickedOptionKeys.sort().toString() !== optionKeys.sort().toString()) {
+            pickedOptionKeys = deepCloneObject(optionKeys)
+            if (applyToElement)
+                virtualSelectElement?.setValue(optionKeys)
+        }
     }
 
     const findOptions=(keys: string[]): typeof options =>

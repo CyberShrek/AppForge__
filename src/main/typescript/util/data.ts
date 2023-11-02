@@ -163,6 +163,8 @@ export function extractJsonItemsWithSuffix(json: {}, suffix: string): {}{
     return items
 }
 
+export const deepCloneObject = (obj: object) => JSON.parse(JSON.stringify(obj))
+
 export const mapToVirtualSelectOptions = (map: Map<string, string>) =>
     [...map.entries()].map(entry => {
         return {

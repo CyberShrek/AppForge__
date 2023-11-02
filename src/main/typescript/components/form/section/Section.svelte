@@ -3,6 +3,7 @@
     import {extractJsonItemsWithSuffix} from "../../../util/data"
     import Field from "./field/Field.svelte"
 
+
     export let
         config: FormSectionConfig,
         values: {[fieldKey: string]: any} = {},

@@ -3,6 +3,7 @@
     import {extractJsonItemsWithSuffix, prettify} from "../../util/data"
     import Section from "./section/Section.svelte"
     import Button from "../input/Button.svelte"
+    import {onMount} from "svelte"
 
     resolveStyle("form")
 
@@ -36,4 +37,5 @@
     <Button submit text={config.submitText}
             on:click={() => alert(prettify(values))}
     />
+
 </form>
