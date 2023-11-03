@@ -71,9 +71,11 @@ export function compareMaps<K, V>(map1: Map<K, V>|null, map2: Map<K, V>|null): b
     return true
 }
 
-export function compareObjects(a: object, b: object): boolean{
+export function compare(a: any, b: any): boolean{
     return JSON.stringify(valueOrDefault(a, null)) === JSON.stringify(valueOrDefault(b, null))
 }
+
+
 
 export function setToArray<T>(set: Set<T>): T[] {
     return [...set]
@@ -163,7 +165,7 @@ export function extractJsonItemsWithSuffix(json: {}, suffix: string): {}{
     return items
 }
 
-export const deepCloneObject = (obj: object) => JSON.parse(JSON.stringify(obj))
+export const deepCopyOf = (some: any) => JSON.parse(JSON.stringify(some))
 
 export const mapToVirtualSelectOptions = (map: Map<string, string>) =>
     [...map.entries()].map(entry => {

@@ -1,7 +1,7 @@
-import {userInfo} from "../../store/userInfo";
-import {OptionsAccessor} from "../OptionsAccessor"
+import {userInfo} from "../../../store/userInfo";
+import {EndpointOptionsAccessor} from "../EndpointOptionsAccessor"
 
-export abstract class AbstractServiceBank extends OptionsAccessor{
+export abstract class AbstractServiceBank extends EndpointOptionsAccessor{
 
     abstract userAssociatedOptionKeys: OptionKey[]
 

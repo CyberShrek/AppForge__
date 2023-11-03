@@ -1,5 +1,5 @@
 import {AbstractServiceBank} from "./AbstractServiceBank"
-import {userInfo} from "../../store/userInfo";
+import {userInfo} from "../../../store/userInfo";
 
 export class CountriesServiceBank extends AbstractServiceBank
 {

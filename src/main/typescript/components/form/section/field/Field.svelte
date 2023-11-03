@@ -7,7 +7,7 @@
     export let
         config: FieldConfig,
         value: any,
-        scopeValues: {[section_dot_fieldValue: string]: any}
+        valueScope: {[section_dot_fieldValue: string]: any}
 
 
 </script>
@@ -18,6 +18,6 @@
     {/if}
     {#if      config.type === "switch"  }<Checkbox config={{switch: true, ...config}} bind:checked={value}/>
     {:else if config.type === "calendar"}<Calendar {config} bind:pickedDate={value}/>
-    {:else if config.type === "select"  }<Select {config} bind:pickedOptionKeys={value} {scopeValues}/>
+    {:else if config.type === "select"  }<Select {config} bind:pickedOptionKeys={value} {valueScope}/>
     {/if}
 </div>

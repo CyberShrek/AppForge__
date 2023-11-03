@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -c -w",
+    "dev": "HOST=0.0.0.0 rollup -c -w",
     "test": "jest",
     "markdown": "markdownToHtml"
   },

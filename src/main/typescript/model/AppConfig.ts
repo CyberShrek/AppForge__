@@ -48,12 +48,15 @@ interface CheckboxConfig{
     switch?: boolean
 }
 
-interface SelectConfig {
+interface SelectConfig extends OptionSourcesConfig {
     multiple?: boolean
     search?: boolean
     showCodes?: boolean
     disableSelectAll?: boolean
     maxValues?: number
+}
+
+interface OptionSourcesConfig{
     endpointSource?: EndpointOptionsSetup
     serviceBankSource?: ServiceBankSetup
 }

@@ -3,11 +3,10 @@
     import {extractJsonItemsWithSuffix} from "../../../util/data"
     import Field from "./field/Field.svelte"
 
-
     export let
         config: FormSectionConfig,
         values: {[fieldKey: string]: any} = {},
-        scopeValues: {[section_dot_fieldValue: string]: any}
+        valueScope: {[section_dot_fieldValue: string]: any}
 
     let fieldConfigsObject = config ? extractJsonItemsWithSuffix(config, "Field") as {[fieldKey: string]: FieldConfig} : {}
 
@@ -20,6 +19,6 @@
     {#each Object.keys(fieldConfigsObject) as fieldKey}
         <Field config={fieldConfigsObject[fieldKey]}
                bind:value={values[fieldKey]}
-               {scopeValues}/>
+               {valueScope}/>
     {/each}
 </div>

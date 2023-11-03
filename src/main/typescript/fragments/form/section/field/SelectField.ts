@@ -3,12 +3,12 @@ import Select from "../../../inputs/Select"
 import {Section} from "../Section"
 import {concatMaps, prettify} from "../../../../util/data"
 import Form from "../../Form"
-import {AbstractServiceBank} from "../../../../api/serviceBankOptions/AbstractServiceBank";
-import {CarriersServiceBank} from "../../../../api/serviceBankOptions/CarriersServiceBank";
-import {CountriesServiceBank} from "../../../../api/serviceBankOptions/CountriesServiceBank";
-import {RegionsServiceBank} from "../../../../api/serviceBankOptions/RegionsServiceBank";
-import {RoadsServiceBank} from "../../../../api/serviceBankOptions/RoadsServiceBank";
-import {StationsServiceBank} from "../../../../api/serviceBankOptions/StationsServiceBank";
+import {AbstractServiceBank} from "../../../../api/options/serviceBank/AbstractServiceBank";
+import {CarriersServiceBank} from "../../../../api/options/serviceBank/CarriersServiceBank";
+import {CountriesServiceBank} from "../../../../api/options/serviceBank/CountriesServiceBank";
+import {RegionsServiceBank} from "../../../../api/options/serviceBank/RegionsServiceBank";
+import {RoadsServiceBank} from "../../../../api/options/serviceBank/RoadsServiceBank";
+import {StationsServiceBank} from "../../../../api/options/serviceBank/StationsServiceBank";
 
 export class SelectField extends Field<OptionKey[]> {
 

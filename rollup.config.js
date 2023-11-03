@@ -37,7 +37,7 @@ export default  {
         applyTerser(),
         svelte({
             compilerOptions: {
-
+                dev: true
             },
             preprocess: sveltePreprocess(),
         })

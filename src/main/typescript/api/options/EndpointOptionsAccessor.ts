@@ -1,7 +1,7 @@
-import {JsonAccessor} from "./abstract/JsonAccessor"
-import {jsonToMap} from "../util/data";
+import {JsonAccessor} from "../abstract/JsonAccessor"
+import {jsonToMap} from "../../util/data";
 
-export class OptionsAccessor extends JsonAccessor{
+export class EndpointOptionsAccessor extends JsonAccessor{
 
     constructor(public path: string) {
         super()
