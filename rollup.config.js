@@ -4,16 +4,19 @@ import applyTerser from '@rollup/plugin-terser'
 import clean from "@rollup-extras/plugin-clean"
 import commonjs from '@rollup/plugin-commonjs'
 import sveltePreprocess from "svelte-preprocess"
-import svelte from "rollup-plugin-svelte";
+import svelte from "rollup-plugin-svelte"
+
+const dev = !!process.env.ROLLUP_WATCH
 
 export default  {
 
+    dev: false,
     input: [`./src/main/typescript/index.ts`, `./src/main/typescript/forge.ts`, `./src/test/typescript/components_debug/debug.js`],
     output: [
         {
             dir: "./src/main/resources/static/js/built",
             format: "es",
-            sourcemap: true,
+            sourcemap: dev,
             manualChunks:{
                 wretch: ["wretch"],
                 domtoimage: ["dom-to-image"],
@@ -37,7 +40,7 @@ export default  {
         applyTerser(),
         svelte({
             compilerOptions: {
-                dev: true
+                dev
             },
             preprocess: sveltePreprocess(),
         })

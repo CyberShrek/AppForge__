@@ -11,7 +11,7 @@ const config = {
         title: "title",
         submitText: "submitText",
         submitPath: "submitPath",
-        statementPath: "statementPath",
+        statementPath: "demo/statement",
         firstSection: {
             firstField: {
                 type: "calendar",

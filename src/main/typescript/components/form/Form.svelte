@@ -3,18 +3,21 @@
     import {extractJsonItemsWithSuffix, prettify} from "../../util/data"
     import Section from "./section/Section.svelte"
     import Button from "../input/Button.svelte"
-    import {onMount} from "svelte"
+    import {FormStatementAccessor} from "../../api/FormStatementAccessor"
 
     resolveStyle("form")
 
     export let
-        config: FormConfig,
-        valueScope: {[section_dot_fieldValue: string]: any} = {}
+        config: FormConfig
 
     let sectionConfigsObject = config ? extractJsonItemsWithSuffix(config, "Section") as {[sectionKey: string]: FormSectionConfig} : {},
-        sectionValues = {}
+        sectionValues = {},
+        valueScope: {[section_dot_fieldValue: string]: any},
+        stateScope: {[section_dot_fieldState: string]: any}
 
-    $: if(sectionValues){
+    $: statementAccessor = config?.statementPath ? new FormStatementAccessor(config.statementPath) : null
+
+    $: if(Object.keys(sectionValues).length > 0){
         valueScope = {}
         for (const sectionKey in sectionValues) {
             const fieldValues = sectionValues[sectionKey]
@@ -22,6 +25,8 @@
                 valueScope[`${sectionKey}.${fieldKey}`] = fieldValues[fieldKey]
             }
         }
+        statementAccessor?.fetch(valueScope)
+            .then(statement => stateScope = statement)
     }
 
 </script>
@@ -37,5 +42,4 @@
     <Button submit text={config.submitText}
             on:click={() => alert(prettify(valueScope))}
     />
-
 </form>

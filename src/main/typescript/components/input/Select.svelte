@@ -1,30 +1,33 @@
 <script lang="ts">
+
     import {onMount} from "svelte"
-    import {VirtualSelectModule} from "../../modules/VirtualSelectModule"
     import {OptionsSource} from "../../api/options/OptionsSource"
+    import {VirtualSelectModule} from "../../modules/VirtualSelectModule"
 
     export let
         config: SelectConfig,
-        pickedOptionKeys: string[] = [],
+        value: string[] = [],
         valueScope: object = {}
 
     let rootElement: HTMLDivElement,
-        optionModule: VirtualSelectModule,
-        optionsSource: OptionsSource
+        optionsSource: OptionsSource,
+        virtualSelectModule: VirtualSelectModule
 
-    // Allow to apply outer changes
-    $: if(pickedOptionKeys)
-        optionModule?.setValue(pickedOptionKeys)
+    // // Allow to apply outer changes
+    $: if(value)
+        virtualSelectModule?.setValue(value)
 
     // React to scope changes
     $: if(valueScope)
         optionsSource?.retrieveOptionsByValueScope(valueScope)
-            .then(options => optionModule.setOptions(options))
+            .then(options => virtualSelectModule.setOptions(options))
+
 
     onMount(() => {
-        optionsSource = new OptionsSource(config);
-        (optionModule = new VirtualSelectModule(rootElement, config))
-            .onChange(pickedKeys => pickedOptionKeys = pickedKeys)
+        optionsSource = new OptionsSource(config)
+        virtualSelectModule = new VirtualSelectModule(rootElement, config)
+        virtualSelectModule
+            .onChange(newValue => value = newValue)
     })
 
 </script>

@@ -13,6 +13,10 @@ export abstract class InputModule<VALUE_TYPE> extends Module{
     
     onChange = (callback: (newValue: VALUE_TYPE) => void) => this.onChangeCallbacks.push(callback)
 
+    getValue(): VALUE_TYPE{
+        return this.value
+    }
+
     setValue(value: VALUE_TYPE, changeRootValue = true){
         if(!compare(value, this.value)){
             this.value = deepCopyOf(value)

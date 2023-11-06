@@ -3,12 +3,12 @@
 
     export let
         config: CheckboxConfig,
-        checked: boolean = false
+        value: boolean = false
 
 </script>
 
 <label class={config.switch ? "switch" : "checkbox"}>
-    <input type="checkbox" bind:checked>
+    <input type="checkbox" bind:checked={value}>
     {valueOrDefault(config.label, "")}
     {#if config.switch}
         <span class="slider"></span>

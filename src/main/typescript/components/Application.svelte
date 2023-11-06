@@ -18,7 +18,6 @@
         resolveStyle("navigation"),
         resolveStyle("inputs"),
         resolveStyle("states"),
-        resolveStyle("third-party/animate"),
         resolveStyle("misc")
     ])
 

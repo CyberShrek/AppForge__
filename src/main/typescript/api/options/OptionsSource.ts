@@ -12,6 +12,8 @@ export class OptionsSource {
     private readonly endpoint?: EndpointOptionsAccessor
     private readonly serviceBank?: AbstractServiceBank
 
+    private callnum = 0
+
     private endpointOptions?: OptionsMap
     private serviceBankOptions?: OptionsMap
 
@@ -34,14 +36,21 @@ export class OptionsSource {
     }
 
     async retrieveOptionsByValueScope(valueScope: object): Promise<OptionsMap>{
-        this.endpointOptions    = this.endpoint    ? await this.retrieveEndpointOptions(valueScope)     : null
-        this.serviceBankOptions = this.serviceBank ? await this.retrieveServiceBankOptions(valueScope)  : null
-        this.valueScope = deepCopyOf(valueScope)
-        return concatMaps(
-            valueOrDefault(this.endpointOptions,    new Map()),
-            valueOrDefault(this.serviceBankOptions, new Map())
-        )
+        const retrieve = async () => {
+            this.endpointOptions    = this.endpoint    ? await this.retrieveEndpointOptions(valueScope)     : null
+            this.serviceBankOptions = this.serviceBank ? await this.retrieveServiceBankOptions(valueScope)  : null
+            this.valueScope = deepCopyOf(valueScope)
+            return concatMaps(
+                valueOrDefault(this.endpointOptions,    new Map()),
+                valueOrDefault(this.serviceBankOptions, new Map())
+            )
+        }
+
+        await this.lastRetrievingPromise
+
+        return this.lastRetrievingPromise = retrieve()
     }
+    private lastRetrievingPromise: Promise<OptionsMap>
 
     private retrieveEndpointOptions = (valueScope: object) => this.retrieveOptions(
         valueScope,

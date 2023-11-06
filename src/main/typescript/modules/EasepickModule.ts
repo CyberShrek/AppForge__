@@ -19,6 +19,12 @@ export class EasepickModule extends InputModule<FormattedDate>{
                 : rootElement.setDate(pickedDate)
         })
 
+        const initialDetail = {
+            date:  new DateTime(),
+            start: new DateTime(),
+            end:   new DateTime()
+        }
+
         new easepick.create({
             element: rootElement,
             calendars: config.range ? 2 : 1,
@@ -26,10 +32,10 @@ export class EasepickModule extends InputModule<FormattedDate>{
             zIndex: 100,
             plugins: [config.range ? RangePlugin : null, AmpPlugin, LockPlugin],
             lang: 'ru',
-            date: new DateTime(),
+            date: initialDetail.date,
             RangePlugin: config.range ? {
-                startDate: new DateTime(),
-                endDate: new DateTime(),
+                startDate: initialDetail.start,
+                endDate: initialDetail.end,
                 locale: {
                     one: 'день',
                     few: 'дня',
@@ -50,13 +56,15 @@ export class EasepickModule extends InputModule<FormattedDate>{
             css: [
                 stylesLocation + "third-party/easepick.css"
             ],
-            setup(picker) {
+            setup: (picker) => {
                 picker.on("select", (e) => {
-                    super.setValue(this.easepickDetailToDateRange(e.detail))
+                    this.setValue(this.easepickDetailToDateRange(e.detail), false)
                     setTimeout(() => picker.hide(), 10)
                 })
             }
         })
+
+        this.value = this.easepickDetailToDateRange(initialDetail)
     }
 
     private easepickDetailToDateRange(detail: any): FormattedDate{
