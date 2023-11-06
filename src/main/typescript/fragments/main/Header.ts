@@ -1,5 +1,5 @@
 import {resolveStyle} from "../../util/resolver"
-import {popupAction, popupList, popupTimeoutAction} from "../../util/modal"
+import {popupAction, popupList, popupTimeoutAction} from "../../util/alert"
 import {appConfig} from "../../store/appConfig"
 import {Fragment} from "../Fragment"
 import {Button} from "../inputs/Button"

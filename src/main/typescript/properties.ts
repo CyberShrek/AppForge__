@@ -23,4 +23,10 @@ export const
         allOptionsSelectedText: "Все",
         clearButtonText: "Очистить",
         moreText: "ещё..."
+    },
+    sweetAlertProperties = {
+        confirmButtonColor: "var(--primary-color)",
+        showCloseButton: true,
+        allowEnterKey: false,
+        showConfirmButton: false
     }

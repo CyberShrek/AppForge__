@@ -16,7 +16,7 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
                 config: SelectConfig) {
 
         super((newKeys: string[]) =>
-            this.rootElement
+            rootElement
                 // @ts-ignore Resolved by module import
                 .setValue(newKeys))
 

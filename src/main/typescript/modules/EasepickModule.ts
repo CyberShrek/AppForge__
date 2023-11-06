@@ -2,14 +2,22 @@ import {easepick} from "@easepick/core"
 import {RangePlugin} from "@easepick/range-plugin"
 import {AmpPlugin} from "@easepick/amp-plugin"
 import {LockPlugin} from "@easepick/lock-plugin"
-import {valueOrDefault} from "../util/data"
+import {stringifyDate, valueOrDefault} from "../util/data"
 import {stylesLocation} from "../properties"
-import {InputModule} from "./abstract/InputModule";
+import {InputModule} from "./abstract/InputModule"
+import {DateTime} from "@easepick/datetime"
 
 export class EasepickModule extends InputModule<FormattedDate>{
 
     constructor(private rootElement: HTMLElement,
-                config: CalendarConfig) {
+                private config: CalendarConfig) {
+
+        super(pickedDate => {
+            Array.isArray(pickedDate)                                       // @ts-ignore Resolved by module import
+                ?  pickedDate[0] && rootElement.setStartDate(pickedDate[0]) // @ts-ignore Resolved by module import
+                || pickedDate[1] && rootElement.setEndDate(pickedDate[1])   // @ts-ignore Resolved by module import
+                : rootElement.setDate(pickedDate)
+        })
 
         new easepick.create({
             element: rootElement,
@@ -18,10 +26,10 @@ export class EasepickModule extends InputModule<FormattedDate>{
             zIndex: 100,
             plugins: [config.range ? RangePlugin : null, AmpPlugin, LockPlugin],
             lang: 'ru',
-            date: pickedDate[0],
+            date: new DateTime(),
             RangePlugin: config.range ? {
-                startDate: pickedDate[0],
-                endDate: pickedDate[1],
+                startDate: new DateTime(),
+                endDate: new DateTime(),
                 locale: {
                     one: 'день',
                     few: 'дня',
@@ -44,14 +52,16 @@ export class EasepickModule extends InputModule<FormattedDate>{
             ],
             setup(picker) {
                 picker.on("select", (e) => {
-                    pickedDate = easepickDetailToDateRange(e.detail)
+                    super.setValue(this.easepickDetailToDateRange(e.detail))
                     setTimeout(() => picker.hide(), 10)
                 })
             }
         })
     }
 
-    private readonly onChangeCallbacks: ((pickedDate: FormattedDate) => void)[] = []
-
-    onChange = (callback: (pickedKeys: typeof this.pickedKeys) => void) => this.onChangeCallbacks.push(callback)
+    private easepickDetailToDateRange(detail: any): FormattedDate{
+        return this.config.range
+            ? [stringifyDate(detail.start), stringifyDate(detail.end)]
+            : stringifyDate(detail.date)
+    }
 }

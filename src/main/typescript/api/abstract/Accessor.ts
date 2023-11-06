@@ -1,7 +1,7 @@
 import wretch from "wretch"
 import {jsonify, jsonToMap, mapToJson} from "../../util/data"
 import {removeCursorLoader, addCursorLoader} from "../../util/domWizard"
-import {popupHttpDataError} from "../../util/modal"
+import {popupHttpDataError} from "../../util/alert"
 
 
 export abstract class Accessor<RESOURCE> {

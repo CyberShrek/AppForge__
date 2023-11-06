@@ -1,7 +1,7 @@
 <script lang="ts">
     import {resolveStyle} from "../../util/resolver"
     import Button from "../input/Button.svelte"
-    import {popupAction, popupList} from "../../util/modal"
+    import {popupAction, popupList} from "../../util/alert"
     import {valueOrDefault} from "../../util/data"
     import Image from "../misc/Image.svelte";
     resolveStyle("header")
