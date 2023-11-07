@@ -2,8 +2,8 @@ interface ReportModel {
     title?: string
     data?: MatrixData
     dataFeatures?: DataFeature[]
-    charts?: ChartModel[]
-    table?: TableModel
+    charts?: ChartConfig[]
+    table?: TableConfig
     context?: ContextFields
     slot?: string
 }
@@ -11,7 +11,7 @@ interface ReportModel {
 ///////////
 // CHART //
 ///////////
-interface ChartModel {
+interface ChartConfig {
     title?: string
     diagram?: DiagramConfig|DiagramConfig[]
 }
@@ -25,8 +25,8 @@ interface DiagramConfig {
 ///////////
 // TABLE //
 ///////////
-interface TableModel {
-    head: TableHead
+interface TableConfig {
+    head: CompleteRow[]
     primaryColumnsNumber?: number
     groupedColumnsNumber?: number
     hiddenColumns?: number[] // TODO implement
@@ -42,7 +42,6 @@ type TableMapData = Map<PrimaryCellData[], CellData[]>
 type RowData = CellData[]
 type CellData = number|string
 type PrimaryCellData = string
-type TableHead = string[]
 
 //////////
 // XLSX //
@@ -51,7 +50,7 @@ interface XlsxTableModel {
     name: string
     context: string[]
     title: string
-    header: CompleteRow[]
+    head: CompleteRow[]
     body: CompleteRow[]
     total: CompleteRow
 }

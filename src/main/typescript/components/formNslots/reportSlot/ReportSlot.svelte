@@ -1,6 +1,14 @@
 <script lang="ts">
 
-    export let config: ReportSlotConfig
+    import {ReportModelWizard} from "../../../model/ReportModelWizard"
+
+    export let
+        config: ReportSlotConfig,
+        model: ReportModel
+
+    $: modelWizard = model && new ReportModelWizard(model)
+
+    // model.
 
 </script>
 

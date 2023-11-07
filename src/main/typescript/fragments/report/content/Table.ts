@@ -24,7 +24,7 @@ export class Table extends InlineFragment<Body>{
     constructor(body: Body,
                 private readonly data: MatrixData,
                 private readonly colFeatures: DataFeature[],
-                private readonly model: TableModel)
+                private readonly model: TableConfig)
     {
         super(body, `
             <div class="table">
@@ -44,7 +44,7 @@ export class Table extends InlineFragment<Body>{
             name:    this.parent.parent.head.title,
             context: this.parent.context?.visibleValues,
             title:   this.parent.parent.head.title,
-            header:  getCompleteRowsFromElement(this.thead),
+            head:  getCompleteRowsFromElement(this.thead),
             body:    getCompleteRowsFromElement(this.tbody),
             total:   getCompleteRowsFromElement(this.tfoot)[0]
         })
