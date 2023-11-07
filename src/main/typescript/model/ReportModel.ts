@@ -13,11 +13,8 @@ interface ReportModel {
 ///////////
 interface ChartModel {
     title?: string
-    diagram?: DiagramConfig|DiagramConfig[],
-    data: ChartDatasets
+    diagram?: DiagramConfig|DiagramConfig[]
 }
-type ChartDatasets = {[label: string]: ChartData }
-type ChartData = number|number[]
 
 interface DiagramConfig {
     name?: string
@@ -75,9 +72,9 @@ type DataFeature = {
 
 interface TextColumn {
     type: "text"
-    replaceWithLabels?: {
-        fields?: FieldKey[]
-        includeCode?: boolean
+    useOptionLabels?: {
+        fromFields?: string[]
+        showCode?: boolean
     }
 }
 

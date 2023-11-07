@@ -100,7 +100,7 @@ export class Table extends InlineFragment<Body>{
             if(feature.type === "numeric" && feature.formula){
                 rowData[index] = executeFormulaForRowData(feature.formula, rowData, totalRowData, this.data)
             } else if(feature.type === "text"){
-                feature.replaceWithLabels?.fields?.forEach(fieldKey => {
+                feature.useOptionLabels?.fromFields?.forEach(fieldKey => {
                     const field = this.parent.parent.associatedFormSnapshot.fields.get(fieldKey)
                     const fieldValue = field ? (field as SelectField).options.get(`${rowData[index]}`) : undefined
                     if(fieldValue) rowData[index] = fieldValue
@@ -230,12 +230,10 @@ function getCellIndexWithSpans(targetCell: HTMLTableCellElement): number  {
             for (let l = 0; l <= matrix[rowIndex].length && colIndex === null; l++) {
                 if (!matrix[rowIndex][l]) colIndex = l
             }
-
             if (cell === targetCell) {
                 result = colIndex
                 break;
             }
-
             for (let k = rowIndex; k < rowIndex + cell.rowSpan; k++) {
                 for (let l = colIndex; l < colIndex + cell.colSpan; l++) {
                      matrix[k] = matrix[k] || [];
@@ -244,8 +242,7 @@ function getCellIndexWithSpans(targetCell: HTMLTableCellElement): number  {
             }
         }
     }
-
-    return result;
+    return result
 }
 
 function getCompleteRowsFromElement(element: Element): CompleteRow[]{

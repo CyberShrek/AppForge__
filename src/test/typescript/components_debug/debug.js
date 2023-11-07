@@ -34,12 +34,12 @@ const config = {
             firstField: {
                 type: "select",
                 label: "firstField",
-                serviceBankSource: {
-                    type: "carriers",
-                    propertiesTriggerKeys: {
-                        date: "firstSection.secondField"
-                    }
-                }
+                // serviceBankSource: {
+                //     type: "carriers",
+                //     propertiesTriggerKeys: {
+                //         date: "firstSection.secondField"
+                //     }
+                // }
             },
             secondField: {
                 type: "select",

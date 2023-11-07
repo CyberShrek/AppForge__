@@ -2,28 +2,28 @@
 
     import { onMount } from 'svelte'
 
-    export let simplifyIfSingle = true
+    export let
+        hideTabsBarIfTabIsSingle = true
 
     let tabsElement: HTMLDivElement
     let bodyElement: HTMLDivElement
-
-    let simplified = false
 
     onMount(() => {
         const pages = tabsElement.querySelectorAll<HTMLDivElement>("div.tab-page")
 
         // Each page from the slot will be inserted into nav-body
-        pages.forEach(pageElement => bodyElement.insertAdjacentElement("beforeend", pageElement))
+        pages.forEach(pageElement => {
+            if(pageElement.closest(".nav-bar") === tabsElement)
+                bodyElement.insertAdjacentElement("beforeend", pageElement)
+        })
 
         // The first tab is selected by default
         tabsElement.querySelector<HTMLButtonElement>("button.tab").click()
-
-        simplified = (simplifyIfSingle && pages.length === 1)
     })
 
 </script>
 
-<div class="nav-container" class:simplified>
+<div class="nav-container" class:hideTabsBar={hideTabsBarIfTabIsSingle && pages.length === 1}>
     <!-- Nav Bar-->
     <div class="nav-bar" bind:this={tabsElement}>
         <slot/>
