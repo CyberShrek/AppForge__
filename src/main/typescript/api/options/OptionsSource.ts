@@ -12,8 +12,6 @@ export class OptionsSource {
     private readonly endpoint?: EndpointOptionsAccessor
     private readonly serviceBank?: AbstractServiceBank
 
-    private callnum = 0
-
     private endpointOptions?: OptionsMap
     private serviceBankOptions?: OptionsMap
 

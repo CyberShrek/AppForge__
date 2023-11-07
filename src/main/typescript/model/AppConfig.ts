@@ -5,27 +5,32 @@ type AppConfig = {
         description?: string
         additional?: string
     }
+} & FormNReportsConfig & {
+    complex?: ({title: string} & FormNReportsConfig)[]
+}
+
+type FormNReportsConfig = {
+    form: FormConfig
 } & {
-    // contentName should ends with either "Form" or "Slot" word to determine what is what
-    [contentName: string]: FormConfig | ReportSlotConfig | any
+    // slotName must end with the "Slot" word
+    [slotName: string]: ReportSlotConfig
 }
 
 type FormConfig = {
-    title?: string
     submitText?: string
     submitPath?: string
     instantSubmit?: boolean
-    statementPath?: string
+    statePath?: string
     layout?: "horizontal" | "vertical"
 } & {
-    // sectionName should ends with the "Section" word
+    // sectionName must end with the "Section" word
     [sectionName: string]: FormSectionConfig
 }
 
 type FormSectionConfig = {
     title?: string
 } & {
-    // fieldName should ends with the "Field" word
+    // fieldName must end with the "Field" word
     [fieldName: string]: FieldConfig
 }
 
@@ -40,7 +45,6 @@ interface CommonFieldConfig {
 interface ReportSlotConfig {
     title: string
     isModal?: boolean
-    associatedWith?: string
 }
 
 interface CheckboxConfig{

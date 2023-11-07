@@ -7,7 +7,7 @@ export class CarriersServiceBank extends AbstractServiceBank
 
     protected requestStep = {
         listName: "perList",
-        specificBodiesFn: () => this.properties.countries.map(code => {
+        specificBodiesFn: () => this.properties?.countries?.map(code => {
             return {"gos": code}
         })
     }

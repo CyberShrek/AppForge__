@@ -176,3 +176,22 @@ export const mapToVirtualSelectOptions = (map: Map<string, string>) =>
             description: entry[0]
         }
     })
+
+
+// FORM STATEMENT
+export function parseFormStatementKeys(
+    keys: string[],
+    sectionsReceiver: SectionKeys,
+    sectionFieldsReceiver: SectionFieldKeys
+){
+    keys.forEach((key: string) => {
+        const entry = key.split('.')
+
+        if(entry[1]) {
+            !sectionFieldsReceiver.has(entry[0]) && sectionFieldsReceiver.set(entry[0], new Set())
+            sectionFieldsReceiver.get(entry[0]).add(entry[1])
+        }
+        else
+            sectionsReceiver.add(entry[0])
+    })
+}

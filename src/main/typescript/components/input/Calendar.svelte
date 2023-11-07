@@ -2,7 +2,7 @@
 
     import Button from "./Button.svelte"
     import {onMount} from "svelte"
-    import {EasepickModule} from "../../modules/EasepickModule";
+    import {EasepickModule} from "../../third-party/EasepickModule";
     import {easepick} from "@easepick/core";
 
     export let

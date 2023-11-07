@@ -1,4 +1,4 @@
-import {SweetAlertModule} from "../modules/SweetAlertModule"
+import {SweetAlertModule} from "../third-party/SweetAlertModule"
 
 const sweet = new SweetAlertModule()
 

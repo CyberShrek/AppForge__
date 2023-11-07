@@ -7,11 +7,11 @@ const config = {
         description: "description",
         additional: ""
     },
-    debugForm: {
+    form: {
         title: "title",
         submitText: "submitText",
         submitPath: "submitPath",
-        statementPath: "demo/statement",
+        statePath: "debug/statement",
         firstSection: {
             firstField: {
                 type: "calendar",
@@ -33,7 +33,13 @@ const config = {
         secondSection: {
             firstField: {
                 type: "select",
-                label: "firstField"
+                label: "firstField",
+                serviceBankSource: {
+                    type: "carriers",
+                    propertiesTriggerKeys: {
+                        date: "firstSection.secondField"
+                    }
+                }
             },
             secondField: {
                 type: "select",
@@ -67,6 +73,15 @@ const config = {
                 label: "thirdField"
             }
         }
+    },
+    mainSlot: {
+        title: "Main"
+    },
+    lateralSlot: {
+        title: "lateral"
+    },
+    extraSlot: {
+        title: "Extra"
     }
 }
 

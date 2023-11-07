@@ -2,18 +2,18 @@
 
     import {onMount} from "svelte"
     import {OptionsSource} from "../../api/options/OptionsSource"
-    import {VirtualSelectModule} from "../../modules/VirtualSelectModule"
+    import {VirtualSelectModule} from "../../third-party/VirtualSelectModule"
 
     export let
         config: SelectConfig,
-        value: string[] = [],
-        valueScope: object = {}
+        value: string[],
+        valueScope: object
 
     let rootElement: HTMLDivElement,
         optionsSource: OptionsSource,
         virtualSelectModule: VirtualSelectModule
 
-    // // Allow to apply outer changes
+    // Allow to apply outer changes
     $: if(value)
         virtualSelectModule?.setValue(value)
 
@@ -22,12 +22,13 @@
         optionsSource?.retrieveOptionsByValueScope(valueScope)
             .then(options => virtualSelectModule.setOptions(options))
 
-
     onMount(() => {
         optionsSource = new OptionsSource(config)
         virtualSelectModule = new VirtualSelectModule(rootElement, config)
         virtualSelectModule
             .onChange(newValue => value = newValue)
+
+        value = virtualSelectModule.getValue()
     })
 
 </script>

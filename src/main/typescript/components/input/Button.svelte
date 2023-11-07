@@ -21,7 +21,8 @@
         title="{hint}"
         bind:this={root}
         on:click={event => event.preventDefault()}
-        on:click>
+        on:click
+        on:mouseenter>
 
     {#if image && image.length > 0}
         <Image name={image}/>

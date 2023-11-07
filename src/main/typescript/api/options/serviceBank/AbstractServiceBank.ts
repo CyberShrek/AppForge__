@@ -1,9 +1,18 @@
 import {userInfo} from "../../../store/userInfo";
 import {EndpointOptionsAccessor} from "../EndpointOptionsAccessor"
+import {JsonAccessor} from "../../abstract/JsonAccessor";
 
-export abstract class AbstractServiceBank extends EndpointOptionsAccessor{
+export abstract class AbstractServiceBank extends JsonAccessor{
 
     abstract userAssociatedOptionKeys: OptionKey[]
+
+    override path = `${document.location.origin}/servicebank/getdata`
+
+    constructor() {
+        super()
+        this.method = "POST"
+        this.errorFooter = "Не удалось загрузить список опций из банка микросервисов"
+    }
 
     protected properties: ServiceBankSetup["properties"]
 
@@ -25,10 +34,6 @@ export abstract class AbstractServiceBank extends EndpointOptionsAccessor{
         parseItemToOptionFn: (items: any) => string[]
         filterFn?: (item: any) => boolean
         errorMessageEnding: string
-    }
-
-    constructor() {
-        super(`${document.location.origin}/servicebank/getdata`)
     }
 
     override fetch(properties?: ServiceBankSetup["properties"]): Promise<OptionsMap> {
@@ -53,7 +58,7 @@ export abstract class AbstractServiceBank extends EndpointOptionsAccessor{
         custom.date = custom.roads = custom.countries = custom.postSoviet = custom.carriers = undefined
         this.body = {
             [listName]: [...specificBodies.map(body => { return {
-                "data": this.properties.date[0],
+                "data": Array.isArray(this.properties.date) ? this.properties.date[0] : this.properties.date,
                 ...body,
                 ...custom
             }})]
@@ -67,11 +72,11 @@ export abstract class AbstractServiceBank extends EndpointOptionsAccessor{
             // The only first item is approved
             new Map((json[Object.keys(json as any)[0]] as Array<any>)
                 .filter((item) => filter ? filter(item) : true)
-                .map((item) => {
-                    const parsed = parseItemToOptionFn(item)
-                    parsed[1] = parsed[1].trim()
-                    return parsed as [string, string]
-                })
+                    .map((item) => {
+                        const parsed = parseItemToOptionFn(item)
+                        parsed[1] = parsed[1].trim()
+                        return parsed as [string, string]
+                    })
             )
         )
     }

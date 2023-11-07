@@ -2,10 +2,10 @@
 
     import {resolveStyle} from "../util/resolver"
     import Header from "./navigation/Header.svelte"
-    import Form from "./form/Form.svelte"
     import {extractJsonItemsWithSuffix, valueOrDefault} from "../util/data"
     import NavContainer from "./navigation/NavContainer.svelte"
     import NavTab from "./navigation/NavTab.svelte"
+    import FormNSlots from "./formNslots/FormNSlots.svelte"
 
     export let
         config:    AppConfig,
@@ -21,16 +21,25 @@
         resolveStyle("misc")
     ])
 
-    let formConfigsObject = config ? extractJsonItemsWithSuffix(config, "Form") as {[fieldKey: string]: FormConfig} : {}
+    if(!config.complex || !Array.isArray(config.complex))
+        config.complex = []
+
+    if(config.form)
+        config.complex.push({
+            title: " ",
+            form: config.form,
+            ...extractJsonItemsWithSuffix(config, "Slot")
+        })
 
 </script>
 
 <Header {appInfo}></Header>
 
 <NavContainer>
-    {#each Object.keys(formConfigsObject) as formKey}
-        <NavTab text={valueOrDefault(formConfigsObject[formKey].title, formKey)}>
-            <Form config={formConfigsObject[formKey]}/>
+    {#each config.complex as boxConfig}
+        <NavTab text={boxConfig.title}>
+            <FormNSlots formConfig={boxConfig.form}
+                        reportConfigsObject={extractJsonItemsWithSuffix(boxConfig, "Slot")}/>
         </NavTab>
     {/each}
 </NavContainer>

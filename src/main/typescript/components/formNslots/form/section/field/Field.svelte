@@ -1,17 +1,22 @@
 <script lang="ts">
 
-    import Checkbox from "../../../input/Checkbox.svelte"
-    import Calendar from "../../../input/Calendar.svelte"
-    import Select from "../../../input/Select.svelte"
+    import Checkbox from "../../../../input/Checkbox.svelte"
+    import Calendar from "../../../../input/Calendar.svelte"
+    import Select   from "../../../../input/Select.svelte"
+    import {deepCopyOf} from "../../../../../util/data";
 
     export let
         config: FieldConfig,
         value: any,
-        valueScope: {[section_dot_fieldValue: string]: any}
+        valueScope: {[section_dot_fieldValue: string]: any},
+        wrong: boolean,
+        hidden: boolean
 
 </script>
 
-<div class="{config.type}-field field">
+<div class:wrong
+     class:hidden
+     class="{config.type}-field field">
     {#if config.type !== "switch" && config.label }
         <p>{config.label}</p>
     {/if}

@@ -5,7 +5,7 @@ import {Fragment} from "../Fragment"
 import {Section} from "./section/Section"
 import {jsonifyFields, jsonToMap, valueOrDefault} from "../../util/data"
 import {SelectField} from "./section/field/SelectField"
-import {FormStatementAccessor} from "../../api/FormStatementAccessor"
+import {FormStateAccessor} from "../../api/FormStateAccessor"
 
 resolveStyle("form")
 
@@ -22,7 +22,7 @@ export default class Form extends Fragment<HTMLFormElement> {
 
     private startValidating = false
 
-    private statementAccessor: FormStatementAccessor
+    private statementAccessor: FormStateAccessor
 
     constructor(protected readonly config: FormConfig, public onSubmit?: (jsonFieldValues: JsonProperties, fullFieldValues: Map<FieldKey, any>) => void) {
         super(`<form class="${config.layout ? config.layout : 'horizontal'}"></form>`)
@@ -37,7 +37,7 @@ export default class Form extends Fragment<HTMLFormElement> {
             }
         }
 
-        if(this.config.statementPath) this.startStatementRetrieving()
+        if(this.config.statePath) this.startStatementRetrieving()
         this.append(this.submitButton)
         this.submitButton.listen("mouseenter", () => {
             this.startValidating = true
@@ -46,7 +46,7 @@ export default class Form extends Fragment<HTMLFormElement> {
         })
     }
 
-    private currentStatement: FormStatement
+    private currentStatement: FormState
 
     get jsonFieldValues(){
         return jsonifyFields(this.fields)
@@ -70,7 +70,7 @@ export default class Form extends Fragment<HTMLFormElement> {
     }
 
     private startStatementRetrieving(){
-        this.statementAccessor = new FormStatementAccessor()
+        this.statementAccessor = new FormStateAccessor()
         this.hide()
         this.onMount(() =>
             this.manageFieldsStatement("initial").then(
@@ -84,7 +84,7 @@ export default class Form extends Fragment<HTMLFormElement> {
 
     // TODO refactor
     private manageFieldsStatement(trigger: string){
-        this.statementAccessor.path = this.config.statementPath
+        this.statementAccessor.path = this.config.statePath
         return this.statementAccessor.fetch(this.jsonFieldValues, trigger).then(statement => {
             if(!!statement){
                 this.currentStatement = statement
@@ -101,14 +101,14 @@ export default class Form extends Fragment<HTMLFormElement> {
                     Object.entries(statement.setupServiceBank).forEach(([fieldKey, setup]) => {
                         const field = this.fields.get(fieldKey)
                         if(field && field instanceof SelectField) {
-                            const initValues = statement.setValues
-                                ? Object.entries(statement.setValues).find(entry => entry[0] === fieldKey)?.[1]
+                            const initValues = statement.values
+                                ? Object.entries(statement.values).find(entry => entry[0] === fieldKey)?.[1]
                                 : undefined
                             field.setupServiceBank(setup, initValues)
                         }
                     })
                 }
-                if(statement.setValues) Object.entries(statement.setValues).forEach(
+                if(statement.values) Object.entries(statement.values).forEach(
                     ([fieldKey, value]) => {
                         const field = this.fields.get(fieldKey)
                         if (field && !(field instanceof SelectField && field.awaitingForServiceBankOptions))

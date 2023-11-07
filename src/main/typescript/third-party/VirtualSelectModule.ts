@@ -18,7 +18,9 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
         super((newKeys: string[]) =>
             rootElement
                 // @ts-ignore Resolved by module import
-                .setValue(newKeys))
+                .setValue?.(newKeys))
+
+        this.value = []
 
         initialPromises.then(() => {
             // @ts-ignore Resolved by module import
@@ -42,9 +44,7 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
     }
 
     override setValue(optionKeys){
-        initialPromises.then(() => {
-            super.setValue(optionKeys)
-        })
+        initialPromises.then(() => super.setValue(optionKeys))
     }
 
     setOptions(newOptions: OptionsMap){

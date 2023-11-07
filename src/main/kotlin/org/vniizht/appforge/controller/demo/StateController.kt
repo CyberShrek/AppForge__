@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/demo/statement")
-class StatementController {
+class StateController {
 
     @PostMapping("/init")
     fun fetchInitStatement() = mapOf(

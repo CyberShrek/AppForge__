@@ -1,4 +1,11 @@
-import {concatMaps, javaMapToMap, mapOf, pairOf} from "../../../main/typescript/util/data"
+import {
+    concatMaps,
+    javaMapToMap,
+    mapOf,
+    pairOf,
+    parseFormStatementKeys,
+    setOf
+} from "../../../main/typescript/util/data"
 
 test("test pairOf", () => expect(
     pairOf("first", "second")
@@ -25,3 +32,48 @@ test("test concatMaps", () => expect(
 ).toEqual(
     mapOf(pairOf("a", "qwerty"), pairOf("b", "a w e"), pairOf("c", "dd"), pairOf("c", "eeee"))
 ))
+
+test("test parseFormStatementKeys", () => {
+    let sectionsReceiver: Set<string> = new Set(),
+        sectionFieldsReceiver: Map<string, Set<string>> = new Map()
+
+    // 1
+    parseFormStatementKeys(
+        ["firstSection.firstField", "secondSection.secondField", "thirdSection.thirdField"],
+        sectionsReceiver,
+        sectionFieldsReceiver
+    )
+    expect(sectionsReceiver).toEqual(setOf())
+    expect(sectionFieldsReceiver).toEqual(mapOf(
+        pairOf("firstSection", setOf("firstField")),
+        pairOf("secondSection", setOf("secondField")),
+        pairOf("thirdSection", setOf("thirdField"))
+        ))
+
+    // 2
+    sectionsReceiver = new Set()
+    sectionFieldsReceiver = new Map()
+    parseFormStatementKeys(
+        ["firstSection.firstField", "firstSection.secondField", "firstSection.thirdField"],
+        sectionsReceiver,
+        sectionFieldsReceiver
+    )
+    expect(sectionsReceiver).toEqual(setOf())
+    expect(sectionFieldsReceiver).toEqual(mapOf(
+        pairOf("firstSection", setOf("firstField", "secondField", "thirdField"))
+    ))
+
+    // 3
+    sectionsReceiver = new Set()
+    sectionFieldsReceiver = new Map()
+    parseFormStatementKeys(
+        ["zeroSection", "firstSection.firstField", "firstSection.secondField", "firstSection.thirdField", "secondSection.firstField", "secondSection.thirdField", "thirdSection"],
+        sectionsReceiver,
+        sectionFieldsReceiver
+    )
+    expect(sectionsReceiver).toEqual(setOf("zeroSection", "thirdSection"))
+    expect(sectionFieldsReceiver).toEqual(mapOf(
+        pairOf("firstSection", setOf("firstField", "secondField", "thirdField")),
+        pairOf("secondSection", setOf("firstField", "thirdField"))
+    ))
+})
