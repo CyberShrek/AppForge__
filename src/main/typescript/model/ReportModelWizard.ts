@@ -4,91 +4,68 @@ import {popupMessage} from "../util/alert"
 
 export class ReportModelWizard {
 
+    readonly properData: MatrixData        // properData is model.data modified by formulas and sorted by primary columns.
+    readonly primaryColumnsNumber: number  // The primary columns are the most left columns consist of "string" type cells
     readonly totalRow: RowData
-    readonly propData: MatrixData
 
-    constructor(
-        private model: ReportModel,
-        private getOptionsFn?: (fieldLocation: string) => OptionsMap // Used for finding labels
-    ) {
+    constructor(private model: ReportModel) {
         if(model.data && model.data.length > 0) {
-            // Firstly calculate the total data to use it in the formulas
-            this.totalRow = this.calculateClusterTotal(model.data, false)
-            this.applyFeaturesToRow(this.totalRow, false)
 
-            // Then calculate the proper data
-            this.propData = deepCopyOf(model.data)
-            this.propData.forEach(row => this.applyFeaturesToRow(row))
+            // Firstly calculate the total data to use it in the formulas
+            this.totalRow = this.getClusterTotal(model.data, false)
+            this.applyFormulasToRow(this.totalRow)
+
+            // Then calculate the proper data and find primary columns
+            this.properData = deepCopyOf(model.data)
+            let primaryColumnsNumber = 0
+            this.properData.forEach(row => {
+                for (let i = 1; i <= row.length; i++) {
+                    if (typeof row[i - 1] !== "string") break
+                    if (i > primaryColumnsNumber) primaryColumnsNumber = i
+                }
+                this.applyFormulasToRow(row)
+            })
+            this.primaryColumnsNumber = primaryColumnsNumber
+            this.sortCluster(this.properData)
         }
         else popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
     }
 
-    getColumnType(columnId){
-        return valueOrDefault(this.model?.columns?.[columnId]?.type, '')
-    }
-
-    calculateClusterTotal(cluster: MatrixData, applyFormulas: boolean = true): RowData{
+    getClusterTotal(cluster: MatrixData, applyFormulas: boolean = true): RowData{
         let total: RowData = []
 
         cluster.forEach(rowData => rowData.forEach(
             (cellData, cellIndex) => {
-                const feature = this.model.columns?.[cellIndex]
-                if(typeof cellData === "number" && feature?.type !== "text") {
+                if(typeof cellData === "number") {
                     total[cellIndex] = total[cellIndex]
                         ? numberOf(total[cellIndex]) + cellData
                         : cellData
                 }
-                else total[cellIndex] = ''
+                else total[cellIndex] = valueOrDefault(total[cellIndex], '')
             })
         )
         if(applyFormulas)
-            this.applyFeaturesToRow(total, false)
+            this.applyFormulasToRow(total)
 
         return total
     }
 
-    groupByFirstColumn(tbody: HTMLTableSectionElement){
-        this.recursiveGroupPrimaryCells(tbody.querySelector("tr:first-of-type"), tbody.querySelector("tr:last-of-type"))
+    // Sorts data by primary columns
+    sortCluster(cluster: MatrixData){
+        cluster.sort((rowA, rowB) => {
+            for (let i = 0; i < this.primaryColumnsNumber; i++) {
+                if (rowA[i] !== rowB[i]) {
+                    return String(rowA[i]).localeCompare(String(rowB[i]));
+                }
+            }
+            return 0;
+        })
     }
 
-    private recursiveGroupPrimaryCells(startHtmlRow: HTMLTableRowElement, endHtmlRow: HTMLTableRowElement, nesting: number = 0){
-
-        let htmlRowMarshall: HTMLTableRowElement
-        let lastPrimaryCell: HTMLTableCellElement
-
-        const marshallNextNesting=() => {
-            if(lastPrimaryCell)
-                this.recursiveGroupPrimaryCells(lastPrimaryCell.parentElement as HTMLTableRowElement, htmlRowMarshall, nesting + 1)
-        }
-        while (htmlRowMarshall !== endHtmlRow){
-            htmlRowMarshall = htmlRowMarshall ? htmlRowMarshall.nextElementSibling as HTMLTableRowElement : startHtmlRow
-            const currentPrimaryCell = htmlRowMarshall.cells[nesting]
-            if(lastPrimaryCell && lastPrimaryCell.textContent === currentPrimaryCell?.textContent){
-                lastPrimaryCell.rowSpan++
-                currentPrimaryCell.hidden = true
-            }
-            else {
-                marshallNextNesting()
-                lastPrimaryCell = htmlRowMarshall.querySelectorAll<HTMLTableCellElement>("td.primary")[nesting]
-            }
-        }
-        marshallNextNesting()
-    }
-
-    private applyFeaturesToRow(row: RowData, applyLabels: boolean = true) {
-        this.model.columns?.forEach((feature, index) => {
-            if(feature.type === "numeric" && feature.formula){
-                row[index] = executeFormulaForRowData(feature.formula, row, this.totalRow, this.model.data)
-            }
-            else if(applyLabels && this.getOptionsFn && feature.type === "text"){
-                feature.useOptionLabels?.fromFields?.forEach(fieldLocation => {
-                    const optionLabel = this.getOptionsFn(fieldLocation).get(`${row[index]}`)
-                    if(optionLabel) {
-                        const optionCode = row[index]
-                        row[index] = optionLabel + feature.useOptionLabels.showCode ? optionCode : ''
-                    }
-                })
-            }
+    private applyFormulasToRow(row: RowData) {
+        this.model.formulas?.forEach((formula, index) => {
+            if(formula && formula.length > 0)
+                row[index] = executeFormulaForRowData(formula, row, this.totalRow, this.model.data)
         })
     }
 }

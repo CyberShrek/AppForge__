@@ -1,7 +1,7 @@
 interface ReportModel {
     title?: string
     data?: MatrixData
-    columns?: ColumnConfig[]
+    formulas?: string[]
     charts?: ChartConfig[]
     table?: TableConfig
     context?: ContextFields
@@ -27,13 +27,17 @@ interface DiagramConfig {
 ///////////
 interface TableConfig {
     head: CompleteRow[]
-    primaryColumns?: number
-    groupFirstColumn?: boolean
+    groupBy?: boolean | number
+    collapseGroups?: boolean
     addTotalToGroups?: boolean
-    hiddenColumns?: number[]
+    addTotal?: boolean
+    addCheckboxes?: {
+        actions?: ActionButton[]
+    }
+    columnFeatures?: ColumnFeature[]
 }
 type CompleteCell = {
-    text: string,
+    value: any,
     rowspan?: number,
     colspan?: number
 }
@@ -64,22 +68,35 @@ interface ContextFields {
 } // Value is field key
 
 /////////////
-// FEATURE //
+// FEATURES //
 /////////////
-type ColumnConfig = {
-    type: string
-} & (TextColumn | NumericColumn)
-
-interface TextColumn {
-    type: "text"
-    useOptionLabels?: {
-        fromFields?: string[]
-        showCode?: boolean
+interface ColumnFeature {
+    spanned?: boolean
+    hidden?:  boolean | "xlsx"
+    colors?: {
+        positive?: boolean | string
+        negative?: boolean | string
     }
+    setOptions?: {
+        fromFields: string[]
+        hideCode?:  boolean
+    }
+    setImages?: {
+        associations: {[cellText: string]: string}
+        default?:  string
+        hideText?: boolean
+    }
+    onClick?: ApiAction
 }
 
-interface NumericColumn {
-    type: "numeric"
-    colored?: boolean
-    formula?: string
+interface ActionButton {
+    label?: string
+    image?: string
+    placeholder?: string
+    onClick?: ApiAction
+}
+
+interface ApiAction {
+    fetchReport?: string
+    fetchFile?:   string
 }

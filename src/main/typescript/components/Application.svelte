@@ -33,5 +33,7 @@
 
 <Header {appInfo}></Header>
 
-<FormNSlots formConfig={config.form}
-            reportConfigsObject={extractJsonItemsWithSuffix(config, "Slot")}/>
+{#if config.form}
+    <FormNSlots formConfig={config.form}
+                reportConfigsObject={extractJsonItemsWithSuffix(config, "Slot")}/>
+{/if}

@@ -23,7 +23,7 @@ export class Table extends InlineFragment<Body>{
 
     constructor(body: Body,
                 private readonly data: MatrixData,
-                private readonly colFeatures: ColumnConfig[],
+                private readonly colFeatures: ColumnFeature[],
                 private readonly model: TableConfig)
     {
         super(body, `
@@ -100,7 +100,7 @@ export class Table extends InlineFragment<Body>{
             if(feature.type === "numeric" && feature.formula){
                 rowData[index] = executeFormulaForRowData(feature.formula, rowData, totalRowData, this.data)
             } else if(feature.type === "text"){
-                feature.useOptionLabels?.fromFields?.forEach(fieldKey => {
+                feature.setOptions?.fromFields?.forEach(fieldKey => {
                     const field = this.parent.parent.associatedFormSnapshot.fields.get(fieldKey)
                     const fieldValue = field ? (field as SelectField).options.get(`${rowData[index]}`) : undefined
                     if(fieldValue) rowData[index] = fieldValue
@@ -174,7 +174,7 @@ export class Table extends InlineFragment<Body>{
         let htmlRowMarshall: HTMLTableRowElement
         let lastPrimaryCell: HTMLTableCellElement
         const marshallNextNesting=() => {
-            if(lastPrimaryCell && nesting < this.model.groupFirstColumn - 1)
+            if(lastPrimaryCell && nesting < this.model.groupBy - 1)
                 this.groupPrimaryCells(lastPrimaryCell.parentElement as HTMLTableRowElement, htmlRowMarshall, nesting + 1)
         }
         while (htmlRowMarshall !== endHtmlRow){
@@ -252,7 +252,7 @@ function getCompleteRowsFromElement(element: Element): CompleteRow[]{
         tr.querySelectorAll<HTMLTableCellElement>("td, th").forEach(tc => {
             if(!tc.hidden) {
                 row.push({
-                    text: tc.innerText.trim(),
+                    value: tc.innerText.trim(),
                     colspan: tc.colSpan,
                     rowspan: tc.rowSpan
                 })

@@ -26,11 +26,15 @@ export const reportModel = {
     table: {
         head: [
             [
-                {text: "Primary 1", rowspan: 2}, {text: "Primary 2", rowspan: 2}, {text: "Value group 1", colspan: 2}, {text: "Value group 2", colspan: 2}
+                {value: "Primary 1", rowspan: 2}, {value: "Primary 2", rowspan: 2}, {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
             ],
             [
-                {text: "Value 1"}, {text: "Value 2"}, {text: "Value 1"}, {text: "Value 2"}
+                {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
             ]
+        ],
+        columnFeatures: [
+            {spanned: true},
+            {spanned: true}
         ]
     }
 }

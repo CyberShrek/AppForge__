@@ -100,14 +100,14 @@
     height: 70px;
 }
 
-.report table :is(.numeric, .text){
+.report table :is(.number, .string){
     font-family: monospace;
     font-size: large;
 }
 
-.report table .numeric, .report table .primary.text {
+.report table .number, .report table .primary.string {
     text-align: right;
 }
-.report table tbody .text.text {
+.report table tbody .string.string {
     text-align: left;
 }

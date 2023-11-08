@@ -28,7 +28,7 @@ export class Body extends InlineFragment<ReportSlot>{
         if(model.context)
             this.context = new Context(this, model.context)
         if(model.table)
-            this.table = new Table(this, model.data, model.columns, model.table)
+            this.table = new Table(this, model.data, model.formulas, model.table)
     }
 
     // createCharts(models: ChartModel[] = this.chartsModelCache): Chart[]{

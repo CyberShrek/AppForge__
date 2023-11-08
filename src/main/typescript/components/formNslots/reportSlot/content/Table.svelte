@@ -2,7 +2,9 @@
 
     import {ReportModelWizard} from "../../../../model/ReportModelWizard"
     import {afterUpdate} from "svelte"
-    import {TablePostprocess} from "./TablePostprocess";
+    import {resolveStyle} from "../../../../util/resolver";
+
+    resolveStyle("table")
 
     export let
         config: TableConfig,
@@ -10,7 +12,7 @@
 
     let tableElement: HTMLTableElement
 
-    $: filteredData = modelWizard.propData
+    $: filteredData = modelWizard.properData
 
     afterUpdate(() => {
     })
@@ -34,30 +36,32 @@
         {#if filteredData}
             <tfoot>
             <tr>
-                {#each modelWizard.calculateClusterTotal(filteredData) as totalCellData}
-                    {#if config.primaryColumns && config.primaryColumns > 0}
-                    <td colspan={config.primaryColumns}>
-                        Итого
-                    </td>
+                <td colspan={modelWizard.primaryColumnsNumber}>
+                    Итого
+                </td>
+                {#each modelWizard.getClusterTotal(filteredData) as totalCellData, i}
+                    {#if i >= modelWizard.primaryColumnsNumber}
+                        <td class="{typeof totalCellData}">
+                            {totalCellData}
+                        </td>
                     {/if}
-                    <td>
-                        {totalCellData}
-                    </td>
                 {/each}
             </tr>
             </tfoot>
+            {#each modelWizard.getClusterGroups(filteredData) as group}
             <tbody>
             {#each filteredData as rowData}
                 <tr>
                     {#each rowData as cellData, i}
-                        <td class:primary={i < config.primaryColumns}
-                            class="{modelWizard.getColumnType(i)}">
+                        <td class:primary={i < modelWizard.primaryColumnsNumber}
+                            class="{typeof cellData}">
                             {cellData}
                         </td>
                     {/each}
                 </tr>
             {/each}
             </tbody>
+            {/each}
         {/if}
     </table>
 </div>
