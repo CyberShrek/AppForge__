@@ -23,7 +23,7 @@ export class Table extends InlineFragment<Body>{
 
     constructor(body: Body,
                 private readonly data: MatrixData,
-                private readonly colFeatures: DataFeature[],
+                private readonly colFeatures: ColumnConfig[],
                 private readonly model: TableConfig)
     {
         super(body, `
@@ -126,7 +126,7 @@ export class Table extends InlineFragment<Body>{
         const cellData = rowData[cellIndex]
         if(feature){
             return `
-                <td class="${feature.type}${this.model.primaryColumnsNumber > cellIndex ? ' primary' : ''}" 
+                <td class="${feature.type}${this.model.primaryColumns > cellIndex ? ' primary' : ''}" 
                     ${feature.type === "numeric" && feature.colored
                         ? `style="color: ${cellData >= 0 ? 'var(--positive-color)' : 'var(--negative-color)'}"`
                         : ''}>
@@ -160,7 +160,7 @@ export class Table extends InlineFragment<Body>{
     private spanTotalPrimaryCells(){
         this.tfoot.querySelectorAll<HTMLTableCellElement>("tr td.primary").forEach((td, index) => {
             if(index === 0) {
-                td.colSpan = this.model.primaryColumnsNumber
+                td.colSpan = this.model.primaryColumns
                 td.textContent = "Итого"
             }
             else td.remove()
@@ -174,7 +174,7 @@ export class Table extends InlineFragment<Body>{
         let htmlRowMarshall: HTMLTableRowElement
         let lastPrimaryCell: HTMLTableCellElement
         const marshallNextNesting=() => {
-            if(lastPrimaryCell && nesting < this.model.groupedColumnsNumber - 1)
+            if(lastPrimaryCell && nesting < this.model.groupFirstColumn - 1)
                 this.groupPrimaryCells(lastPrimaryCell.parentElement as HTMLTableRowElement, htmlRowMarshall, nesting + 1)
         }
         while (htmlRowMarshall !== endHtmlRow){

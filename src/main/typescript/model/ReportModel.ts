@@ -1,7 +1,7 @@
 interface ReportModel {
     title?: string
     data?: MatrixData
-    dataFeatures?: DataFeature[]
+    columns?: ColumnConfig[]
     charts?: ChartConfig[]
     table?: TableConfig
     context?: ContextFields
@@ -27,9 +27,10 @@ interface DiagramConfig {
 ///////////
 interface TableConfig {
     head: CompleteRow[]
-    primaryColumnsNumber?: number
-    groupedColumnsNumber?: number
-    hiddenColumns?: number[] // TODO implement
+    primaryColumns?: number
+    groupFirstColumn?: boolean
+    addTotalToGroups?: boolean
+    hiddenColumns?: number[]
 }
 type CompleteCell = {
     text: string,
@@ -65,7 +66,7 @@ interface ContextFields {
 /////////////
 // FEATURE //
 /////////////
-type DataFeature = {
+type ColumnConfig = {
     type: string
 } & (TextColumn | NumericColumn)
 

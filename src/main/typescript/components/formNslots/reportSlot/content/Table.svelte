@@ -1,17 +1,24 @@
 <script lang="ts">
 
     import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+    import {afterUpdate} from "svelte"
+    import {TablePostprocess} from "./TablePostprocess";
 
     export let
         config: TableConfig,
-        wizard: ReportModelWizard
+        modelWizard: ReportModelWizard
 
-    $: filteredData = wizard.propData
+    let tableElement: HTMLTableElement
+
+    $: filteredData = modelWizard.propData
+
+    afterUpdate(() => {
+    })
 
 </script>
 
 <div class="table">
-    <table>
+    <table bind:this={tableElement}>
         <thead>
         {#each config.head as headRow}
             <tr>
@@ -27,7 +34,12 @@
         {#if filteredData}
             <tfoot>
             <tr>
-                {#each wizard.calculateClusterTotal(filteredData) as totalCellData}
+                {#each modelWizard.calculateClusterTotal(filteredData) as totalCellData}
+                    {#if config.primaryColumns && config.primaryColumns > 0}
+                    <td colspan={config.primaryColumns}>
+                        Итого
+                    </td>
+                    {/if}
                     <td>
                         {totalCellData}
                     </td>
@@ -37,8 +49,9 @@
             <tbody>
             {#each filteredData as rowData}
                 <tr>
-                    {#each filteredData as cellData}
-                        <td>
+                    {#each rowData as cellData, i}
+                        <td class:primary={i < config.primaryColumns}
+                            class="{modelWizard.getColumnType(i)}">
                             {cellData}
                         </td>
                     {/each}

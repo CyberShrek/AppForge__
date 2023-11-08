@@ -1,4 +1,6 @@
-import A from "../../../main/typescript/components/Application.svelte"
+import App from "../../../main/typescript/components/Application.svelte"
+import ReportSlot from "../../../main/typescript/components/formNslots/reportSlot/ReportSlot.svelte"
+import {reportModel} from "./reportSlot"
 
 const config = {
     code: "DEBUG",
@@ -79,9 +81,6 @@ const config = {
     },
     lateralSlot: {
         title: "lateral"
-    },
-    extraSlot: {
-        title: "Extra"
     }
 }
 
@@ -103,10 +102,20 @@ const appInfo = {
     additional: 'additional'
 }
 
-const app = new A({
+const app = new App({
     target: document.body,
     props: {
         config,
         appInfo
     }
 });
+
+const report = new ReportSlot({
+    target: document.body,
+    props: {
+        config: {
+            title: "Extra"
+        },
+        model: reportModel
+    }
+})
