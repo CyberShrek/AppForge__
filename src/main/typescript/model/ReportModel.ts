@@ -27,9 +27,8 @@ interface DiagramConfig {
 ///////////
 interface TableConfig {
     head: CompleteRow[]
-    groupBy?: boolean | number
+    groupBy?: number
     collapseGroups?: boolean
-    addTotalToGroups?: boolean
     addTotal?: boolean
     addCheckboxes?: {
         actions?: ActionButton[]
@@ -87,6 +86,7 @@ interface ColumnFeature {
         hideText?: boolean
     }
     onClick?: ApiAction
+    addTotal?: boolean
 }
 
 interface ActionButton {

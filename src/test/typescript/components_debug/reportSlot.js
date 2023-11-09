@@ -17,7 +17,7 @@ function createMatrixData(primaryCellsSize, valueCellsSize, tableHeight) {
 
 function randomWord() {
     const words = ["apple", "banana", "orange", "grape", "pear", "watermelon", "pineapple", "strawberry", "blueberry", "kiwi", "mango", "peach", "plum", "cherry", "lemon", "lime", "coconut", "pomegranate", "apricot", "fig", "nectarine", "raspberry", "blackberry", "cranberry", "guava", "papaya", "lychee", "dragonfruit", "passionfruit", "starfruit", "cantaloupe", "honeydew", "tangerine", "clementine", "kumquat", "persimmon", "avocado", "jackfruit", "durian", "custard apple", "mangosteen", "rambutan", "longan", "date", "kiwano", "plantain", "breadfruit", "soursop", "cherimoya", "sugar apple", "saskatoonberry", "boysenberry", "elderberry", "gooseberry", "lingonberry", "cloudberry", "loganberry", "mulberry", "quince", "feijoa", "tamarillo", "ugli fruit", "ackee", "breadnut", "cupuacu", "jabuticaba", "maracuja", "pawpaw", "salak", "sapote", "tamarind", "yuzu"];
-    return words[Math.floor(Math.random()*(words.length-1))];
+    return words[Math.floor(Math.random()*(words.length))];
 }
 
 export const reportModel = {
@@ -35,6 +35,7 @@ export const reportModel = {
         columnFeatures: [
             {spanned: true},
             {spanned: true}
-        ]
+        ],
+        groupBy: 0
     }
 }
