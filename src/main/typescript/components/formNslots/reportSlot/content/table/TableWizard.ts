@@ -1,12 +1,15 @@
+import {ReportModelWizard} from "../../../../../model/ReportModelWizard";
+
 export class TableWizard {
 
     // The primary columns are the most left columns consist of "string" type cells
     primaryColumnsNumber: number = 0
 
-    constructor(private data: MatrixData,
+    constructor(private modelWizard: ReportModelWizard,
                 private config: TableConfig) {
 
-        this.data.forEach(row => {
+        // Find primary columns number
+        this.modelWizard.properData.forEach(row => {
             for (let i = 1; i <= row.length; i++) {
                 if (typeof row[i - 1] !== "string") break
                 if (i > this.primaryColumnsNumber) this.primaryColumnsNumber = i
@@ -14,53 +17,63 @@ export class TableWizard {
         })
     }
 
-    // Returns array contains the given matrix data separated by the byColumn column
-    splitData(data: MatrixData, byColumn: number): MatrixData[] {
-        const result: MatrixData[] = []
+    // Performs spanning, totalling, grouping. O(n)
+    groupRows(rows: HTMLCollectionOf<HTMLTableRowElement>){
 
-        let previousColValue
-        data.forEach(row => {
-            if(row[byColumn] === previousColValue) {
-                const rowCopy = [...row]
-                if(this.columnIsSpanned(byColumn))
-                    rowCopy[byColumn] += " span me"
-                result[result.length - 1].push(rowCopy)
+        let cellsToGroup:  HTMLTableCellElement[] = [],
+            cellsToRemove: HTMLTableCellElement[] = [],
+            matricesToSum: MatrixData[]           = []
 
-            }
-            else
-                result.push([row])
+        for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+            const row = rows[rowIndex],
+                getRowData = (): RowData => this.modelWizard.properData[row.getAttribute("i")]
 
-            previousColValue = row[byColumn]
-        })
+            for (let colIndex = this.primaryColumnsNumber - 1; colIndex >= 0; colIndex--) {
+                const groupConfig = this.config.columnFeatures[colIndex].group
+                if (groupConfig) {
+                    const cell = row.cells[colIndex]
+                    let thisIsGroupStart = cellsToGroup[colIndex] === undefined,
+                        thisIsGroupEnd   = rowIndex === rows.length - 1
 
-        return result
-    }
+                        for (let i = 0; i <= colIndex; i++) {
+                            if (!thisIsGroupStart && cellsToGroup[i].textContent !== row.cells[i].textContent)
+                                thisIsGroupStart = true
 
-    // Linearly spans columns corresponding to the config
-    spanRows(rows: HTMLCollectionOf<HTMLTableRowElement>){
+                            if (!thisIsGroupEnd && rows[rowIndex + 1].cells[i].textContent !== row.cells[i].textContent)
+                                thisIsGroupEnd = true
+                        }
 
-        let cellsToSpan:   HTMLTableCellElement[] = [],
-            cellsToRemove: HTMLTableCellElement[] = []
-
-        for (let row of rows) {
-            for (let i = 0; i < row.cells.length; i++) {
-                if (cellsToSpan[i] || this.config.columnFeatures[i]?.spanned) {
-                    const cell = row.cells.item(i)
-                    if(cellsToSpan[i]?.textContent === cell.textContent) {
-                        cellsToSpan[i].rowSpan++
-                        cellsToRemove.push(cell)
+                    if (thisIsGroupStart){
+                        cellsToGroup[colIndex] = cell
+                        if (groupConfig.addTotal) {
+                            matricesToSum[colIndex] = [getRowData()]
+                        }
                     }
-                    else cellsToSpan[i] = cell
+                    else if (thisIsGroupEnd) {
+                        if(groupConfig.addTotal) {
+                            setTimeout(() => {
+                                // this.modelWizard.getDataTotal(matricesToSum[colIndex]).forEach((cellData, cellDataIndex) => {
+                                //     if(cellDataIndex > this.primaryColumnsNumber)
+                                //         totalRow.cells[cellDataIndex].textContent = String(cellData)
+                                // })
+                                row.insertAdjacentHTML("afterend",
+                                    `<tr>${this.modelWizard.getDataTotal(matricesToSum[colIndex]).map(cellData => `<td class=${typeof cellData}>${cellData}</td>`)}</tr>`)
+                            }, 500)
+                        }
+                    }
+                    else {
+                        if (groupConfig.span) {
+                            cellsToGroup[colIndex].rowSpan++
+                            cellsToRemove.push(cell)
+                        }
+                        if (groupConfig.addTotal) {
+                            matricesToSum[colIndex].push(getRowData())
+                        }
+                    }
                 }
             }
         }
         cellsToRemove.forEach(cell => cell.remove())
     }
-
-    // Misc helpers
-
-    columnIsSpanned = (columnId) => !!(this.config.columnFeatures[columnId]?.spanned)
-    columnIsHidden = (columnId) => !!(this.config.columnFeatures[columnId]?.hidden)
-    columnIsStartOfTotal = (columnId) => !!(this.config.columnFeatures[columnId]?.addTotal)
 
 }

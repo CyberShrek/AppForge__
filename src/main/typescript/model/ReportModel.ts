@@ -27,8 +27,6 @@ interface DiagramConfig {
 ///////////
 interface TableConfig {
     head: CompleteRow[]
-    groupBy?: number
-    collapseGroups?: boolean
     addTotal?: boolean
     addCheckboxes?: {
         actions?: ActionButton[]
@@ -70,8 +68,11 @@ interface ContextFields {
 // FEATURES //
 /////////////
 interface ColumnFeature {
-    spanned?: boolean
     hidden?:  boolean | "xlsx"
+    group?: {
+        span?: boolean
+        addTotal?: boolean
+    }
     colors?: {
         positive?: boolean | string
         negative?: boolean | string
@@ -86,7 +87,7 @@ interface ColumnFeature {
         hideText?: boolean
     }
     onClick?: ApiAction
-    addTotal?: boolean
+
 }
 
 interface ActionButton {

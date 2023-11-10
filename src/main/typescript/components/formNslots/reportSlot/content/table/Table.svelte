@@ -16,10 +16,10 @@
         tableWizard: TableWizard
 
     $: if(config && modelWizard)
-        tableWizard = new TableWizard(modelWizard.properData, config)
+        tableWizard = new TableWizard(modelWizard, config)
 
     $: if(tableElement){
-        tableWizard.spanRows(tableElement.tBodies.item(0).rows)
+        tableWizard.groupRows(tableElement.tBodies.item(0).rows)
     }
 
 </script>
@@ -54,10 +54,8 @@
             </tr>
             </tfoot>
             <tbody>
-<!--                <TableBodyBlock data={modelWizard.properData} {tableWizard}/>-->
-                <!-- For performance comparing -->
-                {#each modelWizard.properData as rowData}
-                    <tr>
+                {#each modelWizard.properData as rowData, i}
+                    <tr {i}>
                         {#each rowData as cellData}
                             <td class="{typeof cellData}">
                                 {cellData}
