@@ -40,13 +40,13 @@
         </thead>
         {#if tableWizard}
             <tfoot>
-            <tr>
+            <tr class="total">
                 <td colspan={tableWizard.primaryColumnsNumber}>
                     Итого
                 </td>
                 {#each modelWizard.totalRow as totalCellData, i}
                     {#if i >= tableWizard.primaryColumnsNumber}
-                        <td class="{typeof totalCellData}">
+                        <td class={typeof totalCellData}>
                             {totalCellData}
                         </td>
                     {/if}
@@ -56,8 +56,8 @@
             <tbody>
                 {#each modelWizard.properData as rowData, i}
                     <tr {i}>
-                        {#each rowData as cellData}
-                            <td class="{typeof cellData}">
+                        {#each rowData as cellData, j}
+                            <td class={typeof cellData}>
                                 {cellData}
                             </td>
                         {/each}

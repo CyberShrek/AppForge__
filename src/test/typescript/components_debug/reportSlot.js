@@ -5,7 +5,10 @@ function createMatrixData(primaryCellsSize, valueCellsSize, tableHeight) {
     for(let i  = 0; i < tableHeight; i++){
         const primaryCells = [];
         for(let j = 0; j < primaryCellsSize; j++) {
-             primaryCells[j] = randomWord()
+            if(j === 1)
+                primaryCells[j] = "some"
+            else
+                primaryCells[j] = randomWord()
         }
         const valueCells = []
         for(let j = 0; j < valueCellsSize; j++)
@@ -33,13 +36,15 @@ export const reportModel = {
             ]
         ],
         columnFeatures: [
+            {
+                group: {
+                // span: true,
+                addTotal: true
+            }
+            },
             {group: {
                 // span: true,
-                    addTotal: true
-            }},
-            {group: {
-                // span: true,
-                    // addTotal: true
+                //     addTotal: true
             }}
         ]
     }

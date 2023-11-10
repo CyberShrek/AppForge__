@@ -35,28 +35,6 @@
     background: var(--primary-color);
 }
 
-.report tr td.page{
-    user-select: none;
-    cursor: pointer;
-}
-
-.report tfoot tr td{
-    font-weight: bold;
-    background: var(--secondary-color);
-}
-
-.report tr td.group{
-    vertical-align: top;
-}
-
-.report tr.total td.group button{
-    padding: 0;
-    margin-left: 85%;
-    right: 0;
-    background: none;
-    border: none;
-}
-
 .report td {
     color: var(--primary-color);
     padding: var(--indent);
@@ -76,6 +54,14 @@
     background: inherit;
     margin: 0;
     padding: 0;
+}
+
+.report :is(tr.total td, td.total){
+    font-weight: bold;
+}
+
+.report tr.total td{
+    background: var(--secondary-color);
 }
 
 .report table input[type=checkbox]{
