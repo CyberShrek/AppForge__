@@ -5,9 +5,9 @@ function createMatrixData(primaryCellsSize, valueCellsSize, tableHeight) {
     for(let i  = 0; i < tableHeight; i++){
         const primaryCells = [];
         for(let j = 0; j < primaryCellsSize; j++) {
-            if(j === 1)
-                primaryCells[j] = "some"
-            else
+            // if(j === 1)
+            //     primaryCells[j] = "some"
+            // else
                 primaryCells[j] = randomWord()
         }
         const valueCells = []
@@ -25,7 +25,7 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(2, 4, 300),
+    data: createMatrixData(2, 4, 1000),
     table: {
         head: [
             [
@@ -38,13 +38,13 @@ export const reportModel = {
         columnFeatures: [
             {
                 group: {
-                // span: true,
+                span: true,
                 addTotal: true
             }
             },
             {group: {
-                // span: true,
-                //     addTotal: true
+                span: true,
+                    addTotal: true
             }}
         ]
     }

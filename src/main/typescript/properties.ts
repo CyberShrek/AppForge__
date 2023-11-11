@@ -3,6 +3,8 @@ export const
     stylesLocation = "/appforge/css/",
     modulesLocation = "/appforge/js/",
 
+    tableTotalWord = "Итого",
+
     virtualSelectProperties = {
         additionalClasses: "multiselect",
         disabled: true,

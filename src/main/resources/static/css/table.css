@@ -58,6 +58,7 @@
 
 .report :is(tr.total td, td.total){
     font-weight: bold;
+    background: var(--secondary-color);
 }
 
 .report tr.total td{

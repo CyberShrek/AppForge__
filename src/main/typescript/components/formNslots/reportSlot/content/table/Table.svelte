@@ -5,6 +5,7 @@
     import {TableWizard} from "./TableWizard";
     import {afterUpdate} from "svelte";
     import TableBodyBlock from "./TableBodyBlock.svelte";
+    import {tableTotalWord} from "../../../../../properties";
 
     resolveStyle("table")
 
@@ -42,7 +43,7 @@
             <tfoot>
             <tr class="total">
                 <td colspan={tableWizard.primaryColumnsNumber}>
-                    Итого
+                    {tableTotalWord}
                 </td>
                 {#each modelWizard.totalRow as totalCellData, i}
                     {#if i >= tableWizard.primaryColumnsNumber}

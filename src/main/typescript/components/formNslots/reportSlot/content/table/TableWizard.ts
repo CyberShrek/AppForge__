@@ -1,4 +1,5 @@
 import {ReportModelWizard} from "../../../../../model/ReportModelWizard";
+import {tableTotalWord} from "../../../../../properties";
 
 export class TableWizard {
 
@@ -22,56 +23,53 @@ export class TableWizard {
 
         if(!this.config.columnFeatures) return
 
-        let cellsToGroup:  HTMLTableCellElement[] = [],
-            cellsToRemove: HTMLTableCellElement[] = [],
-            matricesToSum: MatrixData[]           = []
+        let cellsToGroup:  HTMLTableCellElement[] = []
 
-        const process = (primaryCellCallback: (rowI: number,
+        const commonProcess = (primaryCellCallback: (rowI: number,
                                                colI: number,
                                                thisIsGroupStart: boolean,
-                                               thisIsGroupEnd: boolean) => void) => {
+                                               thisIsGroupEnd: boolean,
+                                               columnFeature: ColumnFeature) => void) => {
 
             for (let rowI = 0; rowI < rows.length; rowI++) {
                 for (let colI = this.primaryColumnsNumber - 1; colI >= 0; colI--) {
                     const groupConfig = this.config.columnFeatures[colI].group
                     if (groupConfig) {
                         let thisIsGroupStart = cellsToGroup[colI] === undefined,
-                            thisIsGroupEnd = rowI === rows.length - 1
+                            thisIsGroupEnd   = rowI               === rows.length - 1
 
                         for (let i = 0; i <= colI; i++) {
-                            if (!thisIsGroupStart && cellsToGroup[i].textContent !== rows[rowI].cells[i].textContent) {
-                                cellsToGroup[colI] = rows[rowI].cells[colI]
+                            if (!thisIsGroupStart && cellsToGroup[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupStart = true
-                            }
-                            if (!thisIsGroupEnd && rows[rowI + 1].cells[i].textContent !== rows[rowI].cells[i].textContent) {
+                            if (!thisIsGroupEnd && rows[rowI + 1].cells[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupEnd = true
-                            }
                         }
-                        primaryCellCallback(rowI, colI, thisIsGroupStart, thisIsGroupEnd)
+                        if(thisIsGroupStart){
+                            cellsToGroup[colI] = rows[rowI].cells[colI]
+                        }
+                        primaryCellCallback(rowI, colI, thisIsGroupStart, thisIsGroupEnd, this.config.columnFeatures[colI])
                     }
                 }
             }
         },
-            hasGroupFeatureKey = (key: keyof ColumnFeature["group"]): boolean => {
-            console.log(this.config)
+            hasGroupFeature = (key: keyof ColumnFeature["group"]): boolean =>
+                !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
 
-                return !!this.config.columnFeatures?.find(feature => feature[key])
-            }
 
-        if (hasGroupFeatureKey("addTotal")){
-            let prevTotalColI: number,
-                prevTotalRowI: number
-            process((rowI, colI, thisIsGroupStart, thisIsGroupEnd) => {
+        if (hasGroupFeature("addTotal")){
+            let matricesToSum: MatrixData[] = [],
+                totalRowsToInsertAfter = new Map<number, HTMLTableRowElement>() // Key is row i the total row will be inserted after
 
+            commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {
+
+                if(!columnFeature.group.addTotal || !rows[rowI].hasAttribute("i"))
+                    return
 
                 const rowData = this.modelWizard.properData[rows[rowI].getAttribute("i")]
-                if(thisIsGroupStart){
+                if (thisIsGroupStart){
                     matricesToSum[colI] = [rowData]
                 }
-                else if(thisIsGroupEnd){
-                    console.log(this.modelWizard.getDataTotal(matricesToSum[colI]))
-                    if(prevTotalColI === colI && prevTotalRowI === rowI)
-                        return
+                else if (thisIsGroupEnd) {
 
                     matricesToSum[colI].push(rowData)
                     const totalRow = rows[rowI].cloneNode(true) as HTMLTableRowElement
@@ -79,97 +77,30 @@ export class TableWizard {
                         if (cellDataIndex >= colI)
                             totalRow.cells[cellDataIndex].classList.add("total")
                         if (cellDataIndex > colI)
-                            totalRow.cells[cellDataIndex].textContent = String(cellData)
+                            totalRow.cells[cellDataIndex].textContent = cellDataIndex < this.primaryColumnsNumber ? tableTotalWord :  String(cellData)
                     })
-                    totalRow.removeAttribute("i");
-                    (prevTotalRowI && prevTotalRowI === rowI ? rows[rows.length] : rows[rowI]).insertAdjacentElement("afterend", totalRow)
-                    prevTotalColI = rowI
-                    prevTotalRowI = rowI
+                    totalRow.removeAttribute("i")
+                    totalRowsToInsertAfter.set(rowI + totalRowsToInsertAfter.size, totalRow)
                 }
                 else {
                     matricesToSum[colI].push(rowData)
                 }
             })
+            Array.from(totalRowsToInsertAfter.entries())
+                .forEach(([rowI, totalRow]) =>
+                    rows[rowI].insertAdjacentElement("afterend", totalRow))
         }
 
-        if (hasGroupFeatureKey("span")){
-            process((rowI, colI, thisIsGroupStart, thisIsGroupEnd) => {
-                if(thisIsGroupStart){
-
-                }
-                else if(thisIsGroupEnd){
-
-                }
-                else {
-
+        if (hasGroupFeature("span")){
+            cellsToGroup = []
+            let cellsToRemove: HTMLTableCellElement[] = []
+            commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {
+                if(columnFeature.group.span && !thisIsGroupStart) {
+                    cellsToGroup[colI].rowSpan++
+                    cellsToRemove.push(rows[rowI].cells[colI])
                 }
             })
+            cellsToRemove.forEach(cell => cell.remove())
         }
-
-        // for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-        //     const row = rows[rowIndex],
-        //         getRowData = (): RowData => this.modelWizard.properData[row.getAttribute("i")]
-        //     let prevTotalRow: HTMLTableRowElement
-        //     for (let colIndex = this.primaryColumnsNumber - 1; colIndex >= 0; colIndex--) {
-        //         const groupConfig = this.config.columnFeatures[colIndex].group
-        //
-        //         if (groupConfig) {
-        //             let thisIsGroupStart = cellsToGroup[colIndex] === undefined,
-        //                 thisIsGroupEnd   = rowIndex === rows.length - 1
-        //
-        //                 for (let i = 0; i <= colIndex; i++) {
-        //                     if (!thisIsGroupStart && cellsToGroup[i].textContent !== row.cells[i].textContent)
-        //                         thisIsGroupStart = true
-        //
-        //                     if (!thisIsGroupEnd && rows[rowIndex + 1].cells[i].textContent !== row.cells[i].textContent)
-        //                         thisIsGroupEnd = true
-        //                 }
-        //
-        //             if (thisIsGroupStart){
-        //                 cellsToGroup[colIndex] = row.cells[colIndex]
-        //                 if (groupConfig.addTotal) {
-        //                     matricesToSum[colIndex] = [getRowData()]
-        //                 }
-        //             }
-        //             else if (thisIsGroupEnd) {
-        //                 if(groupConfig.addTotal) {
-        //                     matricesToSum[colIndex].push(getRowData())
-        //                     const totalRow = row.cloneNode(true) as HTMLTableRowElement
-        //                     this.modelWizard.getDataTotal(matricesToSum[colIndex]).forEach((cellData, cellDataIndex) => {
-        //                         if (cellDataIndex >= colIndex)
-        //                             totalRow.cells[cellDataIndex].classList.add("total")
-        //                         if (cellDataIndex > colIndex)
-        //                             totalRow.cells[cellDataIndex].textContent = String(cellData)
-        //                     })
-        //                     totalRow.removeAttribute("i");
-        //                     (prevTotalRow ? prevTotalRow : row).insertAdjacentElement("afterend", totalRow)
-        //                     prevTotalRow = totalRow
-        //                     rowIndex++
-        //
-        //                     if (groupConfig.span) {
-        //                         cellsToGroup[colIndex].rowSpan++
-        //                         cellsToRemove.push(row.cells[colIndex])
-        //                         cellsToGroup[colIndex].rowSpan++
-        //                         cellsToRemove.push(totalRow.cells[colIndex])
-        //                     }
-        //                 }
-        //             }
-        //             else {
-        //                 if (groupConfig.span) {
-        //                     cellsToGroup[colIndex].rowSpan++
-        //                     cellsToRemove.push(row.cells[colIndex])
-        //                 }
-        //                 if (groupConfig.addTotal) {
-        //                     matricesToSum[colIndex].push(getRowData())
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-        cellsToRemove.forEach(cell => cell.remove())
-    }
-
-    private primaryPostprocess(){
-
     }
 }
