@@ -38,14 +38,16 @@ export const reportModel = {
         columnFeatures: [
             {
                 group: {
-                span: true,
-                addTotal: true
-            }
-            },
-            {group: {
-                span: true,
+                    span: true,
                     addTotal: true
-            }}
+                }
+            },
+            {
+                group: {
+                    span: true,
+                    addTotal: true
+                }
+            }
         ]
     }
 }

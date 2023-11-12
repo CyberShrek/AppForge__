@@ -6,6 +6,7 @@
     import {afterUpdate} from "svelte";
     import TableBodyBlock from "./TableBodyBlock.svelte";
     import {tableTotalWord} from "../../../../../properties";
+    import Button from "../../../../input/Button.svelte";
 
     resolveStyle("table")
 
@@ -55,9 +56,9 @@
             </tr>
             </tfoot>
             <tbody>
-                {#each modelWizard.properData as rowData, i}
-                    <tr {i}>
-                        {#each rowData as cellData, j}
+                {#each modelWizard.properData as rowData, rowI}
+                    <tr {rowI}>
+                        {#each rowData as cellData, colI}
                             <td class={typeof cellData}>
                                 {cellData}
                             </td>

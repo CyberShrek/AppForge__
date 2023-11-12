@@ -19,6 +19,7 @@ export class TableWizard {
     }
 
     // Performs spanning, totalling, grouping. O(n)
+    // TODO refactor
     groupRows(rows: HTMLCollectionOf<HTMLTableRowElement>){
 
         if(!this.config.columnFeatures) return
@@ -26,15 +27,15 @@ export class TableWizard {
         let cellsToGroup:  HTMLTableCellElement[] = []
 
         const commonProcess = (primaryCellCallback: (rowI: number,
-                                               colI: number,
-                                               thisIsGroupStart: boolean,
-                                               thisIsGroupEnd: boolean,
-                                               columnFeature: ColumnFeature) => void) => {
+                                                     colI: number,
+                                                     thisIsGroupStart: boolean,
+                                                     thisIsGroupEnd: boolean,
+                                                     columnFeature: ColumnFeature) => void) => {
 
             for (let rowI = 0; rowI < rows.length; rowI++) {
                 for (let colI = this.primaryColumnsNumber - 1; colI >= 0; colI--) {
-                    const groupConfig = this.config.columnFeatures[colI].group
-                    if (groupConfig) {
+                    const columnFeature = this.config.columnFeatures[colI]
+                    if (columnFeature.group) {
                         let thisIsGroupStart = cellsToGroup[colI] === undefined,
                             thisIsGroupEnd   = rowI               === rows.length - 1
 
@@ -44,10 +45,10 @@ export class TableWizard {
                             if (!thisIsGroupEnd && rows[rowI + 1].cells[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupEnd = true
                         }
-                        if(thisIsGroupStart){
+                        if(thisIsGroupStart)
                             cellsToGroup[colI] = rows[rowI].cells[colI]
-                        }
-                        primaryCellCallback(rowI, colI, thisIsGroupStart, thisIsGroupEnd, this.config.columnFeatures[colI])
+
+                        primaryCellCallback(rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature)
                     }
                 }
             }
@@ -56,16 +57,16 @@ export class TableWizard {
                 !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
 
 
-        if (hasGroupFeature("addTotal")){
+        if (hasGroupFeature("addTotal") || hasGroupFeature("span")){
             let matricesToSum: MatrixData[] = [],
                 totalRowsToInsertAfter = new Map<number, HTMLTableRowElement>() // Key is row i the total row will be inserted after
 
             commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {
 
-                if(!columnFeature.group.addTotal || !rows[rowI].hasAttribute("i"))
+                if(!columnFeature.group.addTotal || !rows[rowI].hasAttribute("rowI"))
                     return
 
-                const rowData = this.modelWizard.properData[rows[rowI].getAttribute("i")]
+                const rowData = this.modelWizard.properData[rows[rowI].getAttribute("rowI")]
                 if (thisIsGroupStart){
                     matricesToSum[colI] = [rowData]
                 }
@@ -79,8 +80,10 @@ export class TableWizard {
                         if (cellDataIndex > colI)
                             totalRow.cells[cellDataIndex].textContent = cellDataIndex < this.primaryColumnsNumber ? tableTotalWord :  String(cellData)
                     })
-                    totalRow.removeAttribute("i")
+                    totalRow.removeAttribute("rowI")
                     totalRowsToInsertAfter.set(rowI + totalRowsToInsertAfter.size, totalRow)
+                    if(!hasGroupFeature("addTotal"))
+                        totalRow.classList.add("collapsed")
                 }
                 else {
                     matricesToSum[colI].push(rowData)
@@ -93,14 +96,61 @@ export class TableWizard {
 
         if (hasGroupFeature("span")){
             cellsToGroup = []
-            let cellsToRemove: HTMLTableCellElement[] = []
+            const cellsToAddButton: HTMLTableCellElement[] = [],
+                toggleGroupCollapsing = (groupStartCell: HTMLTableCellElement, colapse: boolean) =>
+                {
+                    const replaceCellChildrenIntoAnotherCell = (cell: HTMLTableCellElement, antherCell: HTMLTableCellElement) => {
+                        while (cell.hasChildNodes())
+                            antherCell.appendChild(cell.firstChild)
+                    }
+                    let nextRow: HTMLTableRowElement = groupStartCell.parentElement as HTMLTableRowElement
+                    while (!nextRow.cells[groupStartCell.cellIndex].classList.contains("total")){
+                        if(colapse) nextRow.classList.add("collapsed")
+                        else        nextRow.classList.remove("collapsed")
+                        nextRow = nextRow.nextElementSibling as HTMLTableRowElement
+                    }
+                    if (!colapse && !hasGroupFeature("addTotal"))
+                         nextRow.classList.add("collapsed")
+                    else nextRow.classList.remove("collapsed")
+
+                    if(colapse) {
+                        nextRow.cells[groupStartCell.cellIndex].classList.remove("vertical-span")
+                        replaceCellChildrenIntoAnotherCell(groupStartCell, nextRow.cells[groupStartCell.cellIndex])
+                    } else {
+                        nextRow.cells[groupStartCell.cellIndex].classList.add("vertical-span")
+                        replaceCellChildrenIntoAnotherCell(nextRow.cells[groupStartCell.cellIndex], groupStartCell)
+                    }
+                }
+
             commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {
-                if(columnFeature.group.span && !thisIsGroupStart) {
-                    cellsToGroup[colI].rowSpan++
-                    cellsToRemove.push(rows[rowI].cells[colI])
+                if(columnFeature.group.span) {
+                    if(thisIsGroupStart){
+                        if(!thisIsGroupEnd)
+                            cellsToAddButton.push(rows[rowI].cells[colI])
+                    }
+                    else {
+                        // cellsToGroup[colI].rowSpan++
+                        rows[rowI].cells[colI].textContent = ''
+                        rows[rowI].cells[colI].classList.add("horizontal-span")
+                    }
                 }
             })
-            cellsToRemove.forEach(cell => cell.remove())
+            cellsToAddButton.forEach(cell => {
+                const button = document.createElement("button")
+                button.classList.add("collapse")
+                button.addEventListener("click", () => {
+                    const collapse = button.classList.contains("collapse")
+                    if(collapse) {
+                        button.classList.remove("collapse")
+                        button.classList.add("expand")
+                    } else {
+                        button.classList.remove("expand")
+                        button.classList.add("collapse")
+                    }
+                    toggleGroupCollapsing(cell, collapse)
+                })
+                cell.appendChild(button)
+            })
         }
     }
 }

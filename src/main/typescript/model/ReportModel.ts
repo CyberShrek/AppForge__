@@ -70,7 +70,7 @@ interface ContextFields {
 interface ColumnFeature {
     hidden?:  boolean | "xlsx"
     group?: {
-        span?: boolean
+        span?: boolean,
         addTotal?: boolean
     }
     colors?: {
