@@ -58,9 +58,15 @@ export const reportModel = {
                 //     total: true
                 // }
             },
-            {},
-            {},
-            {
+            {colorize: {
+                positive: true,
+                negative: true
+                }},
+            {colorize: {
+                    positive: true,
+                    negative: true
+                }
+            }, {
                 onClick: {
                     fetchReport: "1"
                 }

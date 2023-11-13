@@ -7,13 +7,16 @@
     import {scrollIntoElement} from "../../../../util/domWizard";
     import Fix from "../../../misc/Fix.svelte";
     import Button from "../../../input/Button.svelte";
+    import Image from "../../../misc/Image.svelte";
+    import {valueOrDefault} from "../../../../util/data";
 
     resolveStyle("table")
 
     export let
         config: TableConfig,
         modelWizard: ReportModelWizard,
-        submittedApiAction: SubmittedApiAction
+        submittedApiAction: SubmittedApiAction,
+        contextOptions: Map<string, OptionsMap> = new Map()
 
     let rootElement: HTMLDivElement,
         tableElement: HTMLTableElement,
@@ -23,7 +26,7 @@
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
 
-    $: if(tableElement)
+    $: if(tableElement && config.columnFeatures)
         tableWizard.groupRows(tableElement.tBodies.item(0).rows)
 
     $: allRowsAreChecked =
@@ -40,6 +43,17 @@
         if (top < -1 || top > 1) {
             scrollIntoElement(rootElement)
         }
+    }
+
+    function prepareCellText(cellData: CellData, colI: number): string{
+        let result: string
+
+        config.columnFeatures?.[colI]?.setOptions?.fromFields?.forEach(field => {
+            if(!result)
+                result = contextOptions.get(field)?.get(String(cellData))
+        })
+
+        return String(valueOrDefault(result, cellData))
     }
 
 </script>
@@ -97,17 +111,26 @@
                             </td>
                         {/if}
                         {#each rowData as cellData, colI}
-                            <td class={typeof cellData}>
-                                {#if config.columnFeatures?.[colI]?.onClick}
-                                    <a on:click={() =>
+                            <td class={typeof cellData}
+                                class:positive={typeof cellData === "number" && cellData > 0 && config.columnFeatures?.[colI]?.colorize?.positive}
+                                class:negative={typeof cellData === "number" && cellData < 0 && config.columnFeatures?.[colI]?.colorize?.negative}
+                                class:link={config.columnFeatures?.[colI]?.onClick}
+                                on:click={() =>{
+                                    if (config.columnFeatures?.[colI]?.onClick)
                                         submittedApiAction = {
                                             ...config.columnFeatures[colI].onClick,
                                             pickedData: [modelWizard.properData[rowI]]
-                                        }}>
-                                        {cellData}
-                                    </a>
+                                        }
+                                    }}>
+                                {#if config.columnFeatures?.[colI]?.useImages}
+                                    <Image name={config.columnFeatures[colI].useImages.associations?.[cellData]}
+                                           alt={String(cellData)}
+                                           hint={prepareCellText(cellData, colI)}/>
+                                    {#if !config.columnFeatures[colI].useImages.hideText}
+                                        {prepareCellText(cellData, colI)}
+                                    {/if}
                                 {:else}
-                                    {cellData}
+                                    {prepareCellText(cellData, colI)}
                                 {/if}
                             </td>
                         {/each}

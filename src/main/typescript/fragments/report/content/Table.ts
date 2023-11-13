@@ -100,7 +100,7 @@ export class Table extends InlineFragment<Body>{
             if(feature.type === "numeric" && feature.formula){
                 rowData[index] = executeFormulaForRowData(feature.formula, rowData, totalRowData, this.data)
             } else if(feature.type === "text"){
-                feature.setOptions?.fromFields?.forEach(fieldKey => {
+                feature.useOptions?.fromFields?.forEach(fieldKey => {
                     const field = this.parent.parent.associatedFormSnapshot.fields.get(fieldKey)
                     const fieldValue = field ? (field as SelectField).options.get(`${rowData[index]}`) : undefined
                     if(fieldValue) rowData[index] = fieldValue

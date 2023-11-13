@@ -73,17 +73,16 @@ interface ColumnFeature {
         span?: boolean,
         total?: boolean
     }
-    colors?: {
+    colorize?: {
         positive?: boolean | string
         negative?: boolean | string
     }
-    setOptions?: {
+    useOptions?: {
         fromFields: string[]
         hideCode?:  boolean
     }
-    setImages?: {
+    useImages?: {
         associations: {[cellText: string]: string}
-        default?:  string
         hideText?: boolean
     }
     onClick?: ApiAction

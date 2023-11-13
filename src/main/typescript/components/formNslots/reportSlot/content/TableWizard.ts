@@ -20,10 +20,7 @@ export class TableWizard {
     }
 
     // Performs spanning, totalling, grouping. O(n)
-    // TODO refactor
     groupRows(rows: HTMLCollectionOf<HTMLTableRowElement>){
-
-        if(!this.config.columnFeatures) return
 
         let cellsToGroup:  HTMLTableCellElement[] = []
 
@@ -33,30 +30,37 @@ export class TableWizard {
                                                      thisIsGroupEnd: boolean,
                                                      columnFeature: ColumnFeature) => void) => {
 
-            for (let rowI = this.config.checkboxes ? 1 : 0; rowI < rows.length; rowI++) {
-                for (let colI = this.primaryColumnsNumber - 1; colI >= (this.config.checkboxes ? 1 : 0); colI--) {
+            const startRow = this.config.checkboxes ? 1 : 0
+            const startCol = this.primaryColumnsNumber - 1
+            const endRow = rows.length - 1
+            const endCol = this.config.checkboxes ? 1 : 0
+
+            for (let rowI = startRow; rowI < rows.length; rowI++) {
+                for (let colI = startCol; colI >= endCol; colI--) {
                     const columnFeature = this.config.columnFeatures[colI]
                     if (columnFeature.group) {
-                        let thisIsGroupStart = cellsToGroup[colI] === undefined,
-                            thisIsGroupEnd   = rowI               === rows.length - 1
+                        let thisIsGroupStart = cellsToGroup[colI] === undefined
+                        let thisIsGroupEnd = rowI === endRow
 
-                        for (let i = this.config.checkboxes ? 1 : 0; i <= colI; i++) {
+                        for (let i = startRow; i <= colI; i++) {
                             if (!thisIsGroupStart && cellsToGroup[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupStart = true
                             if (!thisIsGroupEnd && rows[rowI + 1].cells[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupEnd = true
                         }
-                        if(thisIsGroupStart)
+                        if (thisIsGroupStart) {
                             cellsToGroup[colI] = rows[rowI].cells[colI]
+                        }
 
                         primaryCellCallback(rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature)
                     }
                 }
             }
-        },
-            hasGroupFeature = (key: keyof ColumnFeature["group"]): boolean =>
-                !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
+        }
 
+        const hasGroupFeature = (key: keyof ColumnFeature["group"]): boolean => {
+            return !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
+        }
 
         if (hasGroupFeature("total") || hasGroupFeature("span")){
             let matricesToSum: MatrixData[] = [],

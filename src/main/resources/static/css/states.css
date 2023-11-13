@@ -35,3 +35,11 @@
 .none{
     display: none;
 }
+
+.positive.positive {
+    color: var(--positive-color)
+}
+
+.negative.negative {
+    color: var(--negative-color)
+}
