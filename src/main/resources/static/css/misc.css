@@ -1,3 +1,13 @@
+.fix {
+    position: fixed;
+    z-index: 64;
+}
+.fix.top    { top:    var(--strong-indent) }
+.fix.bottom { bottom: var(--strong-indent) }
+.fix.left   { left:   var(--strong-indent) }
+.fix.right  { right:  var(--strong-indent) }
+
+
 .loader {
   height: 2em;
   width: 2em;

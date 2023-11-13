@@ -9,5 +9,5 @@ export function executeFormulaForRowData(formula: string,
     totalRow.length
     matrix.length
 
-    return new Function(formula)()
+    return new Function("row", "totalRow", "matrix", formula)(row, totalRow, matrix)
 }

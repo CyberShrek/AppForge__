@@ -17,6 +17,13 @@ export function emptyElement(element: Element, withText: boolean = true){
     if(!withText) element.textContent = text
 }
 
+export function swapElements(element1: HTMLElement, element2: HTMLElement) {
+    const temp = document.createElement('div')
+    element1.replaceWith(temp)
+    element2.replaceWith(element1)
+    temp.replaceWith(element2)
+}
+
 const setOfUniqueIds = new Set<string>()
 // Returns startName with serial number
 export function generateUniqueId(startName: string = "element"){

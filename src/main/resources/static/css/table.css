@@ -63,9 +63,20 @@
     padding: 0;
 }
 
+.report td button.collapse::after{
+  content: "➖"
+}
+.report td button.expand::after{
+  content: "➕"
+}
+
 .report :is(tr.total td, td.total){
     font-weight: bold;
     background: var(--secondary-color);
+}
+
+.report :is(td, th).checkbox{
+    width: min-content;
 }
 
 .report tr.total td{

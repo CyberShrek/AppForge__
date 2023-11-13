@@ -1,5 +1,6 @@
-import {ReportModelWizard} from "../../../../../model/ReportModelWizard";
-import {tableTotalWord} from "../../../../../properties";
+import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+import {tableTotalWord} from "../../../../properties"
+import {swapElements} from "../../../../util/domWizard"
 
 export class TableWizard {
 
@@ -32,14 +33,14 @@ export class TableWizard {
                                                      thisIsGroupEnd: boolean,
                                                      columnFeature: ColumnFeature) => void) => {
 
-            for (let rowI = 0; rowI < rows.length; rowI++) {
-                for (let colI = this.primaryColumnsNumber - 1; colI >= 0; colI--) {
+            for (let rowI = this.config.checkboxes ? 1 : 0; rowI < rows.length; rowI++) {
+                for (let colI = this.primaryColumnsNumber - 1; colI >= (this.config.checkboxes ? 1 : 0); colI--) {
                     const columnFeature = this.config.columnFeatures[colI]
                     if (columnFeature.group) {
                         let thisIsGroupStart = cellsToGroup[colI] === undefined,
                             thisIsGroupEnd   = rowI               === rows.length - 1
 
-                        for (let i = 0; i <= colI; i++) {
+                        for (let i = this.config.checkboxes ? 1 : 0; i <= colI; i++) {
                             if (!thisIsGroupStart && cellsToGroup[i].textContent !== rows[rowI].cells[i].textContent)
                                 thisIsGroupStart = true
                             if (!thisIsGroupEnd && rows[rowI + 1].cells[i].textContent !== rows[rowI].cells[i].textContent)
@@ -57,16 +58,16 @@ export class TableWizard {
                 !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
 
 
-        if (hasGroupFeature("addTotal") || hasGroupFeature("span")){
+        if (hasGroupFeature("total") || hasGroupFeature("span")){
             let matricesToSum: MatrixData[] = [],
                 totalRowsToInsertAfter = new Map<number, HTMLTableRowElement>() // Key is row i the total row will be inserted after
 
             commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {
 
-                if(!columnFeature.group.addTotal || !rows[rowI].hasAttribute("rowI"))
+                if(!columnFeature.group.total || !rows[rowI].hasAttribute("i"))
                     return
 
-                const rowData = this.modelWizard.properData[rows[rowI].getAttribute("rowI")]
+                const rowData = this.modelWizard.properData[rows[rowI].getAttribute("i")]
                 if (thisIsGroupStart){
                     matricesToSum[colI] = [rowData]
                 }
@@ -82,7 +83,7 @@ export class TableWizard {
                     })
                     totalRow.removeAttribute("rowI")
                     totalRowsToInsertAfter.set(rowI + totalRowsToInsertAfter.size, totalRow)
-                    if(!hasGroupFeature("addTotal"))
+                    if(!hasGroupFeature("total"))
                         totalRow.classList.add("collapsed")
                 }
                 else {
@@ -97,29 +98,30 @@ export class TableWizard {
         if (hasGroupFeature("span")){
             cellsToGroup = []
             const cellsToAddButton: HTMLTableCellElement[] = [],
-                toggleGroupCollapsing = (groupStartCell: HTMLTableCellElement, colapse: boolean) =>
+                toggleGroupCollapsing = (groupStartCell: HTMLTableCellElement, collapse: boolean) =>
                 {
-                    const replaceCellChildrenIntoAnotherCell = (cell: HTMLTableCellElement, antherCell: HTMLTableCellElement) => {
-                        while (cell.hasChildNodes())
-                            antherCell.appendChild(cell.firstChild)
-                    }
-                    let nextRow: HTMLTableRowElement = groupStartCell.parentElement as HTMLTableRowElement
-                    while (!nextRow.cells[groupStartCell.cellIndex].classList.contains("total")){
-                        if(colapse) nextRow.classList.add("collapsed")
-                        else        nextRow.classList.remove("collapsed")
+                    const startRow = groupStartCell.parentElement as HTMLTableRowElement
+                    let nextRow: HTMLTableRowElement = startRow
+                    do {
                         nextRow = nextRow.nextElementSibling as HTMLTableRowElement
+                        if(collapse) {
+                            nextRow.classList.add("collapsed")
+                        } else {
+                            nextRow.classList.remove("collapsed")
+                            for (let i = groupStartCell.cellIndex + 1; i < this.primaryColumnsNumber; i++) {
+                                const expandButton = nextRow.cells[i].querySelector("button.expand") as HTMLButtonElement
+                                if(expandButton)
+                                    setTimeout(() => expandButton.click(), 10)
+                            }
+                        }
                     }
-                    if (!colapse && !hasGroupFeature("addTotal"))
-                         nextRow.classList.add("collapsed")
-                    else nextRow.classList.remove("collapsed")
+                    while (!nextRow.cells[groupStartCell.cellIndex].classList.contains("total"))
 
-                    if(colapse) {
-                        nextRow.cells[groupStartCell.cellIndex].classList.remove("vertical-span")
-                        replaceCellChildrenIntoAnotherCell(groupStartCell, nextRow.cells[groupStartCell.cellIndex])
-                    } else {
-                        nextRow.cells[groupStartCell.cellIndex].classList.add("vertical-span")
-                        replaceCellChildrenIntoAnotherCell(nextRow.cells[groupStartCell.cellIndex], groupStartCell)
-                    }
+                    if (!collapse && !hasGroupFeature("total"))
+                         nextRow.classList.add("collapsed")
+
+                    for (let i = groupStartCell.cellIndex + 1; i < startRow.cells.length; i++)
+                        swapElements(startRow.cells[i], nextRow.cells[i])
                 }
 
             commonProcess((rowI, colI, thisIsGroupStart, thisIsGroupEnd, columnFeature) => {

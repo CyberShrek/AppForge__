@@ -25,7 +25,7 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(2, 4, 1000),
+    data: createMatrixData(2, 4, 300),
     table: {
         head: [
             [
@@ -35,17 +35,34 @@ export const reportModel = {
                 {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
             ]
         ],
+        checkboxes: {
+            actions: [
+                {
+                    label: "XXX",
+                    onClick: {
+                        fetchReport: ""
+                    }
+                }
+            ]
+        },
         columnFeatures: [
             {
-                group: {
-                    span: true,
-                    addTotal: true
-                }
+                // group: {
+                //     span: true,
+                //     total: true
+                // }
             },
             {
-                group: {
-                    span: true,
-                    addTotal: true
+                // group: {
+                //     span: true,
+                //     total: true
+                // }
+            },
+            {},
+            {},
+            {
+                onClick: {
+                    fetchReport: "1"
                 }
             }
         ]

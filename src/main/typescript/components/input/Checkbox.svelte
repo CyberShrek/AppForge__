@@ -2,7 +2,7 @@
     import {valueOrDefault} from "../../util/data"
 
     export let
-        config: CheckboxConfig,
+        config: CheckboxConfig = {},
         value: boolean = false
 
 </script>

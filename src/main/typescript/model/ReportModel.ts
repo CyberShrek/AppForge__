@@ -27,11 +27,11 @@ interface DiagramConfig {
 ///////////
 interface TableConfig {
     head: CompleteRow[]
-    addTotal?: boolean
-    addCheckboxes?: {
+    total?: boolean
+    columnFeatures?: ColumnFeature[]
+    checkboxes?: {
         actions?: ActionButton[]
     }
-    columnFeatures?: ColumnFeature[]
 }
 type CompleteCell = {
     value: any,
@@ -71,7 +71,7 @@ interface ColumnFeature {
     hidden?:  boolean | "xlsx"
     group?: {
         span?: boolean,
-        addTotal?: boolean
+        total?: boolean
     }
     colors?: {
         positive?: boolean | string
@@ -87,17 +87,20 @@ interface ColumnFeature {
         hideText?: boolean
     }
     onClick?: ApiAction
-
 }
 
 interface ActionButton {
     label?: string
     image?: string
-    placeholder?: string
+    hint?: string
     onClick?: ApiAction
 }
 
 interface ApiAction {
     fetchReport?: string
     fetchFile?:   string
+}
+
+interface SubmittedApiAction extends ApiAction{
+    pickedData: MatrixData
 }

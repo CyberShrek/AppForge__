@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import {ReportModelWizard} from "../../../model/ReportModelWizard"
-    import Table from "./content/table/Table.svelte"
+    import Table from "./content/Table.svelte"
     import {resolveStyle} from "../../../util/resolver";
 
     resolveStyle("report")
