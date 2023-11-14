@@ -1,17 +1,27 @@
 <script lang="ts">
 
     import {TableWizard} from "./TableWizard"
-    import {ReportModelWizard} from "../../../../model/ReportModelWizard";
     import TableCell from "./TableCell.svelte";
+
 
     export let
         matrixData: MatrixData,
         tableWizard: TableWizard,
-        groupSizes: number[] = null,
+        size: number,
+        globalPrimarySizes: number[] = null,
         nesting = 0
 
-    groupSizes?.push(matrixData.length)
+    const innerSizes = []
 
+    $: size = matrixData.length
+
+    $: if(globalPrimarySizes) {
+        if(nesting < tableWizard.primaryColumnsNumber) {
+            size = 0
+            innerSizes.forEach(innerSize => size += innerSize)
+        }
+        globalPrimarySizes[nesting - 1] = size
+    }
 
 </script>
 
@@ -20,18 +30,19 @@
         <svelte:self
                 matrixData={groupData}
                 {tableWizard}
-                groupSizes={groupSizes ? (groupI === 0 ? [...groupSizes] : groupSizes.map(() => null)) : []}
+                bind:size={innerSizes[groupI]}
+                globalPrimarySizes={globalPrimarySizes ? (groupI === 0 ? globalPrimarySizes : globalPrimarySizes.map(() => null)) : []}
                 nesting={nesting + 1}/>
     {/each}
 {:else}
     {#each matrixData as rowData, rowI}
-        <tr>
+        <tr on:click={() => removeRow(rowI)}>
             {#each rowData as cellData, colI}
                 {#if colI < tableWizard.tableWidth}
-                    {#if colI >= nesting || groupSizes[colI] && rowI === 0}
+                    {#if colI >= nesting || globalPrimarySizes[colI] && rowI === 0}
                         <TableCell data={cellData}
                                    feature={tableWizard.getFeature(colI)}
-                                   rowSpan={colI < nesting ? groupSizes[colI] : 1}/>
+                                   rowSpan={colI < nesting ? globalPrimarySizes[colI] : 1}/>
                     {/if}
                 {/if}
             {/each}
