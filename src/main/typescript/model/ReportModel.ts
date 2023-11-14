@@ -3,9 +3,22 @@ interface ReportModel {
     data?: MatrixData
     formulas?: string[]
     charts?: ChartConfig[]
+    labels?: string[]
     table?: TableConfig
     context?: ContextFields
     slot?: string
+}
+
+///////////
+// LABEL //
+///////////
+interface LabelConfig {
+    title: string
+    content: LabelContent
+}
+interface LabelContent {
+    value: string
+    image?: string | {[value: string]: string}
 }
 
 ///////////
@@ -28,7 +41,7 @@ interface DiagramConfig {
 interface TableConfig {
     head: CompleteRow[]
     total?: boolean
-    columnFeatures?: ColumnFeature[]
+    colFeatures?: ColFeature[]
     checkboxes?: {
         actions?: ActionButton[]
     }
@@ -67,7 +80,7 @@ interface ContextFields {
 /////////////
 // FEATURES //
 /////////////
-interface ColumnFeature {
+interface ColFeature {
     hidden?:  boolean | "xlsx"
     group?: {
         span?: boolean,
@@ -76,7 +89,9 @@ interface ColumnFeature {
     colorize?: {
         positive?: boolean | string
         negative?: boolean | string
+        background?: boolean | string
     }
+    labelize?: LabelContent
     useOptions?: {
         fromFields: string[]
         hideCode?:  boolean

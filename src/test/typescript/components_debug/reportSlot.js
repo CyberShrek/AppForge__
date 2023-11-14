@@ -35,16 +35,16 @@ export const reportModel = {
                 {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
             ]
         ],
-        checkboxes: {
-            actions: [
-                {
-                    label: "XXX",
-                    onClick: {
-                        fetchReport: ""
-                    }
-                }
-            ]
-        },
+        // checkboxes: {
+        //     actions: [
+        //         {
+        //             label: "XXX",
+        //             onClick: {
+        //                 fetchReport: ""
+        //             }
+        //         }
+        //     ]
+        // },
         columnFeatures: [
             {
                 // group: {

@@ -6,6 +6,7 @@ export class TableWizard {
 
     // The primary columns are the most left columns consist of "string" type cells
     primaryColumnsNumber: number = 0
+    tableWidth: number = 0
 
     constructor(private modelWizard: ReportModelWizard,
                 private config: TableConfig) {
@@ -17,7 +18,38 @@ export class TableWizard {
                 if (i > this.primaryColumnsNumber) this.primaryColumnsNumber = i
             }
         })
+
+        // Find table width. Head row with the largest cells count including cell spans is used
+        config.head?.forEach(row => {
+            let rowWidth = row.length
+            row.forEach(cell => rowWidth += cell.colspan ? cell.colspan - 1 : 0)
+            if (rowWidth > this.tableWidth)
+                this.tableWidth = rowWidth
+        })
     }
+
+    // Splits the matrix into groups by the given colIndex. Returns an array of matrices where each matrix is a group.
+    // The last row is a total row
+    splitMatrixByColIndex(matrix: MatrixData, colIndex: number): MatrixData[]{
+        let result: MatrixData[] = [],
+            prevColValue: string | number
+
+        matrix.forEach(row => {
+            const colValue = row[colIndex]
+            if(prevColValue !== colValue){
+                result[result.length - 1]?.push(this.modelWizard.getMatrixTotal(result[result.length - 1]))
+                result.push([])
+                prevColValue = colValue
+            }
+            result[result.length - 1].push(row)
+        })
+        return result
+    }
+
+    getFeature(colI: number): ColFeature {
+        return this.config.colFeatures?.[colI]
+    }
+
 
     // Performs spanning, totalling, grouping. O(n)
     groupRows(rows: HTMLCollectionOf<HTMLTableRowElement>){
@@ -28,7 +60,7 @@ export class TableWizard {
                                                      colI: number,
                                                      thisIsGroupStart: boolean,
                                                      thisIsGroupEnd: boolean,
-                                                     columnFeature: ColumnFeature) => void) => {
+                                                     columnFeature: ColFeature) => void) => {
 
             const startRow = this.config.checkboxes ? 1 : 0
             const startCol = this.primaryColumnsNumber - 1
@@ -37,7 +69,7 @@ export class TableWizard {
 
             for (let rowI = startRow; rowI < rows.length; rowI++) {
                 for (let colI = startCol; colI >= endCol; colI--) {
-                    const columnFeature = this.config.columnFeatures[colI]
+                    const columnFeature = this.config.colFeatures[colI]
                     if (columnFeature.group) {
                         let thisIsGroupStart = cellsToGroup[colI] === undefined
                         let thisIsGroupEnd = rowI === endRow
@@ -58,8 +90,8 @@ export class TableWizard {
             }
         }
 
-        const hasGroupFeature = (key: keyof ColumnFeature["group"]): boolean => {
-            return !!this.config.columnFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
+        const hasGroupFeature = (key: keyof ColFeature["group"]): boolean => {
+            return !!this.config.colFeatures?.find(feature => feature.group && Object.keys(feature.group).includes(key))
         }
 
         if (hasGroupFeature("total") || hasGroupFeature("span")){
@@ -79,7 +111,7 @@ export class TableWizard {
 
                     matricesToSum[colI].push(rowData)
                     const totalRow = rows[rowI].cloneNode(true) as HTMLTableRowElement
-                    this.modelWizard.getDataTotal(matricesToSum[colI]).forEach((cellData, cellDataIndex) => {
+                    this.modelWizard.getMatrixTotal(matricesToSum[colI]).forEach((cellData, cellDataIndex) => {
                         if (cellDataIndex >= colI)
                             totalRow.cells[cellDataIndex].classList.add("total")
                         if (cellDataIndex > colI)

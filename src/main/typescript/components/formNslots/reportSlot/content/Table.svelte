@@ -4,11 +4,11 @@
     import {resolveStyle} from "../../../../util/resolver"
     import {TableWizard} from "./TableWizard"
     import {tableTotalWord} from "../../../../properties"
-    import {scrollIntoElement} from "../../../../util/domWizard";
-    import Fix from "../../../misc/Fix.svelte";
-    import Button from "../../../input/Button.svelte";
-    import Image from "../../../misc/Image.svelte";
-    import {valueOrDefault} from "../../../../util/data";
+    import {scrollIntoElement} from "../../../../util/domWizard"
+    import Fix from "../../../misc/Fix.svelte"
+    import Button from "../../../input/Button.svelte"
+    import {valueOrDefault} from "../../../../util/data"
+    import TableRowsGroup from "./TableRowsGroup.svelte";
 
     resolveStyle("table")
 
@@ -32,8 +32,6 @@
     $: allRowsAreChecked =
         checkedRowsI.length === modelWizard.properData.length
 
-    $: console.log(submittedApiAction)
-
     function togglePickAll() {
         checkedRowsI = allRowsAreChecked ? [] : modelWizard.properData.map((_, index) => index)
     }
@@ -48,7 +46,7 @@
     function prepareCellText(cellData: CellData, colI: number): string{
         let result: string
 
-        config.columnFeatures?.[colI]?.setOptions?.fromFields?.forEach(field => {
+        config.columnFeatures?.[colI]?.useOptions?.fromFields?.forEach(field => {
             if(!result)
                 result = contextOptions.get(field)?.get(String(cellData))
         })
@@ -56,7 +54,14 @@
         return String(valueOrDefault(result, cellData))
     }
 
+    function toggleCellCheckbox(event: Event){
+        if((event.target as HTMLElement)?.tagName === "TD") {
+            (event.target as HTMLTableCellElement).querySelector("input").click()
+        }
+    }
+
 </script>
+
 
 <div class="table"
      bind:this={rootElement}
@@ -101,41 +106,46 @@
             </tr>
             </tfoot>
             <tbody>
-                {#each modelWizard.properData as rowData, rowI}
-                    <tr i={rowI}>
-                        {#if config.checkboxes}
-                            <td class="checkbox">
-                                <input type="checkbox"
-                                       bind:group={checkedRowsI}
-                                       value={rowI}>
-                            </td>
-                        {/if}
-                        {#each rowData as cellData, colI}
-                            <td class={typeof cellData}
-                                class:positive={typeof cellData === "number" && cellData > 0 && config.columnFeatures?.[colI]?.colorize?.positive}
-                                class:negative={typeof cellData === "number" && cellData < 0 && config.columnFeatures?.[colI]?.colorize?.negative}
-                                class:link={config.columnFeatures?.[colI]?.onClick}
-                                on:click={() =>{
-                                    if (config.columnFeatures?.[colI]?.onClick)
-                                        submittedApiAction = {
-                                            ...config.columnFeatures[colI].onClick,
-                                            pickedData: [modelWizard.properData[rowI]]
-                                        }
-                                    }}>
-                                {#if config.columnFeatures?.[colI]?.useImages}
-                                    <Image name={config.columnFeatures[colI].useImages.associations?.[cellData]}
-                                           alt={String(cellData)}
-                                           hint={prepareCellText(cellData, colI)}/>
-                                    {#if !config.columnFeatures[colI].useImages.hideText}
-                                        {prepareCellText(cellData, colI)}
-                                    {/if}
-                                {:else}
-                                    {prepareCellText(cellData, colI)}
-                                {/if}
-                            </td>
-                        {/each}
-                    </tr>
-                {/each}
+            <TableRowsGroup matrixData={modelWizard.properData}
+                            modelWizard={modelWizard}
+                            tableWizard={tableWizard}/>
+
+                <!--{#each modelWizard.properData as rowData, rowI}-->
+                <!--    <tr i={rowI}>-->
+                <!--        {#if config.checkboxes}-->
+                <!--            <td class="checkbox"-->
+                <!--                on:click={event => toggleCellCheckbox(event)}>-->
+                <!--                <input type="checkbox"-->
+                <!--                       bind:group={checkedRowsI}-->
+                <!--                       value={rowI}>-->
+                <!--            </td>-->
+                <!--        {/if}-->
+                <!--        {#each rowData as cellData, colI}-->
+                <!--            <td class={typeof cellData}-->
+                <!--                class:positive={typeof cellData === "number" && cellData > 0 && config.columnFeatures?.[colI]?.colorize?.positive}-->
+                <!--                class:negative={typeof cellData === "number" && cellData < 0 && config.columnFeatures?.[colI]?.colorize?.negative}-->
+                <!--                class:link={config.columnFeatures?.[colI]?.onClick}-->
+                <!--                on:click={() =>{-->
+                <!--                    if (config.columnFeatures?.[colI]?.onClick)-->
+                <!--                        submittedApiAction = {-->
+                <!--                            ...config.columnFeatures[colI].onClick,-->
+                <!--                            pickedData: [modelWizard.properData[rowI]]-->
+                <!--                        }-->
+                <!--                    }}>-->
+                <!--                {#if config.columnFeatures?.[colI]?.useImages}-->
+                <!--                    <Image name={config.columnFeatures[colI].useImages.associations?.[cellData]}-->
+                <!--                           alt={String(cellData)}-->
+                <!--                           hint={prepareCellText(cellData, colI)}/>-->
+                <!--                    {#if !config.columnFeatures[colI].useImages.hideText}-->
+                <!--                        {prepareCellText(cellData, colI)}-->
+                <!--                    {/if}-->
+                <!--                {:else}-->
+                <!--                    {prepareCellText(cellData, colI)}-->
+                <!--                {/if}-->
+                <!--            </td>-->
+                <!--        {/each}-->
+                <!--    </tr>-->
+                <!--{/each}-->
             </tbody>
         {/if}
     </table>

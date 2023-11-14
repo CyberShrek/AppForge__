@@ -11,7 +11,7 @@ export class ReportModelWizard {
         if(model.data && model.data.length > 0) {
 
             // Firstly calculate the total data to use it in the formulas
-            this.totalRow = this.getDataTotal(model.data, false)
+            this.totalRow = this.getMatrixTotal(model.data, false)
             this.applyFormulasToRow(this.totalRow)
 
             // Then calculate the proper data and find primary columns
@@ -22,11 +22,12 @@ export class ReportModelWizard {
         else popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
     }
 
+
     // Calculates total row for the given data
-    getDataTotal(data: MatrixData, applyFormulas: boolean = true): RowData{
+    getMatrixTotal(matrix: MatrixData, applyFormulas: boolean = true): RowData{
         let total: RowData = []
 
-        data.forEach(rowData => rowData.forEach(
+        matrix.forEach(rowData => rowData.forEach(
             (cellData, cellIndex) => {
                 if(typeof cellData === "number") {
                     total[cellIndex] = total[cellIndex]
