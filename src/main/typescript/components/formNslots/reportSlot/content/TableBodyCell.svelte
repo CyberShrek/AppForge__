@@ -2,7 +2,7 @@
 
     export let
         data: string | number | boolean,
-        feature: ColFeature,
+        feature: ColumnFeature,
         rowSpan: number = 1,
         colSpan: number = 1
 

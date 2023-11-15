@@ -41,7 +41,7 @@ interface DiagramConfig {
 interface TableConfig {
     head: CompleteRow[]
     total?: boolean
-    colFeatures?: ColFeature[]
+    columnFeatures?: ColumnFeature[]
     checkboxes?: {
         actions?: ActionButton[]
     }
@@ -80,12 +80,10 @@ interface ContextFields {
 /////////////
 // FEATURES //
 /////////////
-interface ColFeature {
+interface ColumnFeature {
     hidden?:  boolean | "xlsx"
-    group?: {
-        span?: boolean,
-        total?: boolean
-    }
+    span?: boolean,
+    total?: boolean
     colorize?: {
         positive?: boolean | string
         negative?: boolean | string

@@ -8,7 +8,7 @@
     import Fix from "../../../misc/Fix.svelte"
     import Button from "../../../input/Button.svelte"
     import {valueOrDefault} from "../../../../util/data"
-    import TableRowsGroup from "./TableRowsGroup.svelte";
+    import TableRowsGroup from "./TableBodyRowsGroup.svelte";
 
     resolveStyle("table")
 
@@ -26,8 +26,8 @@
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
 
-    $: if(tableElement && config.columnFeatures)
-        tableWizard.groupRows(tableElement.tBodies.item(0).rows)
+    // $: if(tableElement && config.columnFeatures)
+    //     tableWizard.groupRows(tableElement.tBodies.item(0).rows)
 
     $: allRowsAreChecked =
         checkedRowsI.length === modelWizard.properData.length
@@ -107,8 +107,8 @@
             </tfoot>
             <tbody>
             <TableRowsGroup matrixData={modelWizard.properData}
-                            modelWizard={modelWizard}
-                            tableWizard={tableWizard}/>
+                            columnFeatures={config.columnFeatures}
+                            {tableWizard}/>
 
                 <!--{#each modelWizard.properData as rowData, rowI}-->
                 <!--    <tr i={rowI}>-->

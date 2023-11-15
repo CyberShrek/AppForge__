@@ -27,16 +27,18 @@ export class ReportModelWizard {
     getMatrixTotal(matrix: MatrixData, applyFormulas: boolean = true): RowData{
         let total: RowData = []
 
-        matrix.forEach(rowData => rowData.forEach(
-            (cellData, cellIndex) => {
-                if(typeof cellData === "number") {
-                    total[cellIndex] = total[cellIndex]
-                        ? numberOf(total[cellIndex]) + cellData
-                        : cellData
+        for(const rowData of matrix){
+            rowData.forEach(
+                (cellData, cellIndex) => {
+                    if(typeof cellData === "number") {
+                        total[cellIndex] = total[cellIndex]
+                            ? numberOf(total[cellIndex]) + cellData
+                            : cellData
+                    }
+                    else total[cellIndex] = valueOrDefault(total[cellIndex], '')
                 }
-                else total[cellIndex] = valueOrDefault(total[cellIndex], '')
-            })
-        )
+            )
+        }
         if(applyFormulas)
             this.applyFormulasToRow(total)
 

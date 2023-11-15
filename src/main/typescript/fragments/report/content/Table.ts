@@ -23,7 +23,7 @@ export class Table extends InlineFragment<Body>{
 
     constructor(body: Body,
                 private readonly data: MatrixData,
-                private readonly colFeatures: ColFeature[],
+                private readonly colFeatures: ColumnFeature[],
                 private readonly model: TableConfig)
     {
         super(body, `
