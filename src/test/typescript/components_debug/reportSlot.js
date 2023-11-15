@@ -25,11 +25,14 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(2, 4, 100),
+    data: createMatrixData(3, 4, 500),
     table: {
         head: [
             [
-                {value: "Primary 1", rowspan: 2}, {value: "Primary 2", rowspan: 2}, {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
+                {value: "Primary 1", rowspan: 2},
+                {value: "Primary 2", rowspan: 2},
+                {value: "Primary 3", rowspan: 2},
+                {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
             ],
             [
                 {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
@@ -48,26 +51,26 @@ export const reportModel = {
         columnFeatures: [
             {
                 // span: true,
-                total: true
+                // total: true
             },
             {
-                // span: true,
-                total: true
+                span: true,
+                // total: true
             },
-            {colorize: {
-                positive: true,
-                negative: true
-                }
-            },
-            {colorize: {
-                    positive: true,
-                    negative: true
-                }
-            }, {
-                onClick: {
-                    fetchReport: "1"
-                }
-            }
+            // {colorize: {
+            //     positive: true,
+            //     negative: true
+            //     }
+            // },
+            // {colorize: {
+            //         positive: true,
+            //         negative: true
+            //     }
+            // }, {
+            //     onClick: {
+            //         fetchReport: "1"
+            //     }
+            // }
         ]
     }
 }
