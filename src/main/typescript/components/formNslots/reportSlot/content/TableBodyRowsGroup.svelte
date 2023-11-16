@@ -4,31 +4,29 @@
     import TableBodyRow from "./TableBodyRow.svelte"
 
     export let
+        config: TableConfig,
         matrixData: MatrixData,
         tableWizard: TableWizard,
-        columnFeatures: ColumnFeature[],
         size: number = null,
         groupSizes: number[] = null,
+        checkedRowsData: MatrixData = [],
+        collapseStartIndex: number = -1,
         nesting = 0
 
-    const innerSizes = [matrixData.length]
+    const innerSizes:      number[] = [matrixData.length]
 
-    $: hasTotal = matrixData.length > 1 && !!columnFeatures[nesting - 1]?.total
+    $: totalize = matrixData.length > 1 && !!config.columnFeatures?.[nesting - 1]?.totalize
 
-    $: sizeAddition = Number(hasTotal)
+    // The sum of all inner sizes + 1 if has total
+    $: size = innerSizes.reduce((sum, size) => sum + size, Number(totalize))
 
-    $: size = matrixData.length + sizeAddition
+    // Insert the size of current group
+    $: if(innerSizes && groupSizes)
+        groupSizes[nesting - 1] = size
 
-    $: if(groupSizes){
-        updateSize()
-    }
-
-    function updateSize(){
-        if(groupSizes) {
-            size = sizeAddition
-            innerSizes.forEach(innerSize => size += innerSize)
-            groupSizes[nesting - 1] = size
-        }
+    function toggleCollapse(collapse: boolean, targetIndex: number) {
+        if(targetIndex === nesting - 1)
+            collapseStartIndex = collapse ? targetIndex : -1
     }
 
 </script>
@@ -38,35 +36,37 @@
         <svelte:self
                 matrixData={groupData}
                 {tableWizard}
-                {columnFeatures}
+                {config}
                 bind:size={innerSizes[groupI]}
-                groupSizes={groupSizes === null ? [] : (groupI === 0 ? groupSizes : groupSizes.map((size, index) => index < nesting ? null : size))}
-                nesting={nesting + 1}/>
+                bind:checkedRowsData
+                groupSizes={groupSizes === null ? [] : (groupI === 0 ? [...groupSizes] : groupSizes.map((size, index) => index < nesting ? null : size))}
+                nesting={nesting + 1}
+                on:collapse={event => toggleCollapse(true,  event.detail)}
+                on:expand={  event => toggleCollapse(false, event.detail)}
+                {collapseStartIndex}/>
     {/each}
 {:else}
     {#each matrixData as rowData, rowI}
         <TableBodyRow data={rowData}
                       width={tableWizard.tableWidth}
-                      features={columnFeatures}
-                      primaryColumnsNumber={tableWizard.primaryColumnsNumber}
+                      features={config.columnFeatures}
                       isGroupStart={rowI === 0}
-                      primaryGroupSizes={groupSizes}/>
+                      primaryColumnsNumber={tableWizard.primaryColumnsNumber}
+                      primaryGroupSizes={groupSizes}
+                      {collapseStartIndex}
+                      addCheckbox={!!config.checkboxes}
+                      bind:checkedRowsData
+                      on:collapse
+                      on:collapse={event => toggleCollapse(true,  event.detail)}
+                      on:expand
+                      on:expand={  event => toggleCollapse(false, event.detail)}/>
     {/each}
 {/if}
-<!--{#if hasTotal}-->
-<!--    <TableBodyRow data={tableWizard.getMatrixTotal(matrixData, nesting - 1)}-->
-<!--                  width={tableWizard.tableWidth}-->
-<!--                  primaryColumnsNumber={tableWizard.primaryColumnsNumber}/>-->
-<!--    <tr>-->
-<!--        {#each tableWizard.getMatrixTotal(matrixData, nesting - 1) as cellData, colI}-->
-<!--            {#if colI < tableWizard.tableWidth}-->
-<!--                {#if colI >= nesting || !columnFeatures[colI]?.span}-->
-<!--                    <TableCell data={cellData}-->
-<!--                               feature={columnFeatures[colI]}/>-->
-<!--                {/if}-->
-<!--            {/if}-->
-<!--        {/each}-->
-<!--    </tr>-->
-<!--{/if}-->
-
-
+{#if totalize}
+    <TableBodyRow data={tableWizard.getMatrixTotal(matrixData, nesting - 1)}
+                  width={tableWizard.tableWidth}
+                  features={config.columnFeatures}
+                  primaryColumnsNumber={tableWizard.primaryColumnsNumber}
+                  totalColI={nesting}
+                  collapseStartIndex={collapseStartIndex > -1 && collapseStartIndex < nesting - 1 ? collapseStartIndex : -1}/>
+{/if}

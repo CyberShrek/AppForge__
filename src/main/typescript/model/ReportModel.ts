@@ -82,8 +82,7 @@ interface ContextFields {
 /////////////
 interface ColumnFeature {
     hidden?:  boolean | "xlsx"
-    span?: boolean,
-    total?: boolean
+    totalize?: boolean | "collapse",
     colorize?: {
         positive?: boolean | string
         negative?: boolean | string

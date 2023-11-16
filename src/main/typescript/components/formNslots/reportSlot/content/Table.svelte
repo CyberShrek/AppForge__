@@ -21,7 +21,7 @@
     let rootElement: HTMLDivElement,
         tableElement: HTMLTableElement,
         tableWizard: TableWizard,
-        checkedRowsI: number[] = []
+        checkedRowsData: MatrixData = []
 
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
@@ -30,10 +30,10 @@
     //     tableWizard.groupRows(tableElement.tBodies.item(0).rows)
 
     $: allRowsAreChecked =
-        checkedRowsI.length === modelWizard.properData.length
+        checkedRowsData.length === modelWizard.properData.length
 
     function togglePickAll() {
-        checkedRowsI = allRowsAreChecked ? [] : modelWizard.properData.map((_, index) => index)
+        checkedRowsData = allRowsAreChecked ? [] : [...modelWizard.properData]
     }
 
     function scrollUp(){
@@ -66,6 +66,9 @@
 <div class="table"
      bind:this={rootElement}
      on:scroll={scrollUp}>
+
+    {checkedRowsData?.length}
+
     <table bind:this={tableElement}>
         <thead>
         {#each config.head as headRow, rowI}
@@ -107,7 +110,8 @@
             </tfoot>
             <tbody>
             <TableRowsGroup matrixData={modelWizard.properData}
-                            columnFeatures={config.columnFeatures}
+                            bind:checkedRowsData
+                            {config}
                             {tableWizard}/>
 
                 <!--{#each modelWizard.properData as rowData, rowI}-->
@@ -150,7 +154,7 @@
         {/if}
     </table>
 
-    {#if checkedRowsI.length > 0 && config.checkboxes}
+    {#if checkedRowsData.length > 0 && config.checkboxes}
         <Fix left={true}
              bottom={true}>
 
@@ -161,7 +165,7 @@
                         on:click={() =>
                         submittedApiAction = {
                             ...action.onClick,
-                            pickedData: checkedRowsI.map(i => modelWizard.properData[i])
+                            pickedData: checkedRowsData.map(i => modelWizard.properData[i])
                         }}
                 />
             {/each}
