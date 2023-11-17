@@ -11,7 +11,7 @@
         primaryColumnsNumber: number = 0,
         primaryGroupSizes: number[] = [],
         addCheckbox = false,
-        checkedRowsData: MatrixData = [],
+        checked = false,
         totalColI = -1,
         isGroupStart = false,
         collapseStartIndex: number = -1
@@ -22,6 +22,8 @@
 
     $: if(collapseStartIndex === -1)
         collapseButtonsValues = []
+    else
+        collapseButtonsValues[collapseStartIndex] = true
 
     function toggleCollapse(colI: number) {
         collapseButtonsValues[colI] = !collapseButtonsValues[colI]
@@ -40,7 +42,7 @@
         <td class="checkbox" on:click={event => toggleCellCheckbox(event)}>
             {#if totalColI <= -1}
                 <input type="checkbox"
-                       bind:group={checkedRowsData}
+                       bind:checked
                        value={data}>
             {/if}
         </td>
@@ -48,7 +50,7 @@
     {#each data as cellData, colI}
         {#if colI < width}
             {#if   colI >= primaryColumnsNumber - 1
-                || !features[colI]?.totalize && (totalColI === -1 || colI < totalColI) && (!addCheckbox || colI > 0)
+                || !features[colI]?.totalize && (totalColI === -1 || colI < totalColI)
                 || primaryGroupSizes[colI] && isGroupStart
             }
                 <TableCell data={cellData}

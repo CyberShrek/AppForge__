@@ -38,37 +38,44 @@ export const reportModel = {
                 {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
             ]
         ],
-        checkboxes: {
-            actions: [
-                {
-                    label: "XXX",
-                    onClick: {
-                        fetchReport: ""
-                    }
-                }
-            ]
-        },
+        // checkboxes: {
+        //     actions: [
+        //         {
+        //             label: "XXX",
+        //             onClick: {
+        //                 fetchReport: ""
+        //             }
+        //         }
+        //     ]
+        // },
+        pageSize: 100,
         columnFeatures: [
-            // {
-            //     totalize: true
-            // },
-            // {
-            //     totalize: true
-            // },
-            // {colorize: {
-            //     positive: true,
-            //     negative: true
-            //     }
-            // },
-            // {colorize: {
-            //         positive: true,
-            //         negative: true
-            //     }
-            // }, {
-            //     onClick: {
-            //         fetchReport: "1"
-            //     }
-            // }
+            {
+                totalize: true,
+                filter: true
+            },
+            {
+                totalize: true,
+                filter: true
+            },
+            {
+                colorize: {
+                    positive: true,
+                    negative: true
+                }
+            },
+            {
+                colorize: {
+                    positive: true,
+                    negative: true
+                },
+                filter: true
+            },
+            {
+                onClick: {
+                    fetchReport: "1"
+                }
+            }
         ]
     }
 }

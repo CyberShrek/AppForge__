@@ -7,70 +7,58 @@
     import {scrollIntoElement} from "../../../../util/domWizard"
     import Fix from "../../../misc/Fix.svelte"
     import Button from "../../../input/Button.svelte"
-    import {valueOrDefault} from "../../../../util/data"
-    import TableRowsGroup from "./TableBodyRowsGroup.svelte";
+    import TableRowsGroup from "./TableBodyRowsGroup.svelte"
+    import Text from "../../../input/Text.svelte";
+    import PagesBar from "../../../navigation/PagesBar.svelte";
 
     resolveStyle("table")
 
     export let
         config: TableConfig,
         modelWizard: ReportModelWizard,
-        submittedApiAction: SubmittedApiAction,
-        contextOptions: Map<string, OptionsMap> = new Map()
+        submittedApiAction: SubmittedApiAction
 
     let rootElement: HTMLDivElement,
-        tableElement: HTMLTableElement,
         tableWizard: TableWizard,
-        checkedRowsData: MatrixData = []
+        checkedRowsSet = new Set<RowData>(),
+        filterValues: string[] = [],
+        pickedPageI = 0,
+        showHeadToolbar = true,
+        showFootToolbar = true
 
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
 
-    // $: if(tableElement && config.columnFeatures)
-    //     tableWizard.groupRows(tableElement.tBodies.item(0).rows)
-
     $: allRowsAreChecked =
-        checkedRowsData.length === modelWizard.properData.length
+        checkedRowsSet.size === modelWizard.properData.length
+
+    $: paginatedData =
+        tableWizard.paginateData(tableWizard.getFiltratedData(filterValues), config.pageSize)
 
     function togglePickAll() {
-        checkedRowsData = allRowsAreChecked ? [] : [...modelWizard.properData]
+        if(!allRowsAreChecked)
+            checkedRowsSet = new Set(modelWizard.properData)
+        else
+            checkedRowsSet = new Set()
     }
 
-    function scrollUp(){
+    function handleScroll(){
         const top = rootElement.getClientRects().item(0).top
         if (top < -1 || top > 1) {
             scrollIntoElement(rootElement)
-        }
-    }
-
-    function prepareCellText(cellData: CellData, colI: number): string{
-        let result: string
-
-        config.columnFeatures?.[colI]?.useOptions?.fromFields?.forEach(field => {
-            if(!result)
-                result = contextOptions.get(field)?.get(String(cellData))
-        })
-
-        return String(valueOrDefault(result, cellData))
-    }
-
-    function toggleCellCheckbox(event: Event){
-        if((event.target as HTMLElement)?.tagName === "TD") {
-            (event.target as HTMLTableCellElement).querySelector("input").click()
+            showHeadToolbar = false
+            showFootToolbar = false
         }
     }
 
 </script>
 
-
 <div class="table"
      bind:this={rootElement}
-     on:scroll={scrollUp}>
+     on:scroll={handleScroll}>
 
-    {checkedRowsData?.length}
-
-    <table bind:this={tableElement}>
-        <thead>
+    <table>
+        <thead on:mouseenter={() => showHeadToolbar = true}>
         {#each config.head as headRow, rowI}
             <tr>
                 {#if config.checkboxes && rowI === 0}
@@ -89,72 +77,66 @@
                 {/each}
             </tr>
         {/each}
-        </thead>
-        {#if tableWizard}
-            <tfoot>
-            <tr class="total">
+            <tr class="tools"
+                class:collapsed={!showHeadToolbar}>
                 {#if config.checkboxes}
-                    <td class="checkbox"></td>
+                    <th class="checkbox"></th>
                 {/if}
-                <td colspan={tableWizard.primaryColumnsNumber}>
-                    {tableTotalWord}
-                </td>
-                {#each modelWizard.totalRow as totalCellData, i}
-                    {#if i >= tableWizard.primaryColumnsNumber}
-                        <td class={typeof totalCellData}>
-                            {totalCellData}
-                        </td>
-                    {/if}
+                {#each Array(tableWizard.tableWidth) as _, i}
+                    <th>
+                        {#if config.columnFeatures?.[i]?.filter}
+                            <Text bind:value={filterValues[i]}/>
+                        {/if}
+                    </th>
                 {/each}
             </tr>
-            </tfoot>
-            <tbody>
-            <TableRowsGroup matrixData={modelWizard.properData}
-                            bind:checkedRowsData
-                            {config}
-                            {tableWizard}/>
+        </thead>
 
-                <!--{#each modelWizard.properData as rowData, rowI}-->
-                <!--    <tr i={rowI}>-->
-                <!--        {#if config.checkboxes}-->
-                <!--            <td class="checkbox"-->
-                <!--                on:click={event => toggleCellCheckbox(event)}>-->
-                <!--                <input type="checkbox"-->
-                <!--                       bind:group={checkedRowsI}-->
-                <!--                       value={rowI}>-->
-                <!--            </td>-->
-                <!--        {/if}-->
-                <!--        {#each rowData as cellData, colI}-->
-                <!--            <td class={typeof cellData}-->
-                <!--                class:positive={typeof cellData === "number" && cellData > 0 && config.columnFeatures?.[colI]?.colorize?.positive}-->
-                <!--                class:negative={typeof cellData === "number" && cellData < 0 && config.columnFeatures?.[colI]?.colorize?.negative}-->
-                <!--                class:link={config.columnFeatures?.[colI]?.onClick}-->
-                <!--                on:click={() =>{-->
-                <!--                    if (config.columnFeatures?.[colI]?.onClick)-->
-                <!--                        submittedApiAction = {-->
-                <!--                            ...config.columnFeatures[colI].onClick,-->
-                <!--                            pickedData: [modelWizard.properData[rowI]]-->
-                <!--                        }-->
-                <!--                    }}>-->
-                <!--                {#if config.columnFeatures?.[colI]?.useImages}-->
-                <!--                    <Image name={config.columnFeatures[colI].useImages.associations?.[cellData]}-->
-                <!--                           alt={String(cellData)}-->
-                <!--                           hint={prepareCellText(cellData, colI)}/>-->
-                <!--                    {#if !config.columnFeatures[colI].useImages.hideText}-->
-                <!--                        {prepareCellText(cellData, colI)}-->
-                <!--                    {/if}-->
-                <!--                {:else}-->
-                <!--                    {prepareCellText(cellData, colI)}-->
-                <!--                {/if}-->
-                <!--            </td>-->
-                <!--        {/each}-->
-                <!--    </tr>-->
-                <!--{/each}-->
-            </tbody>
+        {#if tableWizard}
+
+            <tfoot on:mouseenter={() => showFootToolbar = true}>
+            {#if config.total}
+                <tr class="total">
+                    {#if config.checkboxes}
+                        <td class="checkbox"></td>
+                    {/if}
+                    <td colspan={tableWizard.primaryColumnsNumber}>
+                        {tableTotalWord}
+                    </td>
+                    {#each modelWizard.totalRow as totalCellData, i}
+                        {#if i >= tableWizard.primaryColumnsNumber}
+                            <td class={typeof totalCellData}>
+                                {totalCellData}
+                            </td>
+                        {/if}
+                    {/each}
+                </tr>
+            {/if}
+            {#if paginatedData.length > 1}
+                <tr class="tools"
+                    class:collapsed={!showFootToolbar}>
+                    <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
+                        <PagesBar size={paginatedData.length}
+                                  bind:picked={pickedPageI}/>
+                    </td>
+                </tr>
+            {/if}
+            </tfoot>
+
+            {#each paginatedData as pageData, pageI}
+                {#if pageI === pickedPageI}
+                    <tbody>
+                        <TableRowsGroup matrixData={pageData}
+                                        bind:checkedRowsSet
+                                        {config}
+                                        {tableWizard}/>
+                    </tbody>
+                {/if}
+            {/each}
         {/if}
     </table>
 
-    {#if checkedRowsData.length > 0 && config.checkboxes}
+    {#if checkedRowsSet.size > 0 && config.checkboxes}
         <Fix left={true}
              bottom={true}>
 
@@ -165,7 +147,7 @@
                         on:click={() =>
                         submittedApiAction = {
                             ...action.onClick,
-                            pickedData: checkedRowsData.map(i => modelWizard.properData[i])
+                            pickedData: Array.from(checkedRowsSet.values())
                         }}
                 />
             {/each}

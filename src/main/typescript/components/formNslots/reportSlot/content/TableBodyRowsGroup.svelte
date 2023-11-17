@@ -9,11 +9,13 @@
         tableWizard: TableWizard,
         size: number = null,
         groupSizes: number[] = null,
-        checkedRowsData: MatrixData = [],
-        collapseStartIndex: number = -1,
+        checkedRowsSet: Set<RowData>,
+        collapseStartIndex: number = config.columnFeatures?.findIndex(feature => feature?.totalize === "collapse") ?? -1,
         nesting = 0
 
-    const innerSizes:      number[] = [matrixData.length]
+    const innerSizes: number[] = [matrixData.length]
+
+    let checkedRows: boolean[] = []
 
     $: totalize = matrixData.length > 1 && !!config.columnFeatures?.[nesting - 1]?.totalize
 
@@ -23,6 +25,25 @@
     // Insert the size of current group
     $: if(innerSizes && groupSizes)
         groupSizes[nesting - 1] = size
+
+    // Insert checked rows
+    $: if(checkedRows) updateCheckedRowsSet()
+    $: if(checkedRowsSet) updateCheckedRows()
+
+    function updateCheckedRowsSet() {
+        checkedRows.forEach((checked, rowI) => {
+            if (checked)
+                checkedRowsSet.add(matrixData[rowI])
+            else
+                checkedRowsSet.delete(matrixData[rowI])
+        })
+        checkedRowsSet = checkedRowsSet
+    }
+
+    function updateCheckedRows() {
+        matrixData.forEach((rowData, rowI) =>
+            checkedRows[rowI] = checkedRowsSet.has(rowData))
+    }
 
     function toggleCollapse(collapse: boolean, targetIndex: number) {
         if(targetIndex === nesting - 1)
@@ -38,7 +59,7 @@
                 {tableWizard}
                 {config}
                 bind:size={innerSizes[groupI]}
-                bind:checkedRowsData
+                bind:checkedRowsSet
                 groupSizes={groupSizes === null ? [] : (groupI === 0 ? [...groupSizes] : groupSizes.map((size, index) => index < nesting ? null : size))}
                 nesting={nesting + 1}
                 on:collapse={event => toggleCollapse(true,  event.detail)}
@@ -55,7 +76,7 @@
                       primaryGroupSizes={groupSizes}
                       {collapseStartIndex}
                       addCheckbox={!!config.checkboxes}
-                      bind:checkedRowsData
+                      bind:checked={checkedRows[rowI]}
                       on:collapse
                       on:collapse={event => toggleCollapse(true,  event.detail)}
                       on:expand

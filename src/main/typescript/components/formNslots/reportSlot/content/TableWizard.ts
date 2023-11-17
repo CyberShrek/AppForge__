@@ -54,4 +54,22 @@ export class TableWizard {
                         : cellData
             )
     }
+
+    getFiltratedData(filterValues: string[]): MatrixData{
+        return this.modelWizard.properData.filter(row => {
+            return filterValues.every((filterValue, index) => {
+                return filterValue === undefined
+                    || filterValue === ""
+                    || String(row[index]).includes(filterValue)
+            })
+        })
+    }
+
+    // Splits the data into pages with the given pageSize
+    paginateData(data: MatrixData, pageSize: number = data.length): MatrixData[]{
+        let result: MatrixData[] = []
+        for (let i = 0; i < data.length; i += pageSize)
+            result.push(data.slice(i, i + pageSize))
+        return result
+    }
 }

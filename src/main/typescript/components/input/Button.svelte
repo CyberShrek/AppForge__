@@ -7,6 +7,7 @@
         frameless   = false,
         submit      = false,
         cancel      = false,
+        active      = false,
         hint        = "",
         text        = "",
         image       = "",
@@ -18,6 +19,7 @@
         class:frameless
         class:submit
         class:cancel
+        class:active
         title="{hint}"
         bind:this={root}
         on:click={event => event.preventDefault()}
