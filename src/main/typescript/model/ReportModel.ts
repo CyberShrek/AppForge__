@@ -12,14 +12,15 @@ interface ReportModel {
 ///////////
 // LABEL //
 ///////////
-interface LabelConfig {
-    title: string
-    content: Label
-}
-interface Label {
-    value: string
-    valueName?: string
+interface LabelConfig{
+    title?: string
+    valueCell?: number
+    valueUnit?: string
+    percentName?: string
+    percentCell?: number
     image?: string | {[value: string]: string}
+    background?: string
+    framed?: boolean
 }
 
 ///////////
@@ -27,13 +28,30 @@ interface Label {
 ///////////
 interface ChartConfig {
     title?: string
-    diagram?: DiagramConfig|DiagramConfig[]
+    keyColumn?: number
+    content?: ChartContentConfig | ChartContentConfig[]
 }
 
-interface DiagramConfig {
-    name?: string
-    type?: string
+interface ChartContentConfig {
+    type: "line" | "bar" | "pie"
+    name: string
+    column: number
     color?: string|string[]
+    fill?: boolean|string[]
+}
+
+interface LineGraphConfig extends ChartContentConfig {
+    type: "line"
+    dash?: boolean
+    curve?: boolean
+}
+
+interface BarGraphConfig extends ChartContentConfig {
+    type: "bar"
+}
+
+interface PieGraphConfig extends ChartContentConfig {
+    type: "pie"
 }
 
 ///////////
@@ -91,7 +109,7 @@ interface ColumnFeature {
         negative?: boolean | string
         background?: boolean | string
     }
-    labelize?: Label
+    labelize?: LabelConfig
     useOptions?: {
         fromFields: string[]
         hideCode?:  boolean

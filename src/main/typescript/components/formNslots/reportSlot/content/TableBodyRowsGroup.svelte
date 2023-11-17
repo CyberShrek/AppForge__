@@ -13,7 +13,7 @@
         collapseStartIndex: number = config.columnFeatures?.findIndex(feature => feature?.totalize === "collapse") ?? -1,
         nesting = 0
 
-    const innerSizes: number[] = [matrixData.length]
+    $: innerSizes = [matrixData.length]
 
     let checkedRows: boolean[] = []
 
@@ -64,6 +64,7 @@
                 nesting={nesting + 1}
                 on:collapse={event => toggleCollapse(true,  event.detail)}
                 on:expand={  event => toggleCollapse(false, event.detail)}
+                on:apiAction
                 {collapseStartIndex}/>
     {/each}
 {:else}
@@ -80,7 +81,8 @@
                       on:collapse
                       on:collapse={event => toggleCollapse(true,  event.detail)}
                       on:expand
-                      on:expand={  event => toggleCollapse(false, event.detail)}/>
+                      on:expand={  event => toggleCollapse(false, event.detail)}
+                      on:apiAction/>
     {/each}
 {/if}
 {#if totalize}

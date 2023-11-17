@@ -21,17 +21,17 @@ function createChartJS(chartCanvas: HTMLCanvasElement, model: ChartConfig): Char
     }))
 
     const datasets: any[] = dataMatrix.map((dataRow, i) =>
-        getChartJsDataset(model.diagram[i], dataRow))
+        getChartJsDataset(model.content[i], dataRow))
 
     const data = Object.values(model.data)
     return new ChartJS(chartCanvas.getContext('2d'), {
         data: {labels, datasets},
-        type: model.diagram[0].type,
+        type: model.content[0].type,
         options: getChartJsOptions(model.title)
     })
 }
 
-function getChartJsDataset(config: DiagramConfig, data: number[]): ChartDataset{
+function getChartJsDataset(config: ChartContentConfig, data: number[]): ChartDataset{
     const common = {
         label: config.name,
         backgroundColor: config.color ? config.color : defaultColors,
@@ -43,12 +43,6 @@ function getChartJsDataset(config: DiagramConfig, data: number[]): ChartDataset{
             ...common,
             type: "line",
             borderColor: config.color ? config.color : defaultColors,
-            tension: 0.4
-        }
-        case "dottedLine": return {
-            ...common,
-            // type: "line",
-            borderDash: [3],
             tension: 0.4
         }
         case "bar": return {

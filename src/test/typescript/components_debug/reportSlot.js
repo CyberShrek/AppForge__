@@ -25,7 +25,75 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(3, 4, 500),
+    data: createMatrixData(3, 4, 50),
+    labels: [
+        {
+            title: "Label 1",
+            valueCell: 3,
+            valueUnit: "Items",
+            percentName: "Share",
+            percentCell: 4
+        },
+        {
+            title: "Label 2",
+            valueCell: 5,
+            valueUnit: "Items",
+            percentName: "Share",
+            percentCell: 6
+        }
+    ],
+    charts: [
+        {
+            title: "Line graph",
+            keyColumn: 0,
+            content: [{
+                type: "line",
+                name: "Line 1",
+                column: 3,
+                color: "red",
+                dash: true
+            },{
+                type: "line",
+                name: "Line 2",
+                column: 4,
+                color: "green",
+                curve: true
+            },{
+                type: "line",
+                name: "Line 3",
+                column: 5,
+                color: "blue",
+                fill: true
+            }]
+        },
+        {
+            title: "Bar chart",
+            keyColumn: 0,
+            content: [{
+                type: "bar",
+                name: "bar 1",
+                column: 3,
+                color: "red"
+            },{
+                type: "bar",
+                name: "bar 1",
+                column: 4,
+                color: "green",
+                fill: true
+            }]
+        },
+        {
+            title: "Pie chart",
+            keyColumn: 0,
+            content: {
+                type: "pie",
+                name: "pie 1",
+                column: 6,
+                color: ["red", "green", "blue"],
+                fill: [false, true, false]
+            }
+        }
+    ],
     table: {
         head: [
             [
@@ -38,24 +106,25 @@ export const reportModel = {
                 {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
             ]
         ],
-        // checkboxes: {
-        //     actions: [
-        //         {
-        //             label: "XXX",
-        //             onClick: {
-        //                 fetchReport: ""
-        //             }
-        //         }
-        //     ]
-        // },
+        checkboxes: {
+            actions: [
+                {
+                    label: "XXX",
+                    onClick: {
+                        fetchReport: ""
+                    }
+                }
+            ]
+        },
+        total: true,
         pageSize: 100,
         columnFeatures: [
             {
-                totalize: true,
+                // totalize: true,
                 filter: true
             },
             {
-                totalize: true,
+                // totalize: true,
                 filter: true
             },
             {
@@ -68,6 +137,12 @@ export const reportModel = {
                 colorize: {
                     positive: true,
                     negative: true
+                },
+                labelize: {
+                    // valueCell: 5,
+                    valueUnit: "Items",
+                    percentName: "Share",
+                    percentCell: 6
                 },
                 filter: true
             },

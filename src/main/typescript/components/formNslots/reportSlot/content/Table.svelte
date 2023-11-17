@@ -8,8 +8,8 @@
     import Fix from "../../../misc/Fix.svelte"
     import Button from "../../../input/Button.svelte"
     import TableRowsGroup from "./TableBodyRowsGroup.svelte"
-    import Text from "../../../input/Text.svelte";
-    import PagesBar from "../../../navigation/PagesBar.svelte";
+    import Text from "../../../input/Text.svelte"
+    import PagesBar from "../../../navigation/PagesBar.svelte"
 
     resolveStyle("table")
 
@@ -22,9 +22,7 @@
         tableWizard: TableWizard,
         checkedRowsSet = new Set<RowData>(),
         filterValues: string[] = [],
-        pickedPageI = 0,
-        showHeadToolbar = true,
-        showFootToolbar = true
+        pickedPageI = 0
 
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
@@ -32,8 +30,9 @@
     $: allRowsAreChecked =
         checkedRowsSet.size === modelWizard.properData.length
 
-    $: paginatedData =
-        tableWizard.paginateData(tableWizard.getFiltratedData(filterValues), config.pageSize)
+    $: filteredData = tableWizard.getFiltratedData(filterValues)
+
+    $: paginatedData = tableWizard.paginateData(filteredData, config.pageSize)
 
     function togglePickAll() {
         if(!allRowsAreChecked)
@@ -46,8 +45,6 @@
         const top = rootElement.getClientRects().item(0).top
         if (top < -1 || top > 1) {
             scrollIntoElement(rootElement)
-            showHeadToolbar = false
-            showFootToolbar = false
         }
     }
 
@@ -58,7 +55,16 @@
      on:scroll={handleScroll}>
 
     <table>
-        <thead on:mouseenter={() => showHeadToolbar = true}>
+        <thead>
+        {#if config.pageSize && modelWizard.properData.length >= config.pageSize}
+            <tr class="pages-bar">
+                <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
+                    <PagesBar pageSize={config.pageSize}
+                              itemsCount={filteredData.length}
+                              bind:pickedPageI/>
+                </td>
+            </tr>
+        {/if}
         {#each config.head as headRow, rowI}
             <tr>
                 {#if config.checkboxes && rowI === 0}
@@ -77,8 +83,7 @@
                 {/each}
             </tr>
         {/each}
-            <tr class="tools"
-                class:collapsed={!showHeadToolbar}>
+            <tr class="filters-bar">
                 {#if config.checkboxes}
                     <th class="checkbox"></th>
                 {/if}
@@ -94,8 +99,8 @@
 
         {#if tableWizard}
 
-            <tfoot on:mouseenter={() => showFootToolbar = true}>
-            {#if config.total}
+            <tfoot>
+            {#if config.total && filteredData.length > 0}
                 <tr class="total">
                     {#if config.checkboxes}
                         <td class="checkbox"></td>
@@ -103,22 +108,13 @@
                     <td colspan={tableWizard.primaryColumnsNumber}>
                         {tableTotalWord}
                     </td>
-                    {#each modelWizard.totalRow as totalCellData, i}
+                    {#each tableWizard.getMatrixTotal(filteredData) as totalCellData, i}
                         {#if i >= tableWizard.primaryColumnsNumber}
                             <td class={typeof totalCellData}>
                                 {totalCellData}
                             </td>
                         {/if}
                     {/each}
-                </tr>
-            {/if}
-            {#if paginatedData.length > 1}
-                <tr class="tools"
-                    class:collapsed={!showFootToolbar}>
-                    <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
-                        <PagesBar size={paginatedData.length}
-                                  bind:picked={pickedPageI}/>
-                    </td>
                 </tr>
             {/if}
             </tfoot>
@@ -128,6 +124,7 @@
                     <tbody>
                         <TableRowsGroup matrixData={pageData}
                                         bind:checkedRowsSet
+                                        on:apiAction={event => submittedApiAction = event.detail}
                                         {config}
                                         {tableWizard}/>
                     </tbody>

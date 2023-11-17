@@ -1,8 +1,8 @@
 <script lang="ts">
 
-    import TableCell from "./TableBodyCell.svelte"
     import Button from "../../../input/Button.svelte"
     import {createEventDispatcher} from 'svelte'
+    import Label from "./Label.svelte";
 
     export let
         data: RowData,
@@ -16,7 +16,7 @@
         isGroupStart = false,
         collapseStartIndex: number = -1
 
-    const dispatch = isGroupStart ? createEventDispatcher() : null
+    const dispatch = isGroupStart || features.find(feature => feature?.onClick) ? createEventDispatcher() : null
 
     let collapseButtonsValues: boolean[] = []
 
@@ -36,6 +36,14 @@
         }
     }
 
+    function dispatchApiAction(colI: number) {
+        const submittedApiAction: SubmittedApiAction = {
+            ...features[colI]?.onClick,
+            pickedData: [data]
+        }
+        dispatch("apiAction", submittedApiAction)
+    }
+
 </script>
 <tr>
     {#if addCheckbox}
@@ -53,19 +61,32 @@
                 || !features[colI]?.totalize && (totalColI === -1 || colI < totalColI)
                 || primaryGroupSizes[colI] && isGroupStart
             }
-                <TableCell data={cellData}
-                           feature={features[colI]}
-                           rowSpan={isGroupStart && features[colI]?.totalize && primaryGroupSizes[colI] ? primaryGroupSizes[colI] : 1}
-                           colSpan={totalColI > -1 && colI === primaryColumnsNumber - 1 ? primaryColumnsNumber - totalColI : 0}
-                           total={totalColI > -1 && colI >= totalColI}
-                           collapsed={collapseStartIndex !== -1 && colI > collapseStartIndex}>
+
+                <td class={typeof data}
+                    class:total={totalColI > -1 && colI >= totalColI}
+                    class:collapsed={collapseStartIndex !== -1 && colI > collapseStartIndex}
+                    class:positive={typeof data === "number" && data > 0 && features[colI]?.colorize?.positive}
+                    class:negative={typeof data === "number" && data < 0 && features[colI]?.colorize?.negative}
+                    class:link={features[colI]?.onClick}
+                    rowspan={isGroupStart && features[colI]?.totalize && primaryGroupSizes[colI] ? primaryGroupSizes[colI] : 1}
+                    colspan={totalColI > -1 && colI === primaryColumnsNumber - 1 ? primaryColumnsNumber - totalColI : 0}
+                    on:click={() => {if(features[colI]?.onClick) dispatchApiAction(colI)}}>
+
+                    {#if features[colI]?.labelize}
+                        <Label {data}
+                               config={{
+                                   valueCell: colI,
+                                   ...features[colI]?.labelize
+                               }}/>
+                    {:else}
+                        {cellData}
+                    {/if}
 
                     {#if isGroupStart && features[colI]?.totalize && (colI === 0 || features.findIndex(feature => feature?.totalize) < colI) && primaryGroupSizes[colI] > 1}
                         <Button text={collapseButtonsValues[colI] ? '➕' : '➖'}
                                 on:click={() => toggleCollapse(colI)}/>
                     {/if}
-
-                </TableCell>
+                </td>
             {/if}
         {/if}
     {/each}

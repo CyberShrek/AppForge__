@@ -46,10 +46,10 @@ export class TableWizard {
     }
 
     // Calculates total row for the given data
-    getMatrixTotal(matrix: MatrixData, primaryColumnIndex: number): RowData{
+    getMatrixTotal(matrix: MatrixData, primaryColumnI: number = this.primaryColumnsNumber - 1): RowData{
         return this.modelWizard.getMatrixTotal(matrix)
             .map((cellData, index) =>
-                index <= primaryColumnIndex ? matrix[0][index]
+                index <= primaryColumnI ? matrix[0][index]
                     : index < this.primaryColumnsNumber ? tableTotalWord
                         : cellData
             )
