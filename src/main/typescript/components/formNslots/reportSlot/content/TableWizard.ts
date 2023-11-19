@@ -72,4 +72,30 @@ export class TableWizard {
             result.push(data.slice(i, i + pageSize))
         return result
     }
+
+    extractXlsxModelUsingElement(htmlTable: HTMLTableElement): XlsxTableModel{
+        const body: CompleteRow[] = []
+        for (const tableRow of [...htmlTable.tBodies[0].rows, ...htmlTable.tFoot.rows]) {
+            let row: CompleteRow = []
+            for (const tableCell of tableRow.cells) {
+                if (!tableCell.classList.contains("checkbox")) {
+                    row.push({
+                        value: tableCell.innerText.trim(),
+                        colspan: tableCell.colSpan,
+                        rowspan: tableCell.rowSpan,
+                        total: tableRow.classList.contains("total") || tableCell.classList.contains("total"),
+                        type: tableCell.classList.contains("number") ? "number" : "string"
+                    })
+                }
+            }
+            body.push(row)
+        }
+
+        return {
+            title: this.modelWizard.model.title,
+            context: [],
+            head: this.config.head,
+            body
+        }
+    }
 }

@@ -14,7 +14,7 @@ export class XlsxAccessor extends BlobAccessor {
     override fetch(){
         return super.fetch().then(blob => {
             const aElement = document.createElement('a')
-            aElement.setAttribute('download', this.body.name + ".xlsx")
+            aElement.setAttribute('download', this.body.title + ".xlsx")
             const href = URL.createObjectURL(blob)
             aElement.href = href
             aElement.setAttribute('target', '_blank')

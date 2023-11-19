@@ -25,81 +25,83 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(3, 4, 50),
-    labels: [
-        {
-            title: "Label 1",
-            valueCell: 3,
-            valueUnit: "Items",
-            percentName: "Share",
-            percentCell: 4
-        },
-        {
-            title: "Label 2",
-            valueCell: 5,
-            valueUnit: "Items",
-            percentName: "Share",
-            percentCell: 6
-        }
-    ],
-    charts: [
-        {
-            title: "Line graph",
-            keyColumn: 0,
-            content: [{
-                type: "line",
-                name: "Line 1",
-                column: 3,
-                color: "red",
-                dash: true
-            },{
-                type: "line",
-                name: "Line 2",
-                column: 4,
-                color: "green",
-                curve: true
-            },{
-                type: "line",
-                name: "Line 3",
-                column: 5,
-                color: "blue",
-                fill: true
-            }]
-        },
-        {
-            title: "Bar chart",
-            keyColumn: 0,
-            content: [{
-                type: "bar",
-                name: "bar 1",
-                column: 3,
-                color: "red"
-            },{
-                type: "bar",
-                name: "bar 1",
-                column: 4,
-                color: "green",
-                fill: true
-            }]
-        },
-        {
-            title: "Pie chart",
-            keyColumn: 0,
-            content: {
-                type: "pie",
-                name: "pie 1",
-                column: 6,
-                color: ["red", "green", "blue"],
-                fill: [false, true, false]
-            }
-        }
-    ],
+    data: createMatrixData(2, 4, 10),
+    // labels: [
+    //     {
+    //         title: "Label 1",
+    //         valueCell: 3,
+    //         valueUnit: "Items",
+    //         percentName: "Share",
+    //         percentCell: 4
+    //     },
+    //     {
+    //         title: "Label 2",
+    //         valueCell: 5,
+    //         valueUnit: "Items",
+    //         percentName: "Share",
+    //         percentCell: 6
+    //     }
+    // ],
+    // charts: [
+    //     {
+    //         title: "Line graph",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "line",
+    //             name: "Line 1",
+    //             column: 3,
+    //             color: "red",
+    //             dash: true
+    //         },{
+    //             type: "line",
+    //             name: "Line 2",
+    //             column: 4,
+    //             color: "green",
+    //             curve: true
+    //         },{
+    //             type: "line",
+    //             name: "Line 3",
+    //             column: 5,
+    //             color: "blue",
+    //             fill: "rgba(255, 99, 132, 0.2)"
+    //         }]
+    //     },
+    //     {
+    //         title: "Bar chart",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "bar",
+    //             name: "bar 1",
+    //             column: 3,
+    //             // color: "red"
+    //         },{
+    //             type: "bar",
+    //             name: "bar 1",
+    //             column: 4,
+    //             // color: "green"
+    //         }]
+    //     },
+    //     {
+    //         title: "Doughnut chart",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "donut",
+    //             name: "donut 1",
+    //             column: 5
+    //         },{
+    //             type: "donut",
+    //             name: "donut 2",
+    //             column: 6,
+    //             color: ["red", "green", "blue"]
+    //         }]
+    //     }
+    // ],
     table: {
         head: [
             [
                 {value: "Primary 1", rowspan: 2},
                 {value: "Primary 2", rowspan: 2},
-                {value: "Primary 3", rowspan: 2},
+                // {value: "Primary 3", rowspan: 2},
                 {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
             ],
             [
@@ -142,7 +144,7 @@ export const reportModel = {
                     // valueCell: 5,
                     valueUnit: "Items",
                     percentName: "Share",
-                    percentCell: 6
+                    percentCell: 5
                 },
                 filter: true
             },

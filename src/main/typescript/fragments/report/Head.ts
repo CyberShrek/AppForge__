@@ -3,7 +3,7 @@ import {getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../u
 import ReportSlot from "./ReportSlot"
 import {Loader} from "../misc/Loader"
 import {InlineFragment} from "../InlineFragment"
-import {popupTimeoutAction} from "../../util/alert";
+import {popupTimeoutAction} from "../../util/alert"
 
 export class Head extends InlineFragment<ReportSlot>{
 

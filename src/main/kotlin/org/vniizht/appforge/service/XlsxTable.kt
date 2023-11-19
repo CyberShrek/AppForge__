@@ -31,17 +31,17 @@ data class XlsxTable(val model: XlsxTableModel){
         borderBottom = BorderStyle.NONE,
         font = font)
 
-    private val headerStyle = createStyle(
+    private val headStyle = createStyle(
         background = IndexedColors.BLUE_GREY,
         border = BorderStyle.MEDIUM,
         font = createFont(isBold = true, color = IndexedColors.WHITE))
     private val bodyStyle            = createStyle()
-    private val bodyStyleLeft        = createStyle(alignment = HorizontalAlignment.LEFT)
-    private val bodyStyleRight       = createStyle(alignment = HorizontalAlignment.RIGHT)
+    private val bodyStyleString        = createStyle(alignment = HorizontalAlignment.LEFT)
+    private val bodyStyleNumber       = createStyle(alignment = HorizontalAlignment.RIGHT)
 
     private val totalStyle       = createStyleTotal()
-    private val bodyStyleTotalLeft   = createStyleTotal(alignment = HorizontalAlignment.LEFT)
-    private val bodyStyleTotalRight  = createStyleTotal(alignment = HorizontalAlignment.RIGHT)
+    private val bodyStyleTotalString   = createStyleTotal(alignment = HorizontalAlignment.LEFT)
+    private val bodyStyleTotalNumber  = createStyleTotal(alignment = HorizontalAlignment.RIGHT)
     private fun createStyleTotal(alignment: HorizontalAlignment = HorizontalAlignment.CENTER) = createStyle(
         alignment = alignment,
         verticalAlignment = VerticalAlignment.TOP,
@@ -51,13 +51,12 @@ data class XlsxTable(val model: XlsxTableModel){
         font = createFont(isBold = true))
 
     init {
-        val titleCell     = if(model.name != null) createNextCell(createNextRow(true), model.name, titleStyle) else null
+        val titleCell     = if(model.title != null) createNextCell(createNextRow(true), model.title, titleStyle) else null
         val timestampCell = createNextCell(createNextRow(), getTimestamp(), timestampStyle)
         val extrasCells   = model.context?.map{ extra -> createNextCell(createNextRow(), extra, extrasStyle)}
-        val nameCell      = if(model.title  != null) createNextCell(createNextRow(true), model.title, headerStyle) else null
-        mountRows(model.header, headerStyle)
+        val nameCell      = if(model.title  != null) createNextCell(createNextRow(true), model.title, headStyle) else null
+        mountRows(model.head, headStyle)
         mountRows(model.body, bodyStyle)
-        mountRow(model.total, totalStyle)
         spanToRowCell(titleCell)
         spanToRowCell(timestampCell)
         spanToRowCell(nameCell)
@@ -69,8 +68,14 @@ data class XlsxTable(val model: XlsxTableModel){
 
     private fun mountRows(rows: List<List<CompleteCell>>, cellStyle: XSSFCellStyle) = rows.forEach { mountRow(it, cellStyle) }
     private fun mountRow(row: List<CompleteCell>, cellStyle: XSSFCellStyle) = with(createNextRow()){
-        row.forEach { cell -> val poiCell = createNextCell(this, cell.text)
-            poiCell.cellStyle = cellStyle
+        row.forEach { cell -> val poiCell = createNextCell(this, cell.value)
+
+            poiCell.cellStyle = if (cellStyle == headStyle) headStyle else when (cell.type) {
+                "string" -> if (cell.total) bodyStyleTotalString else bodyStyleString
+                "number" -> if (cell.total) bodyStyleTotalNumber else bodyStyleNumber
+                else -> cellStyle
+            }
+
             if(cell.rowspan > 1 || cell.colspan > 1)
                 spanCell(poiCell,
                     poiCell.rowIndex + cell.rowspan-1,

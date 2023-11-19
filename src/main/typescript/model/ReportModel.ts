@@ -5,6 +5,7 @@ interface ReportModel {
     charts?: ChartConfig[]
     labels?: LabelConfig[]
     table?: TableConfig
+    html?: string
     context?: ContextFields
     slot?: string
 }
@@ -33,17 +34,17 @@ interface ChartConfig {
 }
 
 interface ChartContentConfig {
-    type: "line" | "bar" | "pie"
+    type: "line" | "bar" | "pie" | "donut"
     name: string
     column: number
     color?: string|string[]
-    fill?: boolean|string[]
 }
 
 interface LineGraphConfig extends ChartContentConfig {
-    type: "line"
-    dash?: boolean
+    type:   "line"
+    dash?:  boolean
     curve?: boolean
+    fill?:  boolean
 }
 
 interface BarGraphConfig extends ChartContentConfig {
@@ -51,7 +52,7 @@ interface BarGraphConfig extends ChartContentConfig {
 }
 
 interface PieGraphConfig extends ChartContentConfig {
-    type: "pie"
+    type: "pie" | "donut"
 }
 
 ///////////
@@ -69,7 +70,9 @@ interface TableConfig {
 type CompleteCell = {
     value: any,
     rowspan?: number,
-    colspan?: number
+    colspan?: number,
+    total?: boolean,
+    type?: string
 }
 type CompleteRow = CompleteCell[]
 type MatrixData = RowData[]
@@ -82,12 +85,10 @@ type PrimaryCellData = string
 // XLSX //
 //////////
 interface XlsxTableModel {
-    name: string
-    context: string[]
     title: string
+    context: string[]
     head: CompleteRow[]
     body: CompleteRow[]
-    total: CompleteRow
 }
 
 /////////////

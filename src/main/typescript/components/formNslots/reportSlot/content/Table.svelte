@@ -10,6 +10,8 @@
     import TableRowsGroup from "./TableBodyRowsGroup.svelte"
     import Text from "../../../input/Text.svelte"
     import PagesBar from "../../../navigation/PagesBar.svelte"
+    import {XlsxAccessor} from "../../../../api/XlsxAccessor";
+    import {onMount} from "svelte";
 
     resolveStyle("table")
 
@@ -20,9 +22,11 @@
 
     let rootElement: HTMLDivElement,
         tableWizard: TableWizard,
+        xlsxAccessor: XlsxAccessor,
         checkedRowsSet = new Set<RowData>(),
         filterValues: string[] = [],
-        pickedPageI = 0
+        pickedPageI = 0,
+        pageSize = modelWizard.properData.length
 
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
@@ -32,7 +36,7 @@
 
     $: filteredData = tableWizard.getFiltratedData(filterValues)
 
-    $: paginatedData = tableWizard.paginateData(filteredData, config.pageSize)
+    $: paginatedData = tableWizard.paginateData(filteredData, pageSize)
 
     function togglePickAll() {
         if(!allRowsAreChecked)
@@ -48,7 +52,16 @@
         }
     }
 
+    onMount(() => {
+        xlsxAccessor = new XlsxAccessor(tableWizard.extractXlsxModelUsingElement(rootElement.querySelector("table")))
+        pageSize = config.pageSize
+    })
+
 </script>
+
+<Button image="download.svg"
+        hint="Экспорт в XLSX"
+        on:click={() => xlsxAccessor.fetch()}/>
 
 <div class="table"
      bind:this={rootElement}

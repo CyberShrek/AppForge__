@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import Image from "../../../misc/Image.svelte";
+    import Image from "../../../misc/Image.svelte"
 
     export let
         data: RowData,

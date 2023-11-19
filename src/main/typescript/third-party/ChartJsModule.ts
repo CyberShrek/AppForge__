@@ -24,26 +24,42 @@ export class ChartJsModule extends Module{
 
     private getDatasets(): ChartDataset[] {
         return (this.config.content as ChartContentConfig[]).map(config =>
-            config.type === "line" ? this.getLineGraphDataset(config as LineGraphConfig) :
-                config.type === "bar" ? this.getBarGraphDataset(config as BarGraphConfig) :
-                    config.type === "pie" ? this.getPieGraphDataset(config as PieGraphConfig) : null
+            config.type === "line" ? this.getLineDataset(config as LineGraphConfig) :
+                config.type === "bar" ? this.getBarDataset(config as BarGraphConfig) :
+                    config.type === "pie" || config.type === "donut" ? this.getPieDataset(config as PieGraphConfig) : null
         )
     }
 
-    private getLineGraphDataset(config: LineGraphConfig): ChartDataset{
+    private getLineDataset(config: LineGraphConfig): ChartDataset{
+        // @ts-ignore
         return {
+            ...this.getCommonDataset(config),
+            type: "line",
+            borderColor: config.color,
+            borderWidth: 3,
+            // @ts-ignore
+            borderDash: config.dash ? [5, 5] : undefined,
+            // @ts-ignore
+            tension: config.curve ? 0.5 : 0,
+            // @ts-ignore
+            fill: !!config.fill,
+            backgroundColor: config.fill && typeof config.fill === "string" ? config.fill : undefined
+        }
+    }
+
+    private getBarDataset(config: BarGraphConfig): ChartDataset{
+        return {
+            type: "bar",
+            // @ts-ignore
+            borderRadius: 5,
             ...this.getCommonDataset(config)
         }
     }
 
-    private getBarGraphDataset(config: BarGraphConfig): ChartDataset{
+    private getPieDataset(config: PieGraphConfig): ChartDataset {
+        // @ts-ignore
         return {
-            ...this.getCommonDataset(config)
-        }
-    }
-
-    private getPieGraphDataset(config: PieGraphConfig): ChartDataset {
-        return {
+            type: config.type === "donut" ? "doughnut" : "pie",
             ...this.getCommonDataset(config)
         }
     }
@@ -51,11 +67,9 @@ export class ChartJsModule extends Module{
     private getCommonDataset(config: ChartContentConfig): ChartDataset {
         // @ts-ignore
         return {
-            type: config.type,
             label: config.name,
             data: this.getColumn(config.column) as number[],
-            borderColor: config.color,
-            fill: config.fill
+            backgroundColor: config.color
         }
     }
 
@@ -63,13 +77,13 @@ export class ChartJsModule extends Module{
         return {
             // aspectRatio: 2|1,
             interaction: {
-                intersect: false,
+                intersect: true,
                 mode: "index"
             },
             plugins: {
-                tooltip:{
-                    position: "nearest"
-                },
+                // tooltip:{
+                //     position: "nearest"
+                // },
                 title: {
                     display: true,
                     text: this.config.title

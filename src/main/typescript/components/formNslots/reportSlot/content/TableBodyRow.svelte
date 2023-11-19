@@ -62,11 +62,11 @@
                 || primaryGroupSizes[colI] && isGroupStart
             }
 
-                <td class={typeof data}
+                <td class={typeof cellData}
                     class:total={totalColI > -1 && colI >= totalColI}
                     class:collapsed={collapseStartIndex !== -1 && colI > collapseStartIndex}
-                    class:positive={typeof data === "number" && data > 0 && features[colI]?.colorize?.positive}
-                    class:negative={typeof data === "number" && data < 0 && features[colI]?.colorize?.negative}
+                    class:positive={typeof cellData === "number" && cellData > 0 && features[colI]?.colorize?.positive}
+                    class:negative={typeof cellData === "number" && cellData < 0 && features[colI]?.colorize?.negative}
                     class:link={features[colI]?.onClick}
                     rowspan={isGroupStart && features[colI]?.totalize && primaryGroupSizes[colI] ? primaryGroupSizes[colI] : 1}
                     colspan={totalColI > -1 && colI === primaryColumnsNumber - 1 ? primaryColumnsNumber - totalColI : 0}

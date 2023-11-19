@@ -7,7 +7,7 @@ export class ReportModelWizard {
     readonly properData: MatrixData // properData is model.data modified by formulas and sorted.
     readonly totalRow: RowData
 
-    constructor(private model: ReportModel) {
+    constructor(readonly model: ReportModel) {
         if(model.data && model.data.length > 0) {
 
             // Firstly calculate the total data to use it in the formulas
