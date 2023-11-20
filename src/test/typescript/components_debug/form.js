@@ -8,6 +8,14 @@ export const form = {
             type: "calendar",
             label: "firstField"
         },
+        selectField: {
+            type: "select",
+            label: "secondField",
+            endpointSource: {
+                path: "demo/options",
+                triggerKeys: ["firstSection.secondField", "secondSection.thirdField", "thirdSection.thirdField"]
+            }
+        },
         secondField: {
             type: "calendar",
             label: "secondField",

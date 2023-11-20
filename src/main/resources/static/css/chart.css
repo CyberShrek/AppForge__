@@ -1,0 +1,15 @@
+.charts {
+  display: grid;
+  background: white;
+  padding: var(--indent);
+  grid-gap: var(--indent);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.chart {
+  display: grid;
+  padding: var(--indent);
+  border: var(--light-border);
+  border-radius: var(--border-radius);
+  overflow: auto;
+}

@@ -10,13 +10,13 @@ const config = {
         description: "description",
         additional: ""
     },
-    // form,
-    // mainSlot: {
-    //     title: "Main"
-    // },
-    // lateralSlot: {
-    //     title: "lateral"
-    // }
+    form,
+    mainSlot: {
+        title: "Main"
+    },
+    lateralSlot: {
+        title: "lateral"
+    }
 }
 
 const appInfo = {

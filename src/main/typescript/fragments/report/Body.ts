@@ -1,10 +1,7 @@
 import {emptyElement} from "../../util/domWizard"
 import {Table} from "./content/Table"
 import {Chart} from "./content/Chart"
-import {Button} from "../inputs/Button"
-import {popupTimeoutAction} from "../../util/alert"
 import ReportSlot from "./ReportSlot"
-import {prettify} from "../../util/data"
 import {Context} from "./content/Context"
 import {InlineFragment} from "../InlineFragment"
 

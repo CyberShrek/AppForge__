@@ -25,23 +25,37 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(2, 4, 10),
-    // labels: [
-    //     {
-    //         title: "Label 1",
-    //         valueCell: 3,
-    //         valueUnit: "Items",
-    //         percentName: "Share",
-    //         percentCell: 4
-    //     },
-    //     {
-    //         title: "Label 2",
-    //         valueCell: 5,
-    //         valueUnit: "Items",
-    //         percentName: "Share",
-    //         percentCell: 6
-    //     }
-    // ],
+    data: createMatrixData(3, 4, 500),
+    labels: [
+        {
+            title: "Label 1",
+            valueCell: 3,
+            valueUnit: "Items",
+            image: "passenger.svg"
+        },
+        {
+            title: "Label 2",
+            valueCell: 5,
+            valueUnit: "Items",
+            image: "woman.svg",
+            frame: true
+        },
+        {
+            title: "Label 3",
+            valueCell: 4,
+            valueUnit: "Items",
+            image: "ruble.svg",
+            background: "lime"
+        },
+        {
+            title: "Label 3",
+            valueCell: 3,
+            valueUnit: "Items",
+            image: "loan_document.svg",
+            frame: true,
+            background: "coral"
+        }
+    ],
     // charts: [
     //     {
     //         title: "Line graph",
@@ -101,7 +115,7 @@ export const reportModel = {
             [
                 {value: "Primary 1", rowspan: 2},
                 {value: "Primary 2", rowspan: 2},
-                // {value: "Primary 3", rowspan: 2},
+                {value: "Primary 3", rowspan: 2},
                 {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
             ],
             [
@@ -123,6 +137,15 @@ export const reportModel = {
         columnFeatures: [
             {
                 // totalize: true,
+                labelize: {
+                    image: {
+                        "apple": "ф.svg",
+                    }
+                },
+                onClick: {
+                    forCells: ["apple", "cherimoya"],
+                    fetchReport: "1"
+                },
                 filter: true
             },
             {
@@ -143,8 +166,7 @@ export const reportModel = {
                 labelize: {
                     // valueCell: 5,
                     valueUnit: "Items",
-                    percentName: "Share",
-                    percentCell: 5
+                    frame: true
                 },
                 filter: true
             },

@@ -59,10 +59,6 @@
 
 </script>
 
-<Button image="download.svg"
-        hint="Экспорт в XLSX"
-        on:click={() => xlsxAccessor.fetch()}/>
-
 <div class="table"
      bind:this={rootElement}
      on:scroll={handleScroll}>
@@ -70,11 +66,15 @@
     <table>
         <thead>
         {#if config.pageSize && modelWizard.properData.length >= config.pageSize}
-            <tr class="pages-bar">
+            <tr class="tool-bar">
                 <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
                     <PagesBar pageSize={config.pageSize}
                               itemsCount={filteredData.length}
-                              bind:pickedPageI/>
+                              bind:pickedPageI>
+                        <Button image="download.svg"
+                                hint="Экспорт в .xlsx"
+                                on:click={() => xlsxAccessor.fetch()}/>
+                    </PagesBar>
                 </td>
             </tr>
         {/if}

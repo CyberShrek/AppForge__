@@ -8,6 +8,10 @@ interface ReportModel {
     html?: string
     context?: ContextFields
     slot?: string
+
+    // Apply after fetching the report from server
+    usedValues?: FormValues
+    usedOptions?: FieldOptions
 }
 
 ///////////
@@ -19,9 +23,9 @@ interface LabelConfig{
     valueUnit?: string
     percentName?: string
     percentCell?: number
-    image?: string | {[value: string]: string}
+    image?: string | {[forCell: string]: string}
     background?: string
-    framed?: boolean
+    frame?: boolean
 }
 
 ///////////
@@ -98,9 +102,9 @@ interface ContextFields {
     [label: string]: string
 } // Value is field key
 
-/////////////
+//////////////
 // FEATURES //
-/////////////
+//////////////
 interface ColumnFeature {
     filter?: boolean
     hidden?:  boolean | "xlsx"
@@ -108,18 +112,9 @@ interface ColumnFeature {
     colorize?: {
         positive?: boolean | string
         negative?: boolean | string
-        background?: boolean | string
     }
     labelize?: LabelConfig
-    useOptions?: {
-        fromFields: string[]
-        hideCode?:  boolean
-    }
-    useImages?: {
-        associations: {[cellText: string]: string}
-        hideText?: boolean
-    }
-    onClick?: ApiAction
+    onClick?: ApiAction & { forCells: string[] }
 }
 
 interface ActionButton {

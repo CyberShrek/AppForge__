@@ -88,7 +88,7 @@ export class Head extends InlineFragment<ReportSlot>{
         addEventListener("fullscreenchange", () => {
             const fullscreenMode = !!getFullscreenElement()
             button.hint = fullscreenMode ? "Выйти из полноэкранного режима" : defaultConfig.hint
-            button.image = fullscreenMode ? "exit.svg" : defaultConfig.image
+            button.image = fullscreenMode ? "close.svg" : defaultConfig.image
         })
         return button
     }

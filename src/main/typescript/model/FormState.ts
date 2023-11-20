@@ -2,8 +2,9 @@ interface FormState {
     message?: string
     hidden?: string[]
     wrong?: string[]
-    values?: {[section_dot_field: string]: any}
+    values?: FormValues
 }
+
 
 // After parse
 type SectionKeys      = Set<string>

@@ -6,4 +6,4 @@
 
 </script>
 
-<input bind:value {placeholder}/>
+<input bind:value {placeholder} type="text"/>

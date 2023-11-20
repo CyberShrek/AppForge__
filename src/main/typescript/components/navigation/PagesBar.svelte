@@ -19,15 +19,21 @@
 </script>
 
 <div class="nav-pages">
-    {#if itemsCount !== -1}
-        {pageStartI + 1}-{pageEndI} из {itemsCount}
-    {/if}
+    <span class="context">
+        {#if itemsCount !== -1}
+            {pageStartI + 1}-{pageEndI} из {itemsCount}
+        {/if}
+    </span>
 
-    <Button unavailable={size <= 1 || pickedPageI === 0} text='❬' on:click={() => pickedPageI--}/>
+    <div class="pages">
+        <Button unavailable={size <= 1 || pickedPageI === 0} text='❬' on:click={() => pickedPageI--}/>
 
-    {#each Array(size) as _, i}
-        <Button active={pickedPageI === i} text={String(i + 1)} on:click={() => pickedPageI = i}/>
-    {/each}
+        {#each Array(size) as _, i}
+            <Button active={pickedPageI === i} text={String(i + 1)} on:click={() => pickedPageI = i}/>
+        {/each}
 
-    <Button unavailable={size <= 1 || pickedPageI === size - 1} text='❭' on:click={() => pickedPageI++}/>
+        <Button unavailable={size <= 1 || pickedPageI === size - 1} text='❭' on:click={() => pickedPageI++}/>
+    </div>
+
+    <slot/>
 </div>

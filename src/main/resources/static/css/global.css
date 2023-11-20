@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 :root{
 	--primary-color: #003466;
 	--secondary-color: #d2e0fa;
 	--solid-color: whitesmoke;
 	--positive-color: forestgreen;
-	--negative-color: firebrick;
+	--negative-color: red;
 	--border: thin solid steelblue;
 	--light-border: thin solid lightsteelblue;
 	--indent: 10px;
@@ -19,7 +21,7 @@
 }
 
 *{
-	font-family: Helvetica;
+	font-family: Roboto;
 }
 
 body {

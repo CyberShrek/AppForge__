@@ -1,6 +1,9 @@
 <script lang="ts">
 
     import Image from "../../../misc/Image.svelte"
+    import {resolveStyle} from "../../../../util/resolver";
+
+    resolveStyle("label")
 
     export let
         data: RowData,
@@ -8,27 +11,30 @@
 
 </script>
 
-<div class="label">
+<div>
     {#if config.title}
         <p>{config.title}</p>
     {/if}
-    <div class:framed={config.framed}
+    <div class="label"
+         class:framed={config.frame}
          style:background={config.background}>
 
         {#if config.image}
             <Image name={typeof config.image === "string" ? config.image : config.image[data[config.valueCell]]}/>
         {/if}
-        {#if config.valueCell}
-            <span class="value">{data[config.valueCell]}</span>
-        {/if}
-        {#if config.valueUnit}
-            <span class="value-unit">{config.valueUnit}</span>
-        {/if}
-        {#if config.percentName}
-            <span class="percent-name">{config.percentName}</span>
-        {/if}
-        {#if config.percentCell}
-            <span class="percent">{data[config.percentCell]}%</span>
-        {/if}
+        <div class="text">
+            {#if config.valueCell !== undefined}
+                <span class="value" style:color={config.background}>{data[config.valueCell]}</span>
+            {/if}
+            {#if config.valueUnit !== undefined}
+                <span class="value-unit">{config.valueUnit}</span>
+            {/if}
+            {#if config.percentName !== undefined}
+                <span class="percent-name">{config.percentName}</span>
+            {/if}
+            {#if config.percentCell !== undefined}
+                <span class="percent" style:color={config.background}>{data[config.percentCell]}%</span>
+            {/if}
+        </div>
     </div>
 </div>

@@ -4,15 +4,19 @@ const
     stylesPromises  = new Map<string, Promise<any>>(),
     modulesPromises = new Map<string, Promise<any>>()
 
-export const resolveStyle = (name: string) =>
-    promisePromise(name, stylesPromises, new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel     = 'stylesheet'
-        link.href    = `${stylesLocation}${name}.css`
-        link.onload  = resolve
-        link.onerror = reject
-        document.head.appendChild(link)
-    }))
+export const resolveStyle = (name: string) => {
+    if(!stylesPromises.has(name))
+        stylesPromises.set(name, new Promise((resolve, reject) => {
+            const link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.href = `${stylesLocation}${name}.css`
+            link.onload = resolve
+            link.onerror = reject
+            document.head.appendChild(link)
+        }))
+
+    return stylesPromises.get(name)
+}
 
 export const resolveModule = (name: string) =>
     promisePromise(name, modulesPromises, import(`${modulesLocation}${name}.js`))

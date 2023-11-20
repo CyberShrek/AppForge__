@@ -4,16 +4,21 @@
     import Section from "./section/Section.svelte"
     import Button from "../../input/Button.svelte"
     import {FormStateAccessor} from "../../../api/FormStateAccessor"
+    import {ReportAccessor} from "../../../api/ReportAccessor"
+    import {createEventDispatcher} from "svelte"
 
     resolveStyle("form")
 
-    export let
-        config: FormConfig,
-        submittedValue: typeof valueScope
+    const dispatch = createEventDispatcher()
+
+    export let config: FormConfig
+
+    const reportAccessor = new ReportAccessor(config.submitPath)
 
     let sectionConfigsObject = config ? extractJsonItemsWithSuffix(config, "Section") as {[sectionKey: string]: FormSectionConfig} : {},
         jsonValues = {},
-        valueScope: {[section_dot_field: string]: any},
+        valueScope: FormValues,
+        submittedValues: FormValues,
         wrongSections: SectionKeys,
         hiddenSections: SectionKeys,
         wrongSectionFields: SectionFieldKeys,
@@ -22,11 +27,14 @@
         submitIsUnavailable: boolean = true,
         showWrongs = false
 
-
     $: stateAccessor = config?.statePath ? new FormStateAccessor(config.statePath) : null
 
     $: if(Object.keys(jsonValues).length > 0)
         onValuesChange()
+
+    $: if(submittedValues)
+        dispatchNewReport()
+
 
     function onValuesChange(){
         valueScope = {}
@@ -61,6 +69,12 @@
         previousState = deepCopyOf(state)
     }
 
+    async function dispatchNewReport(){
+        const reportModel = await reportAccessor.fetch(submittedValues)
+        reportModel.usedValues = deepCopyOf(submittedValues)
+        dispatch("report", reportModel)
+    }
+
 </script>
 
 <form>
@@ -77,7 +91,7 @@
 
     <Button submit text={config.submitText}
             unavailable={showWrongs && submitIsUnavailable}
-            on:click={() => submittedValue = valueScope}
+            on:click={() => submittedValues = valueScope}
             on:mouseenter={() => showWrongs = true}
     />
 </form>

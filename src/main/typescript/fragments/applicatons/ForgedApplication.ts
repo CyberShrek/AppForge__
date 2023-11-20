@@ -5,7 +5,7 @@ import {appInfo} from "../../store/appInfo"
 import Form from "../form/Form";
 import {appConfig} from "../../store/appConfig";
 import {NavigationContainer} from "../navigation/NavigationContainer"
-import {Report} from "../../api/Report"
+import {ReportAccessor} from "../../api/ReportAccessor"
 import ReportSlot from "../report/ReportSlot"
 
 // Must be loaded only once
@@ -60,7 +60,7 @@ export class ForgedApplication extends Fragment {
     }
 
     private createForm(config: FormConfig) : Form{
-        const reportAccessor = new Report(config.submitPath)
+        const reportAccessor = new ReportAccessor(config.submitPath)
         const form = new Form(config)
         form.onSubmit = (jsonValues, prettyValues) => {
             form.submitButton.disable()

@@ -1,6 +1,9 @@
 <script lang="ts">
 
     import {ChartJsModule} from "../../../../third-party/ChartJsModule";
+    import {resolveStyle} from "../../../../util/resolver";
+
+    resolveStyle("chart")
 
     export let
         data: MatrixData,
@@ -13,7 +16,5 @@
 
 </script>
 
-<div class="chart">
-    <canvas style="display: inline-block"
-            bind:this={rootCanvas}/>
-</div>
+<canvas style="display: inline-block"
+        bind:this={rootCanvas}/>

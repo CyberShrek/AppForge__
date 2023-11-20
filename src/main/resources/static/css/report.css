@@ -1,5 +1,5 @@
 :root{
-    --report-header-button-height: 35px;
+    --report-header-height: 35px;
 }
 
 .report {
@@ -9,19 +9,18 @@
     height: min-content;
     overflow-x: hidden;
     border-radius: var(--outer-border-radius);
-/*     box-shadow: var(--light-shadow); */
 }
 
-.report.windowed{
+.modal .report{
     width: 95vw;
     max-height: 95vh;
 }
 .report .head {
     display:flex;
-    height: var(--report-header-button-height);
+    height: var(--report-header-height);
     align-items: center;
     padding: var(--indent);
-    padding-left: calc(var(--report-header-button-height)/2);
+    padding-left: calc(var(--report-header-height)/2);
 }
 .report .head p {
     font-size: larger;
@@ -35,14 +34,14 @@
 
 .report .context{
     margin: 0;
-    padding: 0 calc(var(--report-header-button-height)/2);
+    padding: 0 calc(var(--report-header-height)/2);
     list-style-type: none;
-    line-height: var(--report-header-button-height);
+    line-height: var(--report-header-height);
 }
 
 .report button{
-    height: var(--report-header-button-height);
-    width: var(--report-header-button-height);
+    height: var(--report-header-height);
+    width: var(--report-header-height);
     margin-left: var(--indent);
     background: white;
     border: 0;

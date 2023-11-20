@@ -5,14 +5,15 @@
 
 form {
     display: grid;
-    grid-gap: var(--strong-indent);
+    grid-gap: var(--indent);
+/*     border: var(--light-border); */
+    margin: 0 var(--indent);
+    padding: var(--indent);
+    border-radius: var(--outer-border-radius);
 }
 
 form .section {
     display: flex;
-/*     grid-template-columns: repeat(auto-fill, minmax(var(--form-cell-width), 1fr));
-    grid-template-rows: repeat(auto-fill, var(--form-cell-height)); */
-    background: white;
     flex-wrap: wrap;
     grid-gap: var(--indent);
 }
@@ -51,11 +52,6 @@ form button.submit{
     white-space: nowrap;
     align-self: end;
 }
-
-form .field.switch-field.field{
-    width: 100%;
-}
-
 
 form .field.wrong :is(.multiselect){
     outline: thin solid var(--negative-color);

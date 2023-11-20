@@ -1,0 +1,66 @@
+:root {
+  --label-height: 100px;
+}
+
+.report .labels {
+  display: grid;
+  overflow-x: auto;
+  justify-content: space-around;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: var(--light-indent);
+}
+
+.report .labels > div p {
+  margin: 0 var(--indent);
+}
+
+.report .label {
+  display: flex;
+  height: var(--label-height);
+   grid-template-columns: auto 1fr 1fr;
+}
+
+.report .label.framed {
+  padding: var(--indent);
+  margin: var(--light-indent);
+  border-radius: var(--border-radius);
+  background: var(--secondary-color);
+}
+
+.report .label img{
+  padding: var(--indent);
+}
+
+.report .label .text {
+  display: grid;
+  align-items: end;
+  margin: auto;
+  grid-gap: var(--light-indent);
+  justify-items: center;
+  grid-template-rows: 1fr auto auto;
+  grid-template-areas: 
+    "value vunit"
+    "pname pname"
+    "prcnt prcnt"
+}
+
+.report .label .value{
+  grid-area: value;
+}
+.report .label .value:is(:not(:last-child)){
+  font-size: xx-large;
+}
+.report .label .value-unit{
+  grid-area: vunit;
+}
+.report .label .percent-name{
+  grid-area: pname;
+}
+.report .label .percent {
+  grid-area: prcnt;
+}
+.report .label :is(.value, .percent){
+  font-weight: bold;
+    color: var(--primary-color);
+  filter: saturate(10) brightness(0.5);
+}

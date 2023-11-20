@@ -10,24 +10,16 @@
         appInfo:   AppInfo,
         userInfo:  UserInfo
 
+    document.body.style.display = "none"
+
     // Must be loaded only once
-    const cssPromises = Promise.all([
+    Promise.all([
         resolveStyle("global"),
         resolveStyle("navigation"),
         resolveStyle("inputs"),
         resolveStyle("states"),
         resolveStyle("misc")
-    ])
-
-    // if(!config.complex || !Array.isArray(config.complex))
-    //     config.complex = []
-    //
-    // if(config.form)
-    //     config.complex.push({
-    //         title: " ",
-    //         form: config.form,
-    //         ...extractJsonItemsWithSuffix(config, "Slot")
-    //     })
+    ]).then(() => document.body.style.display = "")
 
 </script>
 

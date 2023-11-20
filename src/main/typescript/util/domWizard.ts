@@ -1,3 +1,5 @@
+import {toJpeg} from "dom-to-image"
+
 // Used to create inner html and return them as elements
 const factoryElement = document.createElement("factory")
 document.body.appendChild(factoryElement)
@@ -68,4 +70,15 @@ export function removeCursorLoader() {
     cursorLoadersCount--
     if(cursorLoadersCount <= 0)
         document.documentElement.style.cursor = 'default'
+}
+
+export function exportAsJpeg(element: HTMLElement, jpegName: string = "element"){
+    toJpeg(element)
+        .then((dataUrl) => {
+            const link = document.createElement("a")
+            link.download = jpegName+".jpeg"
+            link.href = dataUrl
+            link.click()
+            link.remove()
+        })
 }

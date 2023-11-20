@@ -26,6 +26,39 @@
     transition: none;
 }
 
+.report table .tool-bar td {
+    padding: 0;
+}
+
+.report table .tool-bar div {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+     padding: 0 var(--indent);
+}
+
+.report table .tool-bar .pages {
+     padding: var(--indent) 0;
+    overflow-x: auto;
+}
+
+.report table .tool-bar button.active {
+    color: white;
+    background: var(--primary-color)
+}
+.report table .tool-bar button:is(:first-of-type, :last-of-type) {
+    font-size: x-large;
+}
+
+.report table .tool-bar .context{
+    white-space: nowrap;
+}
+
+.report table .filters-bar th {
+    border-top: none;
+    padding-top: 0;
+}
+
 .report th {
     padding: 10px;
     color: white;
@@ -44,19 +77,6 @@
     background-color: #fff;
 }
 
-.report td.name {
-    text-align: left;
-}
-.report td.pretty{
-    padding: 0;
-
-}
-.report td.pretty square-label{
-    background: inherit;
-    margin: 0;
-    padding: 0;
-}
-
 .report :is(tr.total td, td.total){
     font-weight: bold;
     background: var(--secondary-color);
@@ -73,23 +93,6 @@
 .report table input[type=checkbox]{
     transform: scale(1.5);
     background-color: aqua;
-}
-
-.report table input[type=text]{
-    padding: calc(var(--indent)/2);
-    min-width: auto;
-    /*     margin-left: auto; */
-    justify-self: end;
-    width: 22px;
-    color: var(--primary-color);
-}
-.report table input[type=text]:not(:placeholder-shown){
-    width: 100px;
-}
-
-.report td img{
-    width: 70px;
-    height: 70px;
 }
 
 .report table :is(.number, .string){
