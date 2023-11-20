@@ -6,7 +6,6 @@
 form {
     display: grid;
     grid-gap: var(--indent);
-/*     border: var(--light-border); */
     margin: 0 var(--indent);
     padding: var(--indent);
     border-radius: var(--outer-border-radius);
@@ -20,6 +19,7 @@ form .section {
 
 form .section > p {
     text-align: center;
+    font-size: 18px;
     font-weight: bold;
     margin: var(--light-indent);
 }
@@ -37,7 +37,8 @@ form .field {
 form .field > p {
     margin: 0 0 var(--light-indent) 0;
     white-space: nowrap;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 18px;
 }
 form .field > p:empty {
     margin: 0;

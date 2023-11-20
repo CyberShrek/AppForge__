@@ -1,6 +1,7 @@
 #header {
   display: flex;
   align-items: center;
+  padding: 0 var(--indent);
   left: 0;
 }
 
@@ -12,6 +13,11 @@
 #header p{
   margin-right: auto;
   margin-left: var(--indent);
+}
+
+#header :is(a, p){
+  font-weight: normal;
+    font-size: 18px;
 }
 
 #header button{

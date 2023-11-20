@@ -16,6 +16,7 @@
 
 .report .label {
   display: flex;
+  padding: calc(var(--indent) + var(--light-indent));
   height: var(--label-height);
    grid-template-columns: auto 1fr 1fr;
 }
@@ -35,7 +36,6 @@
   display: grid;
   align-items: end;
   margin: auto;
-  grid-gap: var(--light-indent);
   justify-items: center;
   grid-template-rows: 1fr auto auto;
   grid-template-areas: 
@@ -49,6 +49,7 @@
 }
 .report .label .value:is(:not(:last-child)){
   font-size: xx-large;
+  padding-right: var(--light-indent);
 }
 .report .label .value-unit{
   grid-area: vunit;

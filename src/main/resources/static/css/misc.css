@@ -1,11 +1,21 @@
 .fix {
     position: fixed;
     z-index: 64;
+    box-shadow: var(--shadow);
 }
 .fix.top    { top:    var(--strong-indent) }
 .fix.bottom { bottom: var(--strong-indent) }
 .fix.left   { left:   var(--strong-indent) }
 .fix.right  { right:  var(--strong-indent) }
+
+.fix.framed {
+    flex-wrap: wrap;
+    color: var(--primary-color);
+    padding: var(--indent);
+    background: var(--secondary-color);
+    border: 5px solid var(--primary-color);
+    border-radius: var(--border-radius);
+}
 
 
 .loader {

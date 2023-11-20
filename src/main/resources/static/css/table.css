@@ -1,7 +1,6 @@
 .report .table {
+    border-top: var(--border);
     margin-bottom: var(--border-radius);
-    border-top: var(--light-border);
-    border-bottom: var(--light-border);
     overflow: auto;
     max-height: 100vh;
 }
@@ -17,6 +16,12 @@
     border-right: var(--light-border);
     border-top: var(--light-border);
 }
+.report thead tr:first-of-type :is(th, td){
+    border-top: 0;
+}
+.report :is(th, td):last-of-type{
+    border-right: 0;
+}
 
 .report :is(thead, tfoot) {
     z-index: 10;
@@ -26,27 +31,28 @@
     transition: none;
 }
 
-.report table .tool-bar td {
+.report table .tool-row td {
     padding: 0;
 }
 
-.report table .tool-bar div {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-     padding: 0 var(--indent);
-}
 
 .report table .tool-bar .pages {
      padding: var(--indent) 0;
+    margin: 0 var(--indent);
     overflow-x: auto;
 }
-
-.report table .tool-bar button.active {
-    color: white;
-    background: var(--primary-color)
+.report table .pages button {
+    font-size: 14px;
+    margin: 0;
+    font-weight: normal;
 }
-.report table .tool-bar button:is(:first-of-type, :last-of-type) {
+
+.report table .pages button.active {
+    color: white;
+    background: var(--primary-color);
+    font-weight: bold;
+}
+.report table .pages button:is(:first-of-type, :last-of-type) {
     font-size: x-large;
 }
 
@@ -56,7 +62,11 @@
 
 .report table .filters-bar th {
     border-top: none;
+    padding: var(--light-indent);
     padding-top: 0;
+}
+.report table .filters-bar th:empty {
+    
 }
 
 .report th {
@@ -64,7 +74,8 @@
     color: white;
     width: 100vw;
     white-space: nowrap;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: normal;
     background: var(--primary-color);
 }
 
@@ -72,9 +83,10 @@
     color: var(--primary-color);
     padding: var(--indent);
     text-align: center;
+    font-size: 14px;
     vertical-align: top;
     transition: all 0.3s;
-    background-color: #fff;
+    background-color: white;
 }
 
 .report :is(tr.total td, td.total){
@@ -83,6 +95,7 @@
 }
 
 .report :is(td, th).checkbox{
+    vertical-align: top;
     width: min-content;
 }
 
@@ -90,14 +103,24 @@
     background: var(--secondary-color);
 }
 
+.report td.link {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.report :is(td.link, td.checkbox):hover {
+    filter: contrast(85%);
+}
+
+.report td.labelized {
+    padding: 0;
+}
+.report td.labelized.framed {
+    border: 0;
+}
+
 .report table input[type=checkbox]{
     transform: scale(1.5);
     background-color: aqua;
-}
-
-.report table :is(.number, .string){
-    font-family: monospace;
-    font-size: large;
 }
 
 .report table .number, .report table .primary.string {

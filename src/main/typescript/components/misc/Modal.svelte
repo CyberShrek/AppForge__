@@ -22,12 +22,17 @@
         }
     })
 
+    // Disable scroll when modal is opened
+    $: if (show)
+        document.body.style.overflow = "hidden"
+    else
+        document.body.style.overflow = ""
+
     $: if (show === false)
         dispatch("close")
 
 </script>
-
-{#if show}
+{#if show === true}
     <div bind:this={rootElement}
          class="modal-backdrop"
          role="button"
@@ -35,7 +40,7 @@
          on:click={() => show = false}
          on:keydown={() => show = false}>
 
-        <div class="modal">
+        <div class="modal" on:click={e => e.stopPropagation()}>
             <slot/>
         </div>
     </div>

@@ -19,6 +19,7 @@ button.submit{
     font-size: large;
     color: white;
     background: var(--primary-color);
+    box-shadow: var(--shadow);
 }
 
 input[type=date],

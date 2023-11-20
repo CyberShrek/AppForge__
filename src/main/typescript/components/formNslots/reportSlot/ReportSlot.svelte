@@ -6,12 +6,14 @@
     import Label from "./content/Label.svelte"
     import Chart from "./content/Chart.svelte"
     import Button from "../../input/Button.svelte"
-    import {toggleFullscreen} from "../../../util/domWizard"
+    import {exportAsJpeg, toggleFullscreen} from "../../../util/domWizard"
     import {slide} from "svelte/transition"
     import {deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
     import {createEventDispatcher} from "svelte"
     import Charts from "./content/Charts.svelte";
+    import Modal from "../../misc/Modal.svelte";
+    import {XlsxAccessor} from "../../../api/XlsxAccessor"
 
     resolveStyle("report")
 
@@ -23,7 +25,8 @@
 
     let rootElement: HTMLDivElement,
         collapsed = false,
-        submittedApiAction: SubmittedApiAction
+        submittedApiAction: SubmittedApiAction,
+        xlsxAccessor: XlsxAccessor
 
     $: modelWizard = model && new ReportModelWizard(model)
 
@@ -39,10 +42,21 @@
     }
 
 </script>
+
 <div class="report" bind:this={rootElement}>
     <div class="head">
-        <p>{model?.title ? model.title : config.title}</p>
+        <h3>{model?.title ? model.title : config.title}</h3>
         {#if model}
+            {#if model?.table}
+                <Button image="download.svg"
+                        hint="Экспорт в .xlsx"
+                        on:click={() => xlsxAccessor?.fetch()}/>
+            {/if}
+            {#if model?.charts}
+                <Button image="download.svg"
+                        hint="Экспорт в .jpg"
+                        on:click={() => exportAsJpeg(rootElement, modelWizard.model.title)}/>
+            {/if}
             {#if !config.isModal}
                 <Button image="collapse.svg"
                         hint={collapsed ? "Развернуть" : "Свернуть"}
@@ -60,7 +74,7 @@
         <div class="body"
              transition:slide>
             {#each Object.keys(model) as modelKey}
-                {#if      modelKey === "table"}<Table config={model.table} {modelWizard} bind:submittedApiAction/>
+                {#if      modelKey === "table"}<Table config={model.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
                 {:else if modelKey === "charts"}<Charts configs={model.charts} {modelWizard}/>
                 {:else if modelKey === "labels"}
                     <div class="labels">

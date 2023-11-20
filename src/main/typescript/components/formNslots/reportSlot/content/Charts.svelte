@@ -12,10 +12,6 @@
 
 </script>
 
-<Button image="download.svg"
-        hint="Экспорт в .jpg"
-        on:click={() => exportAsJpeg(rootElement, modelWizard.model.title)}/>
-
 <div class="charts"
      bind:this={rootElement}>
 

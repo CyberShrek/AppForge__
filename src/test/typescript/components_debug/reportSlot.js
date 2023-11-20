@@ -25,7 +25,7 @@ function randomWord() {
 
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(3, 4, 500),
+    data: createMatrixData(3, 4, 10),
     labels: [
         {
             title: "Label 1",
@@ -56,60 +56,60 @@ export const reportModel = {
             background: "coral"
         }
     ],
-    // charts: [
-    //     {
-    //         title: "Line graph",
-    //         keyColumn: 0,
-    //         content: [{
-    //             type: "line",
-    //             name: "Line 1",
-    //             column: 3,
-    //             color: "red",
-    //             dash: true
-    //         },{
-    //             type: "line",
-    //             name: "Line 2",
-    //             column: 4,
-    //             color: "green",
-    //             curve: true
-    //         },{
-    //             type: "line",
-    //             name: "Line 3",
-    //             column: 5,
-    //             color: "blue",
-    //             fill: "rgba(255, 99, 132, 0.2)"
-    //         }]
-    //     },
-    //     {
-    //         title: "Bar chart",
-    //         keyColumn: 0,
-    //         content: [{
-    //             type: "bar",
-    //             name: "bar 1",
-    //             column: 3,
-    //             // color: "red"
-    //         },{
-    //             type: "bar",
-    //             name: "bar 1",
-    //             column: 4,
-    //             // color: "green"
-    //         }]
-    //     },
-    //     {
-    //         title: "Doughnut chart",
-    //         keyColumn: 0,
-    //         content: [{
-    //             type: "donut",
-    //             name: "donut 1",
-    //             column: 5
-    //         },{
-    //             type: "donut",
-    //             name: "donut 2",
-    //             column: 6,
-    //             color: ["red", "green", "blue"]
-    //         }]
-    //     }
-    // ],
+    charts: [
+        {
+            title: "Line graph",
+            keyColumn: 0,
+            content: [{
+                type: "line",
+                name: "Line 1",
+                column: 3,
+                color: "red",
+                dash: true
+            },{
+                type: "line",
+                name: "Line 2",
+                column: 4,
+                color: "green",
+                curve: true
+            },{
+                type: "line",
+                name: "Line 3",
+                column: 5,
+                color: "blue",
+                fill: "rgba(255, 99, 132, 0.2)"
+            }]
+        },
+        {
+            title: "Bar chart",
+            keyColumn: 0,
+            content: [{
+                type: "bar",
+                name: "bar 1",
+                column: 3,
+                // color: "red"
+            },{
+                type: "bar",
+                name: "bar 1",
+                column: 4,
+                // color: "green"
+            }]
+        },
+        {
+            title: "Doughnut chart",
+            keyColumn: 0,
+            content: [{
+                type: "donut",
+                name: "donut 1",
+                column: 5
+            },{
+                type: "donut",
+                name: "donut 2",
+                column: 6,
+                color: ["red", "green", "blue"]
+            }]
+        }
+    ],
     table: {
         head: [
             [

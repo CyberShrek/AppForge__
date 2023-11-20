@@ -3,6 +3,7 @@
     import { fade } from 'svelte/transition'
 
     export let
+        framed: boolean = false,
         top    = false,
         bottom = false,
         left   = false,
@@ -11,6 +12,7 @@
 </script>
 
 <div class="fix"
+     class:framed
      class:top
      class:bottom
      class:left

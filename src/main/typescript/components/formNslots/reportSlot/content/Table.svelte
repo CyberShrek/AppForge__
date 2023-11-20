@@ -18,11 +18,11 @@
     export let
         config: TableConfig,
         modelWizard: ReportModelWizard,
-        submittedApiAction: SubmittedApiAction
+        submittedApiAction: SubmittedApiAction,
+        xlsxAccessor: XlsxAccessor
 
     let rootElement: HTMLDivElement,
         tableWizard: TableWizard,
-        xlsxAccessor: XlsxAccessor,
         checkedRowsSet = new Set<RowData>(),
         filterValues: string[] = [],
         pickedPageI = 0,
@@ -70,11 +70,7 @@
                 <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
                     <PagesBar pageSize={config.pageSize}
                               itemsCount={filteredData.length}
-                              bind:pickedPageI>
-                        <Button image="download.svg"
-                                hint="Экспорт в .xlsx"
-                                on:click={() => xlsxAccessor.fetch()}/>
-                    </PagesBar>
+                              bind:pickedPageI/>
                 </td>
             </tr>
         {/if}
@@ -96,18 +92,16 @@
                 {/each}
             </tr>
         {/each}
-            <tr class="filters-bar">
-                {#if config.checkboxes}
-                    <th class="checkbox"></th>
-                {/if}
-                {#each Array(tableWizard.tableWidth) as _, i}
-                    <th>
-                        {#if config.columnFeatures?.[i]?.filter}
-                            <Text bind:value={filterValues[i]}/>
-                        {/if}
-                    </th>
-                {/each}
-            </tr>
+        <tr class="filters-bar">
+            {#if config.checkboxes}
+                <th class="checkbox"></th>
+            {/if}
+            {#each Array(tableWizard.tableWidth) as _, i}
+                <th>{#if config.columnFeatures?.[i]?.filter}
+                        <Text bind:value={filterValues[i]}/>
+                    {/if}</th>
+            {/each}
+        </tr>
         </thead>
 
         {#if tableWizard}
@@ -147,7 +141,8 @@
     </table>
 
     {#if checkedRowsSet.size > 0 && config.checkboxes}
-        <Fix left={true}
+        <Fix framed={true}
+             left={true}
              bottom={true}>
 
             {#each config.checkboxes.actions as action}

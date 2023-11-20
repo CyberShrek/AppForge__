@@ -7,7 +7,6 @@
     min-height: var(--report-header-height);
     background: white;
     height: min-content;
-    overflow-x: hidden;
     border-radius: var(--outer-border-radius);
 }
 
@@ -20,16 +19,19 @@
     height: var(--report-header-height);
     align-items: center;
     padding: var(--indent);
+    margin: var(--indent);
     padding-left: calc(var(--report-header-height)/2);
+    background: var(--solid-color);
+    border-radius: var(--border-radius);
+    border: var(--light-border);
 }
-.report .head p {
-    font-size: larger;
+.report .head h3 {
+    font-size: 22px;
     margin: auto auto auto 0;
 }
 
 .report .body{
     display: grid;
-    grid-gap: var(--strong-indent);
 }
 
 .report .context{
@@ -39,6 +41,17 @@
     line-height: var(--report-header-height);
 }
 
+.report .tool-bar{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: var(--indent);
+     padding: var(--indent);
+    background: var(--solid-color);
+    border: var(--light-border);
+    border-radius: var(--border-radius);
+}
+
 .report button{
     height: var(--report-header-height);
     width: var(--report-header-height);
@@ -46,41 +59,7 @@
     background: white;
     border: 0;
 }
+.report button:first-of-type{
 
-.report info.link{
-    white-space: nowrap;
-    font-weight: normal;
-    margin: var(--indent);
-    margin-top: 0;
-}
-
-
-/* Chart.js */
-.report charts-block {
-    display: grid;
-    
-    justify-items: center;
-    
-    padding: var(--indent);
-    
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(2, 48vh);
-    
-    gap: var(--indent);
-    
-    flex-shrink: 1;
-    flex-grow: 1;
-    
-    background: inherit;
-    border-top: var(--light-border);
-}
-.report chart{
-    display: inline-flex;
-    justify-content: center;
-    min-height: auto;
-    min-width: auto;
-    width: 100%;
-    height: 100%;
-    border: var(--light-border);
-    border-radius: var(--border-radius);
+    margin-left: 0;
 }
