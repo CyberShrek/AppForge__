@@ -8,6 +8,7 @@
 
 .chart {
   display: grid;
+  height: min-content;
   padding: var(--indent);
   border: var(--light-border);
   border-radius: var(--border-radius);

@@ -7,8 +7,6 @@
         formConfig: FormConfig,
         reportConfigsObject: {[configKey: string]: ReportSlotConfig}
 
-    let submittedValues: FormValues
-
     const reportModels: {[reportSlot: string]: ReportModel} = {}
 
     function setReport(report: ReportModel): void {

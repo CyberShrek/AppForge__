@@ -6,12 +6,14 @@ interface ReportModel {
     labels?: LabelConfig[]
     table?: TableConfig
     html?: string
-    context?: ContextFields
+    context?: ContextConfig
     slot?: string
 
     // Apply after fetching the report from server
     usedValues?: FormValues
     usedOptions?: FieldOptions
+    // Used only by chained reports (called from another report)
+    usedData?: MatrixData
 }
 
 ///////////
@@ -98,8 +100,12 @@ interface XlsxTableModel {
 /////////////
 // CONTEXT //
 /////////////
-interface ContextFields {
-    [label: string]: string
+interface ContextConfig {
+    reportData: {
+        title: string
+        columns: string[]
+    }[]
+    fields: { [label: string]: string }
 } // Value is field key
 
 //////////////

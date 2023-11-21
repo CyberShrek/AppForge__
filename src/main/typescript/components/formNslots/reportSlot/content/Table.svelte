@@ -10,7 +10,7 @@
     import TableRowsGroup from "./TableBodyRowsGroup.svelte"
     import Text from "../../../input/Text.svelte"
     import PagesBar from "../../../navigation/PagesBar.svelte"
-    import {XlsxAccessor} from "../../../../api/XlsxAccessor";
+    import {XlsxAccessor} from "../../../../api/XlsxAccessor"
     import {onMount} from "svelte";
 
     resolveStyle("table")

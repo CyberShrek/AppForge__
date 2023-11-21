@@ -5,7 +5,7 @@ export class Context extends InlineFragment<Body>{
 
     visibleValues: string[]
 
-    constructor(body: Body, context: ContextFields) {
+    constructor(body: Body, context: ContextConfig) {
         super(body, `<ul class="context"></ul>`)
         this.visibleValues = Object.entries(context)
             .map(([label, fieldKey]) =>

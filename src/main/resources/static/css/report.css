@@ -35,10 +35,11 @@
 }
 
 .report .context{
-    margin: 0;
-    padding: 0 calc(var(--report-header-height)/2);
-    list-style-type: none;
-    line-height: var(--report-header-height);
+    display: flex;
+    flex-direction: column;
+    margin: 0 var(--indent);
+    padding: 0 var(--indent);
+    line-height: calc(var(--report-header-height)/1.5);
 }
 
 .report .tool-bar{

@@ -23,9 +23,11 @@ function randomWord() {
     return words[Math.floor(Math.random()*(words.length))];
 }
 
+const data = createMatrixData(3, 4, 10)
+
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(3, 4, 10),
+    data,
     labels: [
         {
             title: "Label 1",
@@ -176,5 +178,20 @@ export const reportModel = {
                 }
             }
         ]
-    }
+    },
+    context: {
+        fields: {
+            "first.first": "Первый",
+            "second.second": "Второй",
+            "third.third": "Третий"
+        }
+    },
+    usedValues: {
+        "first.first": 111,
+        "second.second": [222, 222],
+        "third.third": true,
+        "fourth.fourth": "444",
+        "fifth.fifth": "555"
+    },
+    usedData: data
 }

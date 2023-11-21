@@ -80,11 +80,11 @@ export class TableWizard {
             for (const tableCell of tableRow.cells) {
                 if (!tableCell.classList.contains("checkbox")) {
                     row.push({
-                        value: tableCell.innerText.trim(),
+                        value:   tableCell.innerText.trim(),
                         colspan: tableCell.colSpan,
                         rowspan: tableCell.rowSpan,
-                        total: tableRow.classList.contains("total") || tableCell.classList.contains("total"),
-                        type: tableCell.classList.contains("number") ? "number" : "string"
+                        total:   tableRow.classList.contains("total") || tableCell.classList.contains("total"),
+                        type:    tableCell.classList.contains("number") ? "number" : "string"
                     })
                 }
             }
@@ -93,7 +93,7 @@ export class TableWizard {
 
         return {
             title: this.modelWizard.model.title,
-            context: [],
+            context: this.modelWizard.visibleContextValues,
             head: this.config.head,
             body
         }

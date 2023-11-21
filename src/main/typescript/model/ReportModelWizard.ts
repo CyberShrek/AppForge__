@@ -6,6 +6,7 @@ export class ReportModelWizard {
 
     readonly properData: MatrixData // properData is model.data modified by formulas and sorted.
     readonly totalRow: RowData
+    readonly visibleContextValues: string[]
 
     constructor(readonly model: ReportModel) {
         if(model.data && model.data.length > 0) {
@@ -18,6 +19,11 @@ export class ReportModelWizard {
             this.properData = deepCopyOf(model.data)
             this.properData.forEach(row => this.applyFormulasToRow(row))
             this.properData.sort()
+
+            // Find visible context values by associated fields with used values
+            if (model.context?.fields && model.usedValues)
+            this.visibleContextValues = Object.entries(model.context.fields)
+                .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
         }
         else popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
     }

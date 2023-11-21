@@ -24,7 +24,6 @@
 </script>
 
 <Header {appInfo}></Header>
-
 {#if config.form}
     <FormNSlots formConfig={config.form}
                 reportConfigsObject={extractJsonItemsWithSuffix(config, "Slot")}/>

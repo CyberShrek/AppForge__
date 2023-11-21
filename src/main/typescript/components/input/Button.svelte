@@ -15,6 +15,8 @@
 
 </script>
 
+
+
 <button class:unavailable
         class:frameless
         class:submit
@@ -27,7 +29,7 @@
         on:mouseenter>
 
     {#if image && image.length > 0}
-        <Image name={image}/>
+        <Image {hint} name={image}/>
     {/if}
 
     {text}

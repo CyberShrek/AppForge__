@@ -3,8 +3,8 @@ package org.vniizht.appforge.model
 data class XlsxTableModel (
     val context: List<String>? = listOf(),
     val title:   String? = null,
-    val head: List<List<CompleteCell>> = listOf(),
-    val body:   List<List<CompleteCell>> = listOf()
+    val head:    List<List<CompleteCell>> = listOf(),
+    val body:    List<List<CompleteCell>> = listOf()
 )
 
 data class CompleteCell(
