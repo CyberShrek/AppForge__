@@ -82,7 +82,6 @@ button.submit:hover{
 label.switch {
     display: flex;
     margin-left: var(--switch-width);
-    font-weight: bold;
     font-size: large;
     min-width: min-content;
     max-width: max-content;

@@ -37,18 +37,18 @@ type FormSectionConfig = {
 type FieldConfig = CommonFieldConfig & (CheckboxConfig | CalendarConfig | SelectConfig | TextInputConfig)
 
 interface CommonFieldConfig {
-    label?: string
+    title?: string
     size?: number
     type: "switch" | "calendar" | "select" | "text"
 }
 
 interface ReportSlotConfig {
     title: string
-    isModal?: boolean
+    modal?: boolean
 }
 
 interface CheckboxConfig{
-    label?: string
+    title?: string
     switch?: boolean
 }
 

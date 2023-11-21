@@ -50,10 +50,10 @@ export function popupTimeoutAction(text?: string, confirmButtonText?: string, on
 }
 
 export function popupError(title?: string, error?: Error, footer?: string){
-    sweet.alert({title, text: error.message, icon: "error", footer})
-    throw error
+    return sweet.alert({title, text: error.message, icon: "error", footer})
+    // throw error/**/
 }
 
 export function popupHttpDataError(error?: Error, footer?: string){
-    popupError("Ошибка получения данных", error, footer)
+    return popupError("Ошибка получения данных", error, footer)
 }

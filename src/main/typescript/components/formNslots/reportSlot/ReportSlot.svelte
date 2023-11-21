@@ -5,7 +5,7 @@
     import {resolveStyle} from "../../../util/resolver"
     import Label from "./content/Label.svelte"
     import Button from "../../input/Button.svelte"
-    import {exportAsJpeg, toggleFullscreen} from "../../../util/domWizard"
+    import {exportAsJpeg, getFullscreenElement, toggleFullscreen} from "../../../util/domWizard"
     import {slide} from "svelte/transition"
     import {deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
@@ -13,6 +13,7 @@
     import Charts from "./content/Charts.svelte"
     import {XlsxAccessor} from "../../../api/XlsxAccessor"
     import Context from "./content/Context.svelte";
+    import {userInfo} from "../../../store/userInfo";
 
     resolveStyle("report")
 
@@ -27,7 +28,8 @@
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor,
         chartsElement: HTMLDivElement,
-        showCharts = model?.charts && !model?.table
+        showCharts = model?.charts && !model?.table,
+        fullScreen = false
 
     $: modelWizard = model && new ReportModelWizard(model)
 
@@ -42,6 +44,17 @@
         reportModel.usedData = deepCopyOf(submittedApiAction.pickedData)
         dispatch("report", reportModel)
     }
+
+    function toggleReportFullscreen(){
+        toggleFullscreen(rootElement)
+        fullScreen = !!getFullscreenElement()
+    }
+
+    // Also set the fullscreen to false on escape key press
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape")
+            toggleReportFullscreen()
+    })
 
 </script>
 
@@ -66,13 +79,13 @@
                         hint="Экспортировать таблицу в .xlsx"
                         on:click={() => xlsxAccessor?.fetch()}/>
             {/if}
-            {#if !config.isModal}
+            {#if !config.modal}
                 <Button image="collapse.svg"
                         hint={collapsed ? "Развернуть" : "Свернуть"}
                         on:click={() => collapsed = !collapsed}/>
             {/if}
-            <Button image="expand.svg" hint="На весь экран" on:click={() => toggleFullscreen(rootElement)}/>
-            {#if config.isModal}
+            <Button image={fullScreen ? "restore.svg" : "expand.svg"} hint={fullScreen ? "Нормальный вид" : "На весь экран"} on:click={() => toggleReportFullscreen()}/>
+            {#if config.modal}
                 <Button image="close.svg"
                         hint="Закрыть"
                         on:click={() => window.dispatchEvent(new KeyboardEvent("keydown",{ key: "Escape" }))}/>

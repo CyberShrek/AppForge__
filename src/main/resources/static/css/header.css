@@ -7,6 +7,8 @@
 
 #header a{
   text-decoration: none;
+  color: var(--primary-color);
+  font-weight: bold;
    margin: 0 var(--indent);
 }
 
@@ -16,7 +18,6 @@
 }
 
 #header :is(a, p){
-  font-weight: normal;
     font-size: 18px;
 }
 

@@ -10,6 +10,9 @@
         appInfo:   AppInfo,
         userInfo:  UserInfo
 
+    $: if(!appInfo.updateDate)
+        appInfo.updateDate = config.info.updateDate
+
     document.body.style.display = "none"
 
     // Must be loaded only once

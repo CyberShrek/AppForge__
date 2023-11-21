@@ -1,4 +1,5 @@
 import {JsonAccessor} from "./abstract/JsonAccessor";
+import {userInfo} from "../store/userInfo";
 
 export class FormStateAccessor extends JsonAccessor<FormState> {
 
@@ -19,6 +20,6 @@ export class FormStateAccessor extends JsonAccessor<FormState> {
 
         this.params = trigger ? {trigger} : undefined
 
-        return super.fetch(body)
+        return super.fetch({...body, userInfo})
     }
 }

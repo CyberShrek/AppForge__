@@ -9,7 +9,7 @@
 
 <label class={config.switch ? "switch" : "checkbox"}>
     <input type="checkbox" bind:checked={value}>
-    {valueOrDefault(config.label, "")}
+    {valueOrDefault(config.title, "")}
     {#if config.switch}
         <span class="slider"></span>
     {/if}

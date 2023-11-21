@@ -19,7 +19,9 @@ export abstract class Accessor<RESOURCE> {
         addCursorLoader()
         if(body) this.body = body
         return this.lastPromise = this.request
-            .catch((error: Error) => popupHttpDataError(error, this.errorFooter))
+            .catch((error: Error) => {
+                popupHttpDataError(error, this.errorFooter).then(() => location.reload())
+            })
             .finally(() => removeCursorLoader())
             .then(entity => {
                 if (entity) return entity as RESOURCE

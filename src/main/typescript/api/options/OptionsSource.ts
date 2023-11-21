@@ -35,11 +35,11 @@ export class OptionsSource {
 
     async retrieveOptionsByValueScope(valueScope: object): Promise<OptionsMap>{
         const retrieve = async () => {
-            this.endpointOptions    = this.endpoint    ? await this.retrieveEndpointOptions(valueScope)     : null
-            this.serviceBankOptions = this.serviceBank ? await this.retrieveServiceBankOptions(valueScope)  : null
+            this.endpointOptions = this.endpoint ? await this.retrieveEndpointOptions(valueScope) : null
+            this.serviceBankOptions = this.serviceBank ? await this.retrieveServiceBankOptions(valueScope) : null
             this.valueScope = deepCopyOf(valueScope)
             return concatMaps(
-                valueOrDefault(this.endpointOptions,    new Map()),
+                valueOrDefault(this.endpointOptions, new Map()),
                 valueOrDefault(this.serviceBankOptions, new Map())
             )
         }
@@ -47,6 +47,7 @@ export class OptionsSource {
         await this.lastRetrievingPromise
 
         return this.lastRetrievingPromise = retrieve()
+
     }
     private lastRetrievingPromise: Promise<OptionsMap>
 

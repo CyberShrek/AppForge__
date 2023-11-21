@@ -14,5 +14,4 @@ interface AppInfo {
     tables: string[];
     instructionPath: string,
     description: string
-    additional: string
 }

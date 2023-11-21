@@ -16,7 +16,7 @@
                 {icon: "🗓", text: "Дата обновления: "  + appInfo.updateDate},
                 {icon: "👤", text: "Технолог: "        + appInfo.technologistName}
             ],
-            appInfo.additional
+            appInfo.comment
         )
     }
 

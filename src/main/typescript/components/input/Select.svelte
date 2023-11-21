@@ -18,9 +18,12 @@
         virtualSelectModule?.setValue(value)
 
     // React to scope changes
-    $: if(valueScope)
+    $: if(valueScope) {
         optionsSource?.retrieveOptionsByValueScope(valueScope)
-            .then(options => virtualSelectModule.setOptions(options))
+            .then(options => {
+                virtualSelectModule.setOptions(options)
+            })
+    }
 
     onMount(() => {
         optionsSource = new OptionsSource(config)

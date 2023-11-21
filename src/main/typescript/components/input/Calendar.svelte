@@ -27,6 +27,6 @@
 </script>
 
 <div class="datepicker">
+    <Button image="calendar.svg" on:click={() => rootElement.click()}/>
     <input bind:this={rootElement}>
-    <Button text="📅" on:click={() => rootElement.click()}/>
 </div>

@@ -19,7 +19,7 @@
       on:report={e => setReport(e.detail)}/>
 
 {#each Object.keys(reportConfigsObject) as reportKey}
-    {#if reportConfigsObject[reportKey].isModal}
+    {#if reportConfigsObject[reportKey].modal}
         <Modal show={!!reportConfigsObject[reportKey]}
                on:close={() => setReport(null)}>
             <ReportSlot config={reportConfigsObject[reportKey]}

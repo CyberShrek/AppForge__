@@ -52,16 +52,16 @@ export abstract class AbstractServiceBank extends JsonAccessor{
         }
     }
 
-    private setServiceBankBody(listName: string, specificBodies: any[] = [{}]): void{
+    private setServiceBankBody(listName: string, specificBody: {} = {}): void{
         // Properties with unknown name will remain as custom properties
         const custom = {...this.properties}
         custom.date = custom.roads = custom.countries = custom.postSoviet = custom.carriers = undefined
         this.body = {
-            [listName]: [...specificBodies.map(body => { return {
+            [listName]: [{
                 "data": Array.isArray(this.properties.date) ? this.properties.date[0] : this.properties.date,
-                ...body,
+                ...specificBody,
                 ...custom
-            }})]
+            }]
         }
     }
 

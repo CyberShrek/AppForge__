@@ -55,9 +55,11 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
                     this.options = newOptions
                     this.rootElement // @ts-ignore Resolved by module import
                         .setOptions(mapToVirtualSelectOptions(newOptions))
-                    this.setValue(valueBuffer)
                     this.rootElement // @ts-ignore Resolved by module import
                         .enable()
+                    // @ts-ignore Resolved by module import
+                    this.rootElement.setValue(valueBuffer)
+
                 } else {
                     this.rootElement // @ts-ignore Resolved by module import
                         .disable()

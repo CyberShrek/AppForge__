@@ -46,7 +46,7 @@ ___
 </script>
 
 <!-- Внешний AppForge-модуль. Загрузится браузером автоматически, ничего дополнять здесь не потребуется -->
-<script type="module" src="/appforge/js/built/forge.js">
+<script type="module" src="/appforge/js/built/forge.ts">
 </script>
 
 </html>

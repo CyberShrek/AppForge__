@@ -9,7 +9,7 @@ export default class Checkbox extends Fragment<HTMLLabelElement>{
         super(`
             <label class="checkbox">
                 <input type="checkbox">
-                ${valueOrDefault(config.label, "")}
+                ${valueOrDefault(config.title, "")}
             </label>`
         )
         this.checkboxElement = this.select("input")

@@ -57,6 +57,8 @@
         hiddenSections      = new Set()
         hiddenSectionFields = new Map()
 
+        if(!state) return
+
         if(state.wrong)
             parseFormStatementKeys(state.wrong, wrongSections, wrongSectionFields)
         else

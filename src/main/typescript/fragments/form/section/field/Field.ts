@@ -42,8 +42,8 @@ export abstract class Field<VALUE> extends InlineFragment<Section>{
     {
         super(parent, `<div class="${config.type}-field field" ${config.size ? `style="grid-column: span ${config.size}` : ''}"></div>`)
 
-        if(createParagraph && config.label)
-            this.append(create(`<p>${config.label}</p>`))
+        if(createParagraph && config.title)
+            this.append(create(`<p>${config.title}</p>`))
 
         this.append(...content)
         this.value = initValue

@@ -71,5 +71,52 @@ export const form = {
             type: "switch",
             label: "thirdField"
         }
+    },
+    departureSection: {
+        title: "Отправления",
+        switchField: {
+            type: "switch",
+            title: "Только страны СНГ и Балтии"
+        },
+        countriesField: {
+            title: "Государства",
+            type: "select",
+            multiple: true,
+            search: true,
+            serviceBankSource: {
+                type: "countries",
+                propertiesTriggerKeys: {
+                    date: "firstSection.firstField",
+                    postSoviet: "departureSection.switchField"
+                }
+            }
+        },
+        roadsField: {
+            title: "Дороги",
+            type: "select",
+            multiple: true,
+            search: true,
+            disableSelectAll: true,
+            serviceBankSource: {
+                type: "roads",
+                propertiesTriggerKeys: {
+                    date: "firstSection.firstField",
+                    countries: "departureSection.countriesField"
+                }
+            }
+        },
+        stationsField: {
+            title: "Станции",
+            type: "select",
+            multiple: true,
+            search: true,
+            serviceBankSource: {
+                type: "stations",
+                propertiesTriggerKeys: {
+                    date: "firstSection.firstField",
+                    roads: "departureSection.roadsField"
+                }
+            }
+        }
     }
 }

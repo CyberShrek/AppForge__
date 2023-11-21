@@ -18,10 +18,13 @@ form .section {
 }
 
 form .section > p {
-    text-align: center;
-    font-size: 18px;
+    text-align: start;
+    font-size: 22px;
     font-weight: bold;
     margin: var(--light-indent);
+    margin-top: var(--strong-indent);
+    margin-bottom: 0;
+    width: 100%;
 }
 
 form .field {
