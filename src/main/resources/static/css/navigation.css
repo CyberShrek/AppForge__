@@ -33,3 +33,38 @@
 .nav-container > .nav-body{
   padding: var(--indent);
 }
+
+.nav-pages {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-pages .pages {
+    display: flex;
+   padding: var(--light-indent) 0;
+    margin: 0 var(--light-indent);
+    overflow-x: auto;
+}
+.nav-pages .pages button {
+    font-size: 14px;
+    margin: 0;
+  
+    font-weight: normal;
+}
+
+.nav-pages .pages button:is(:first-of-type, :last-of-type) {
+    font-size: x-large;
+}
+
+.nav-pages .pages button.active {
+    color: white;
+    background: var(--primary-color);
+    font-weight: bold;
+}
+
+.nav-pages .context{
+    white-space: nowrap;
+}

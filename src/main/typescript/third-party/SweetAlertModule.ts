@@ -4,6 +4,8 @@ import swal, {SweetAlertOptions, SweetAlertPosition, SweetAlertResult} from "swe
 import {sweetAlertProperties} from "../properties"
 
 resolveStyle("third-party/sweetalert2")
+resolveStyle("third-party/animate")
+resolveStyle("modal")
 
 export class SweetAlertModule extends Module {
 
@@ -15,10 +17,14 @@ export class SweetAlertModule extends Module {
     }
 
     alert(options: SweetAlertOptions): Promise<SweetAlertResult>{
+        const position = this.getSweetMousePosition()
+        // @ts-ignore
         return swal.fire({
-            position: this.getSweetMousePosition(),
+            position,
             ...sweetAlertProperties,
-            ...options
+            ...options,
+            showClass: {popup: 'animate__animated '+getAnimationShowClass(position)},
+            hideClass: {popup: 'animate__animated animate__zoomOut'},
         })
     }
 
@@ -36,17 +42,17 @@ export class SweetAlertModule extends Module {
     }
 }
 
-// function getAnimationShowClass(position: SweetAlertPosition): string{
-//     switch (position) {
-//         case "top-left"     : return "animate__fadeInTopLeft"
-//         case "top"          : return "animate__fadeInDown"
-//         case "top-right"    : return "animate__fadeInTopRight"
-//         case "center-left"  : return "animate__fadeInLeft"
-//         case "center"       : return "animate__fadeIn"
-//         case "center-right" : return "animate__fadeInRight"
-//         case "bottom-left"  : return "animate__fadeInBottomLeft"
-//         case "bottom"       : return "animate__fadeInUp"
-//         case "bottom-right" : return "animate__fadeInBottomRight"
-//         default             : return ""
-//     }
-// }
+function getAnimationShowClass(position: SweetAlertPosition): string{
+    switch (position) {
+        case "top-left"     : return "animate__fadeInTopLeft"
+        case "top"          : return "animate__fadeInDown"
+        case "top-right"    : return "animate__fadeInTopRight"
+        case "center-left"  : return "animate__fadeInLeft"
+        case "center"       : return "animate__fadeIn"
+        case "center-right" : return "animate__fadeInRight"
+        case "bottom-left"  : return "animate__fadeInBottomLeft"
+        case "bottom"       : return "animate__fadeInUp"
+        case "bottom-right" : return "animate__fadeInBottomRight"
+        default             : return ""
+    }
+}

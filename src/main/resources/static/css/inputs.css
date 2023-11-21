@@ -35,6 +35,12 @@ input[type=text]{
      outline: 0;
  }
 
+.link {
+    cursor: pointer;
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
 /* BUTTONS */
 :is(option, button){ cursor: pointer; }
 button{

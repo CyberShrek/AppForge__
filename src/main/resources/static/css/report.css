@@ -19,11 +19,10 @@
     height: var(--report-header-height);
     align-items: center;
     padding: var(--indent);
-    margin: var(--indent);
+    margin: var(--light-indent);
     padding-left: calc(var(--report-header-height)/2);
     background: var(--solid-color);
     border-radius: var(--border-radius);
-    border: var(--light-border);
 }
 .report .head h3 {
     font-size: 22px;
@@ -40,17 +39,6 @@
     margin: 0 var(--indent);
     padding: 0 var(--indent);
     line-height: calc(var(--report-header-height)/1.5);
-}
-
-.report .tool-bar{
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    margin: var(--indent);
-     padding: var(--indent);
-    background: var(--solid-color);
-    border: var(--light-border);
-    border-radius: var(--border-radius);
 }
 
 .report button{

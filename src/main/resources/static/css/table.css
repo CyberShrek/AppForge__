@@ -1,29 +1,26 @@
-.report .table {
-    border-top: var(--border);
+.table {
+    border-top: var(--light-border);
     margin-bottom: var(--border-radius);
     overflow: auto;
     max-height: 100vh;
 }
 
-.report:fullscreen table-container{
-    overflow-y: unset;
-}
-
-.report table {
+table {
     border-spacing: 0;
+    width: 100%;
 }
-.report :is(th, td){
+:is(th, td){
     border-right: var(--light-border);
     border-top: var(--light-border);
 }
-.report thead tr:first-of-type :is(th, td){
+thead tr:first-of-type :is(th, td){
     border-top: 0;
 }
-.report :is(th, td):last-of-type{
+:is(th, td):last-of-type{
     border-right: 0;
 }
 
-.report :is(thead, tfoot) {
+:is(thead, tfoot) {
     z-index: 10;
     position: sticky;
     top: -1px;
@@ -31,45 +28,24 @@
     transition: none;
 }
 
-.report table .tool-row td {
+table .tool-row td {
     padding: 0;
 }
 
-
-.report table .tool-bar .pages {
-     padding: var(--indent) 0;
-    margin: 0 var(--indent);
-    overflow-x: auto;
-}
-.report table .pages button {
-    font-size: 14px;
-    margin: 0;
-    font-weight: normal;
+table .tool-bar td {
+    padding: 0;
 }
 
-.report table .pages button.active {
-    color: white;
-    background: var(--primary-color);
-    font-weight: bold;
-}
-.report table .pages button:is(:first-of-type, :last-of-type) {
-    font-size: x-large;
-}
-
-.report table .tool-bar .context{
-    white-space: nowrap;
-}
-
-.report table .filters-bar th {
+table .filters-bar th {
     border-top: none;
     padding: var(--light-indent);
     padding-top: 0;
 }
-.report table .filters-bar th:empty {
+table .filters-bar th:empty {
     
 }
 
-.report th {
+th {
     padding: 10px;
     color: white;
     width: 100vw;
@@ -79,7 +55,7 @@
     background: var(--primary-color);
 }
 
-.report td {
+td {
     color: var(--primary-color);
     padding: var(--indent);
     text-align: center;
@@ -89,43 +65,43 @@
     background-color: white;
 }
 
-.report :is(tr.total td, td.total){
+:is(tr.total td, td.total){
     font-weight: bold;
     background: var(--secondary-color);
 }
 
-.report :is(td, th).checkbox{
+:is(td, th).checkbox{
     vertical-align: top;
     width: min-content;
 }
 
-.report tr.total td{
+tr.total td{
     background: var(--secondary-color);
 }
 
-.report td.link {
+td.link {
     cursor: pointer;
     text-decoration: underline;
 }
-.report :is(td.link, td.checkbox):hover {
+:is(td.link, td.checkbox):hover {
     filter: contrast(85%);
 }
 
-.report td.labelized {
+td.labelized {
     padding: 0;
 }
-.report td.labelized.framed {
+td.labelized.framed {
     border: 0;
 }
 
-.report table input[type=checkbox]{
+table input[type=checkbox]{
     transform: scale(1.5);
     background-color: aqua;
 }
 
-.report table .number, .report table .primary.string {
+table .number, table .primary.string {
     text-align: right;
 }
-.report table tbody .string.string {
+table tbody .string.string {
     text-align: left;
 }

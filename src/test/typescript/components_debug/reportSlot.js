@@ -23,7 +23,7 @@ function randomWord() {
     return words[Math.floor(Math.random()*(words.length))];
 }
 
-const data = createMatrixData(3, 4, 10)
+const data = createMatrixData(3, 4, 30)
 
 export const reportModel = {
     title: "Debug",
@@ -180,6 +180,13 @@ export const reportModel = {
         ]
     },
     context: {
+        reportData: [{
+            title: "First data",
+            columns: [0, 1, 2]
+        },{
+            title: "Second data",
+            columns: [3, 4, 5, 6]
+        }],
         fields: {
             "first.first": "Первый",
             "second.second": "Второй",

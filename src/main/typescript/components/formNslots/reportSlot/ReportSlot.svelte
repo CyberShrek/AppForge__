@@ -49,17 +49,17 @@
     <div class="head">
         <h3>{model?.title ? model.title : config.title}</h3>
         {#if model}
+            {#if model?.charts && showCharts}
+                <Button unavailable={collapsed}
+                        hint="Экспортировать графики в .jpeg"
+                        text=".jpeg"
+                        on:click={() => exportAsJpeg(chartsElement, modelWizard.model.title)}/>
+            {/if}
             {#if model?.charts && model?.table}
                 <Button image="graph.svg"
                         unavailable={collapsed}
                         hint="Графическое представление"
                         on:click={() => showCharts = !showCharts}/>
-            {/if}
-            {#if model?.charts && showCharts}
-                <Button image="download.svg"
-                        unavailable={collapsed}
-                        hint="Экспортировать графики в .jpg"
-                        on:click={() => exportAsJpeg(chartsElement, modelWizard.model.title)}/>
             {/if}
             {#if model?.table}
                 <Button image="download.svg"

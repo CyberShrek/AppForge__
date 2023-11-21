@@ -1,14 +1,22 @@
 <script lang="ts">
 
     import {ReportModelWizard} from "../../../../model/ReportModelWizard"
-    import {popupList} from "../../../../util/alert";
+    import {popupList, popupTable} from "../../../../util/alert";
 
     export let
         modelWizard: ReportModelWizard
 
-    function showContextReportData(){
+    function showContextReportData(dataConfig: ContextConfig["reportData"]){
 
-        popupList()
+        const dataToShow: MatrixData = modelWizard.properData.map(rowData => {
+            let rowDataToShow: RowData = []
+            dataConfig.columns.forEach(colI => {
+                rowDataToShow.push(rowData[colI])
+            })
+            return rowDataToShow
+        })
+
+        popupTable(dataConfig.title, dataToShow)
     }
 
 </script>
@@ -19,7 +27,7 @@
     {/each}
     {#if modelWizard.model.context.reportData}
         {#each modelWizard.model.context.reportData as dataConfig}
-            <span on:click>
+            <span class="link" on:click={() => showContextReportData(dataConfig)}>
                 {dataConfig.title}
             </span>
         {/each}

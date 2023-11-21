@@ -2,7 +2,7 @@
 
     export let
         placeholder: string = "",
-        value: string = ""
+        value:       string = ""
 
 </script>
 

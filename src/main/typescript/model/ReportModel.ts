@@ -101,11 +101,11 @@ interface XlsxTableModel {
 // CONTEXT //
 /////////////
 interface ContextConfig {
+    fields: { [label: string]: string }
     reportData: {
         title: string
         columns: string[]
     }[]
-    fields: { [label: string]: string }
 } // Value is field key
 
 //////////////

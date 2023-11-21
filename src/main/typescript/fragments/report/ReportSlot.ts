@@ -4,8 +4,8 @@ import {resolveStyle} from "../../util/resolver"
 import {popupMessage} from "../../util/alert"
 import {scrollIntoElement} from "../../util/domWizard"
 import {InlineFragment} from "../InlineFragment"
-import {ForgedApplication} from "../applicatons/ForgedApplication";
-import Form from "../form/Form";
+import {ForgedApplication} from "../applicatons/ForgedApplication"
+import Form from "../form/Form"
 
 resolveStyle("report")
 
