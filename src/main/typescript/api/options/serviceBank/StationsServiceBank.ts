@@ -8,9 +8,9 @@ export class StationsServiceBank extends AbstractServiceBank
     protected errorMessageEnding: string = "станций"
     protected requestStep = {
         listName: "stanList",
-        specificBodiesFn: () => this.properties.roads.map(code => {
-            return {"dor": this.properties.roads}
-        })
+        specificBodyFn: () =>  {
+            return {"dor": this.properties.roads.join(",")}
+        }
     }
     protected responseStep = {
         parseItemToOptionFn: item => [item["stan"], item["pnazv"]],

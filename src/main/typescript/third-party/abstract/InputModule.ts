@@ -21,7 +21,8 @@ export abstract class InputModule<VALUE_TYPE> extends Module{
         if(!compare(value, this.value)){
             this.value = deepCopyOf(value)
             this.onChangeCallbacks.forEach(callback => callback(this.value))
-            changeRootValue && this.changeRootValueFn?.(value)
+            if (changeRootValue)
+                this.changeRootValueFn?.(value)
         }
     }
 }

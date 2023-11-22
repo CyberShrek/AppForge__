@@ -7,7 +7,7 @@
 
     resolveStyle("modal")
 
-    export let show: boolean
+    export let show: boolean = true
 
     let rootElement: HTMLDivElement
 

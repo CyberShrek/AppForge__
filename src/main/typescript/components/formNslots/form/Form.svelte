@@ -25,9 +25,8 @@
         hiddenSectionFields: SectionFieldKeys,
         previousState: FormState,
         submitIsUnavailable: boolean = true,
-        showWrongs = false
-
-    $: stateAccessor = config?.statePath ? new FormStateAccessor(config.statePath) : null
+        showWrongs = false,
+        stateAccessor = config?.statePath ? new FormStateAccessor(config.statePath) : null
 
     $: if(Object.keys(jsonValues).length > 0)
         onValuesChange()
@@ -44,7 +43,7 @@
                 const fieldValues = jsonValues[sectionKey]
                 for (const fieldKey in fieldValues)
                     if(!hiddenSectionFields?.get(sectionKey)?.has(fieldKey))
-                        valueScope[`${sectionKey}.${fieldKey}`] = fieldValues[fieldKey]
+                        valueScope[`${sectionKey}_${fieldKey}`] = fieldValues[fieldKey]
             }
         }
         stateAccessor?.fetch(valueScope)
@@ -59,7 +58,7 @@
 
         if(!state) return
 
-        if(state.wrong)
+        if(state.wrong?.length > 0)
             parseFormStatementKeys(state.wrong, wrongSections, wrongSectionFields)
         else
             submitIsUnavailable = false
@@ -80,7 +79,6 @@
 </script>
 
 <form>
-
     {#each Object.keys(sectionConfigsObject) as sectionKey}
         <Section config={sectionConfigsObject[sectionKey]}
                  bind:values={jsonValues[sectionKey]}

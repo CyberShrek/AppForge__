@@ -8,14 +8,6 @@ export const form = {
             type: "calendar",
             label: "firstField"
         },
-        selectField: {
-            type: "select",
-            label: "secondField",
-            endpointSource: {
-                path: "demo/options",
-                triggerKeys: ["firstSection.secondField", "secondSection.thirdField", "thirdSection.thirdField"]
-            }
-        },
         secondField: {
             type: "calendar",
             label: "secondField",
@@ -30,33 +22,33 @@ export const form = {
         }
     },
     secondSection: {
-        firstField: {
-            type: "select",
-            label: "firstField",
-            // serviceBankSource: {
-            //     type: "carriers",
-            //     propertiesTriggerKeys: {
-            //         date: "firstSection.secondField"
-            //     }
-            // }
-        },
-        secondField: {
-            type: "select",
-            label: "secondField",
-            endpointSource: {
-                path: "demo/options",
-                triggerKeys: ["firstSection.secondField", "secondSection.thirdField", "thirdSection.thirdField"]
-            }
-        },
-        thirdField: {
-            type: "select",
-            label: "thirdField",
-            multiple: true,
-            search: true,
-            endpointSource: {
-                path: "demo/options"
-            }
-        }
+        // firstField: {
+        //     type: "select",
+        //     label: "firstField",
+        //     // serviceBankSource: {
+        //     //     type: "carriers",
+        //     //     propertiesTriggerKeys: {
+        //     //         date: "firstSection.secondField"
+        //     //     }
+        //     // }
+        // },
+        // secondField: {
+        //     type: "select",
+        //     label: "secondField",
+        //     endpointSource: {
+        //         path: "demo/options",
+        //         triggerKeys: ["firstSection.secondField", "secondSection.thirdField", "thirdSection.thirdField"]
+        //     }
+        // },
+        // thirdField: {
+        //     type: "select",
+        //     label: "thirdField",
+        //     multiple: true,
+        //     search: true,
+        //     endpointSource: {
+        //         path: "demo/options"
+        //     }
+        // }
     },
     thirdSection: {
         firstField: {
@@ -105,18 +97,18 @@ export const form = {
                 }
             }
         },
-        stationsField: {
-            title: "Станции",
-            type: "select",
-            multiple: true,
-            search: true,
-            serviceBankSource: {
-                type: "stations",
-                propertiesTriggerKeys: {
-                    date: "firstSection.firstField",
-                    roads: "departureSection.roadsField"
-                }
-            }
-        }
+        // stationsField: {
+        //     title: "Станции",
+        //     type: "select",
+        //     multiple: true,
+        //     search: true,
+        //     serviceBankSource: {
+        //         type: "stations",
+        //         propertiesTriggerKeys: {
+        //             date: "firstSection.firstField",
+        //             roads: "departureSection.roadsField"
+        //         }
+        //     }
+        // }
     }
 }

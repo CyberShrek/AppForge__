@@ -111,28 +111,28 @@ interface ContextConfig {
 //////////////
 // FEATURES //
 //////////////
-interface ColumnFeature {
+interface ColumnFeature extends ApiAction {
     filter?: boolean
-    hidden?:  boolean | "xlsx"
-    totalize?: boolean | "collapse",
+    hidden?:  boolean
+    totalize?: boolean,
+    collapse?: boolean,
     colorize?: {
         positive?: boolean | string
         negative?: boolean | string
     }
     labelize?: LabelConfig
-    onClick?: ApiAction & { forCells: string[] }
+    linkCells?: string[]
 }
 
-interface ActionButton {
+interface ActionButton extends ApiAction {
     label?: string
     image?: string
     hint?: string
-    onClick?: ApiAction
 }
 
 interface ApiAction {
-    fetchReport?: string
-    fetchFile?:   string
+    linkToReport?: string
+    linkToFile?:   string
 }
 
 interface SubmittedApiAction extends ApiAction{

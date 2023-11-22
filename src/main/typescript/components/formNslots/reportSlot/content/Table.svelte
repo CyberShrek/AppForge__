@@ -151,7 +151,8 @@
                         hint={action.hint}
                         on:click={() =>
                         submittedApiAction = {
-                            ...action.onClick,
+                            linkToReport: action.linkToReport,
+                            linkToFile: action.linkToFile,
                             pickedData: Array.from(checkedRowsSet.values())
                         }}
                 />

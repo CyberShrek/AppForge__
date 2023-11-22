@@ -22,7 +22,7 @@ export abstract class AbstractServiceBank extends JsonAccessor{
 
     protected abstract requestStep: {
         listName: string
-        specificBodiesFn?: () => {}[]
+        specificBodyFn?: () => {}
     }
 
     protected abstract userCheckPermission?: {
@@ -42,7 +42,7 @@ export abstract class AbstractServiceBank extends JsonAccessor{
             return new Promise(resolve => resolve(new Map()))
         else {
             const fetchCallback=() => {
-                this.setServiceBankBody(this.requestStep.listName, this.requestStep.specificBodiesFn?.())
+                this.setServiceBankBody(this.requestStep.listName, this.requestStep.specificBodyFn?.())
                 return this.fetchServiceBankOptions(this.responseStep.parseItemToOptionFn, this.responseStep.filterFn)
             }
             if(!userInfo.superUser && this.userCheckPermission){

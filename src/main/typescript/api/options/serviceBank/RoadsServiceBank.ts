@@ -7,10 +7,11 @@ export class RoadsServiceBank extends AbstractServiceBank
 
     protected requestStep = {
         listName: "dorList",
-        specificBodiesFn: () => this.properties.countries.map(code => {
-            return {"gos": code}
-        })
+        specificBodyFn: () => {
+            return {"gos": this.properties.countries}
+        }
     }
+
     protected responseStep = {
         parseItemToOptionFn: item => [`${item["d_kod"]}`, item["d_name"]],
         errorMessageEnding: "дорог"

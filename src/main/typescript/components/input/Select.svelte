@@ -3,6 +3,7 @@
     import {onMount} from "svelte"
     import {OptionsSource} from "../../api/options/OptionsSource"
     import {VirtualSelectModule} from "../../third-party/VirtualSelectModule"
+    import {userInfo} from "../../store/userInfo";
 
     export let
         config: SelectConfig,
@@ -11,7 +12,8 @@
 
     let rootElement: HTMLDivElement,
         optionsSource: OptionsSource,
-        virtualSelectModule: VirtualSelectModule
+        virtualSelectModule: VirtualSelectModule,
+        initial = true
 
     // Allow to apply outer changes
     $: if(value)
@@ -21,7 +23,8 @@
     $: if(valueScope) {
         optionsSource?.retrieveOptionsByValueScope(valueScope)
             .then(options => {
-                virtualSelectModule.setOptions(options)
+                virtualSelectModule.setOptions(options, initial ? getUserAssociatedServiceBankKeyOrNull() : null)
+                initial = false
             })
     }
 
@@ -33,6 +36,18 @@
 
         value = virtualSelectModule.getValue()
     })
+
+    function getUserAssociatedServiceBankKeyOrNull(): OptionKey | null {
+
+        switch (config.serviceBankSource?.type) {
+            case "carriers": return userInfo.carrier
+            case "countries": return userInfo.country
+            case "regions": return userInfo.region
+            case "roads": return userInfo.road
+            case "stations": return userInfo.station
+        }
+        return null
+    }
 
 </script>
 

@@ -13,12 +13,11 @@ export abstract class Accessor<RESOURCE> {
     body: any
     errorFooter: string = "Ошибка получения ресурса"
 
-
     async fetch(body?: object): Promise<RESOURCE> {
-        await this.lastPromise
+        await globalAccessPromise
         addCursorLoader()
         if(body) this.body = body
-        return this.lastPromise = this.request
+        globalAccessPromise = this.request
             .catch((error: Error) => {
                 popupHttpDataError(error, this.errorFooter).then(() => location.reload())
             })
@@ -26,6 +25,8 @@ export abstract class Accessor<RESOURCE> {
             .then(entity => {
                 if (entity) return entity as RESOURCE
             })
+
+        return await globalAccessPromise
     }
 
     protected get requestInit(){
@@ -40,6 +41,6 @@ export abstract class Accessor<RESOURCE> {
     }
 
     protected abstract get request(): Promise<RESOURCE>
-
-    private lastPromise: Promise<RESOURCE>
 }
+
+let globalAccessPromise: Promise<any>

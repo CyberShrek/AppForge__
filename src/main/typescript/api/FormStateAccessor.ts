@@ -14,7 +14,7 @@ export class FormStateAccessor extends JsonAccessor<FormState> {
 
     override fetch(body: any, trigger?: string): Promise<FormState> {
         if(this.initial) {
-            trigger = "init"
+            trigger = "initial"
             this.initial = false
         }
 

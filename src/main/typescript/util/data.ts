@@ -185,7 +185,7 @@ export function parseFormStatementKeys(
     sectionFieldsReceiver: SectionFieldKeys
 ){
     keys.forEach((key: string) => {
-        const entry = key.split('.')
+        const entry = key.split('_')
 
         if(entry[1]) {
             !sectionFieldsReceiver.has(entry[0]) && sectionFieldsReceiver.set(entry[0], new Set())

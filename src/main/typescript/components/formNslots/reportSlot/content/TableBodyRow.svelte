@@ -16,7 +16,7 @@
         isGroupStart = false,
         collapseStartIndex: number = -1
 
-    const dispatch = isGroupStart || features.find(feature => feature?.onClick) ? createEventDispatcher() : null
+    const dispatch = createEventDispatcher()
 
     let collapseButtonsValues: boolean[] = []
 
@@ -27,8 +27,8 @@
 
     function isCellHasAction(cellI: number, cellValue: any): boolean {
         return !!(
-            features[cellI]?.onClick
-            && (!features[cellI].onClick.forCells || features[cellI].onClick.forCells.find(targetCellValue => targetCellValue === cellValue)
+            (features[cellI]?.linkToReport || features[cellI]?.linkToFile)
+            && (!features[cellI].linkCells || features[cellI].linkCells.find(targetCellValue => targetCellValue === cellValue)
             )
         );
     }
@@ -57,7 +57,8 @@
 
     function dispatchApiAction(colI: number) {
         const submittedApiAction: SubmittedApiAction = {
-            ...features[colI]?.onClick,
+            linkToReport: features[colI]?.linkToReport,
+            linkToFile: features[colI]?.linkToFile,
             pickedData: [data]
         }
         dispatch("apiAction", submittedApiAction)

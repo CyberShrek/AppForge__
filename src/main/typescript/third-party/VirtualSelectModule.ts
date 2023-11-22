@@ -1,6 +1,6 @@
 import {resolveModule, resolveStyle} from "../util/resolver"
 import {virtualSelectProperties} from "../properties"
-import {compareMaps, mapToVirtualSelectOptions} from "../util/data"
+import {compareMaps, deepCopyOf, mapToVirtualSelectOptions} from "../util/data"
 import {InputModule} from "./abstract/InputModule";
 
 const initialPromises = Promise.all([
@@ -43,23 +43,21 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
         })
     }
 
-    override setValue(optionKeys){
+    override setValue(optionKeys: OptionKey[]){
         initialPromises.then(() => super.setValue(optionKeys))
     }
 
-    setOptions(newOptions: OptionsMap){
+    setOptions(newOptions: OptionsMap, initialKey?: OptionKey) {
         initialPromises.then(() => {
             if (!compareMaps(this.options, newOptions)) {
                 if (newOptions && newOptions.size > 0) {
-                    const valueBuffer = [...this.value]
-                    this.options = newOptions
-                    this.rootElement // @ts-ignore Resolved by module import
-                        .setOptions(mapToVirtualSelectOptions(newOptions))
+                    const valueBuffer = initialKey ? [initialKey] : [...this.value]
                     this.rootElement // @ts-ignore Resolved by module import
                         .enable()
+                    this.rootElement // @ts-ignore Resolved by module import
+                        .setOptions(mapToVirtualSelectOptions(newOptions))
                     // @ts-ignore Resolved by module import
                     this.rootElement.setValue(valueBuffer)
-
                 } else {
                     this.rootElement // @ts-ignore Resolved by module import
                         .disable()
@@ -67,6 +65,8 @@ export class VirtualSelectModule extends InputModule<OptionKey[]>{
                         .reset()
                     this.rootElement.blur()
                 }
+
+                this.options = new Map(newOptions)
             }
         })
     }

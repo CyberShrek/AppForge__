@@ -7,10 +7,12 @@
         formConfig: FormConfig,
         reportConfigsObject: {[configKey: string]: ReportSlotConfig}
 
-    const reportModels: {[reportSlot: string]: ReportModel} = {}
+    let reportModels: {[reportSlot: string]: ReportModel} = {}
 
     function setReport(report: ReportModel): void {
         reportModels[report.slot] = report
+        reportModels = reportModels
+        console.log(report)
     }
 
 </script>
@@ -20,12 +22,13 @@
 
 {#each Object.keys(reportConfigsObject) as reportKey}
     {#if reportConfigsObject[reportKey].modal}
-        <Modal show={!!reportConfigsObject[reportKey]}
-               on:close={() => setReport(null)}>
-            <ReportSlot config={reportConfigsObject[reportKey]}
-                        model={reportModels[reportKey]}
-                        on:report={e => setReport(e.detail)}/>
-        </Modal>
+        {#if reportModels[reportKey]}
+            <Modal on:close={() => reportModels[reportKey] = null}>
+                <ReportSlot config={reportConfigsObject[reportKey]}
+                            model={reportModels[reportKey]}
+                            on:report={e => setReport(e.detail)}/>
+            </Modal>
+        {/if}
     {:else}
         <ReportSlot config={reportConfigsObject[reportKey]}
                     model={reportModels[reportKey]}

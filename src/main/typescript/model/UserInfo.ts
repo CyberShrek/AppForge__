@@ -1,6 +1,6 @@
 interface UserInfo {
     superUser: boolean,
-    carrier: number,
+    carrier: string,
     country: string,
     road: string,
     agent: number

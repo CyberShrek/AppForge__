@@ -1,6 +1,6 @@
 :root{
     --form-cell-width: 360px;
-    --form-cell-height: 70px;
+    --form-cell-height: 80px;
 }
 
 form {
@@ -18,20 +18,20 @@ form .section {
 }
 
 form .section > p {
-    text-align: start;
+    display: flex;
+    align-items: end;
+    height: var(--form-cell-height);
+    width: 100%;
     font-size: 22px;
     font-weight: bold;
-    margin: var(--light-indent);
-    margin-top: var(--strong-indent);
-    margin-bottom: 0;
-    width: 100%;
+    margin: 0;
 }
 
 form .field {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: var(--form-cell-height);
+    height: var(--form-cell-height);
     width: var(--form-cell-width);
     border-radius: var(--border-radius);
     grid-column: span 2;

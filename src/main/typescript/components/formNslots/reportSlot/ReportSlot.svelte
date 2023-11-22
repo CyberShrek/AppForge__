@@ -37,7 +37,7 @@
         dispatchNewReport()
 
     async function dispatchNewReport(){
-        const reportModel = await new ReportAccessor(submittedApiAction.fetchReport)
+        const reportModel = await new ReportAccessor(submittedApiAction.linkToReport)
             .fetch({...model.usedOptions, data: submittedApiAction.pickedData})
 
         reportModel.usedValues = deepCopyOf(model.usedValues)
