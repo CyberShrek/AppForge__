@@ -16,7 +16,7 @@ table {
 thead tr:first-of-type :is(th, td){
     border-top: 0;
 }
-:is(th, td):last-of-type{
+td:last-of-type{
     border-right: 0;
 }
 
@@ -42,14 +42,14 @@ table .filters-bar th {
     padding-top: 0;
 }
 table .filters-bar th:empty {
-    
+/*     background: 0;
+    border: 0; */
 }
 
 th {
     padding: 10px;
     color: white;
     width: 100vw;
-    white-space: nowrap;
     font-size: 16px;
     font-weight: normal;
     background: var(--primary-color);

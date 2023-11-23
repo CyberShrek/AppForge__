@@ -19,10 +19,12 @@
     height: var(--report-header-height);
     align-items: center;
     padding: var(--indent);
-    margin: var(--light-indent);
+    margin: var(--indent);
     padding-left: calc(var(--report-header-height)/2);
-    background: var(--solid-color);
     border-radius: var(--border-radius);
+}
+.report .head:not(:last-child){
+    background: var(--solid-color);
 }
 .report .head h3 {
     font-size: 22px;

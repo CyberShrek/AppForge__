@@ -60,7 +60,7 @@ export class TableWizard {
             return filterValues.every((filterValue, index) => {
                 return filterValue === undefined
                     || filterValue === ""
-                    || String(row[index]).includes(filterValue)
+                    || String(row[index]).toLowerCase().includes(filterValue.toLowerCase())
             })
         })
     }

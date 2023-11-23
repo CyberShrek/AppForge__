@@ -39,7 +39,7 @@ test("test parseFormStatementKeys", () => {
 
     // 1
     parseFormStatementKeys(
-        ["firstSection.firstField", "secondSection.secondField", "thirdSection.thirdField"],
+        ["firstSection_firstField", "secondSection_secondField", "thirdSection_thirdField"],
         sectionsReceiver,
         sectionFieldsReceiver
     )
@@ -54,7 +54,7 @@ test("test parseFormStatementKeys", () => {
     sectionsReceiver = new Set()
     sectionFieldsReceiver = new Map()
     parseFormStatementKeys(
-        ["firstSection.firstField", "firstSection.secondField", "firstSection.thirdField"],
+        ["firstSection_firstField", "firstSection_secondField", "firstSection_thirdField"],
         sectionsReceiver,
         sectionFieldsReceiver
     )
@@ -67,7 +67,7 @@ test("test parseFormStatementKeys", () => {
     sectionsReceiver = new Set()
     sectionFieldsReceiver = new Map()
     parseFormStatementKeys(
-        ["zeroSection", "firstSection.firstField", "firstSection.secondField", "firstSection.thirdField", "secondSection.firstField", "secondSection.thirdField", "thirdSection"],
+        ["zeroSection", "firstSection_firstField", "firstSection_secondField", "firstSection_thirdField", "secondSection_firstField", "secondSection_thirdField", "thirdSection"],
         sectionsReceiver,
         sectionFieldsReceiver
     )

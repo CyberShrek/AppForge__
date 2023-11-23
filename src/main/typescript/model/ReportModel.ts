@@ -70,6 +70,7 @@ interface TableConfig {
     pageSize?: number,
     columnFeatures?: ColumnFeature[]
     checkboxes?: {
+        title?: string
         actions?: ActionButton[]
     }
 }

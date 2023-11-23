@@ -4,8 +4,9 @@
     export let
         name: string,
         alt: string = "",
-        hint: string = ""
+        hint: string = "",
+        location: string = imagesLocation
 
 </script>
 
-<img src="{imagesLocation}{name}" {alt} title={hint}/>
+<img src="{location}{name}" {alt} title={hint}/>

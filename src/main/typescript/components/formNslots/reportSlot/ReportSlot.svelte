@@ -5,15 +5,15 @@
     import {resolveStyle} from "../../../util/resolver"
     import Label from "./content/Label.svelte"
     import Button from "../../input/Button.svelte"
-    import {exportAsJpeg, getFullscreenElement, toggleFullscreen} from "../../../util/domWizard"
+    import {exportAsJpeg, getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../../util/domWizard"
     import {slide} from "svelte/transition"
     import {deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
-    import {createEventDispatcher} from "svelte"
+    import {afterUpdate, createEventDispatcher} from "svelte"
     import Charts from "./content/Charts.svelte"
     import {XlsxAccessor} from "../../../api/XlsxAccessor"
     import Context from "./content/Context.svelte";
-    import {userInfo} from "../../../store/userInfo";
+    import ToTopButton from "../../misc/ToTopButton.svelte";
 
     resolveStyle("report")
 
@@ -32,6 +32,9 @@
         fullScreen = false
 
     $: modelWizard = model && new ReportModelWizard(model)
+
+    $: if(modelWizard)
+        collapsed = false
 
     $: if (submittedApiAction)
         dispatchNewReport()
@@ -56,25 +59,33 @@
             toggleReportFullscreen()
     })
 
+    afterUpdate(() => {
+        if(!collapsed && model?.data?.length > 0)
+        setTimeout(() => scrollIntoElement(rootElement), 100)
+    })
+
 </script>
 
 <div class="report" bind:this={rootElement}>
     <div class="head">
         <h3>{model?.title ? model.title : config.title}</h3>
-        {#if model}
-            {#if model?.charts && showCharts}
+        {#if model && modelWizard.properData.length > 0}
+            {#if !config.modal}
+                <ToTopButton/>
+            {/if}
+            {#if model.charts && showCharts}
                 <Button unavailable={collapsed}
                         hint="Экспортировать графики в .jpeg"
                         text=".jpeg"
                         on:click={() => exportAsJpeg(chartsElement, modelWizard.model.title)}/>
             {/if}
-            {#if model?.charts && model?.table}
+            {#if model.charts && model.table}
                 <Button image="graph.svg"
                         unavailable={collapsed}
                         hint="Графическое представление"
                         on:click={() => showCharts = !showCharts}/>
             {/if}
-            {#if model?.table}
+            {#if model.table}
                 <Button image="download.svg"
                         hint="Экспортировать таблицу в .xlsx"
                         on:click={() => xlsxAccessor?.fetch()}/>
@@ -92,7 +103,7 @@
             {/if}
         {/if}
     </div>
-    {#if model && !collapsed}
+    {#if model && !collapsed && modelWizard.properData.length > 0}
         <div class="body"
              transition:slide>
             {#if model.context}

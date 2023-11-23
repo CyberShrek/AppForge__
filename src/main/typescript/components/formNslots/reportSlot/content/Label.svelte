@@ -20,7 +20,7 @@
          style:background={config.background}>
 
         {#if config.image}
-            <Image name={typeof config.image === "string" ? config.image : config.image[data[config.valueCell]]}/>
+            <Image name={typeof config.image === "string" ? config.image : config.image[data[config.valueCell]]} location=""/>
         {/if}
         <div class="text">
             {#if config.valueCell !== undefined}

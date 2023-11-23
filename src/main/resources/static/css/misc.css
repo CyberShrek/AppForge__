@@ -1,7 +1,13 @@
 .fix {
+    display: flex;
+    opacity: 0.6;
     position: fixed;
     z-index: 64;
     box-shadow: var(--shadow);
+    transition:  opacity 0.3s;
+}
+.fix:hover {
+    opacity: 1;
 }
 .fix.top    { top:    var(--strong-indent) }
 .fix.bottom { bottom: var(--strong-indent) }
@@ -16,7 +22,14 @@
     border: 5px solid var(--primary-color);
     border-radius: var(--border-radius);
 }
+.fix p{
+    margin: auto var(--indent) auto 0;
+}
 
+.fix button {
+    min-height: 35px;
+    min-width: 35px;
+}
 
 .loader {
   height: 2em;

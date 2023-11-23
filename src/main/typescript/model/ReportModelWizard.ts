@@ -25,7 +25,12 @@ export class ReportModelWizard {
             this.visibleContextValues = Object.entries(model.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
         }
-        else popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
+        else {
+            this.properData = []
+            this.totalRow = []
+            this.visibleContextValues = []
+            popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
+        }
     }
 
 
@@ -52,9 +57,11 @@ export class ReportModelWizard {
     }
 
     private applyFormulasToRow(row: RowData) {
-        this.model.formulas?.forEach((formula, index) => {
+        // The copy is used to avoid changing the original data
+        const rowCopy = [...row]
+        this.model.formulas?.forEach((formula, i) => {
             if(formula && formula.length > 0)
-                row[index] = executeFormulaForRowData(formula, row, this.totalRow, this.model.data)
+                row[i] = executeFormulaForRowData(formula, i, rowCopy, this.totalRow)
         })
     }
 }

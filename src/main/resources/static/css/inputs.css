@@ -6,6 +6,7 @@
 
 /* COMMONS */
 input, button{
+    
     cursor: pointer;
     color: var(--primary-color);
     border-radius: var(--border-radius);

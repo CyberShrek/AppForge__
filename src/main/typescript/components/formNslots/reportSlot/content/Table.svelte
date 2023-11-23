@@ -144,10 +144,13 @@
         <Fix framed={true}
              left={true}
              bottom={true}>
-
+            {#if config.checkboxes.title}
+                <p>{config.checkboxes.title}</p>
+            {/if}
             {#each config.checkboxes.actions as action}
                 <Button text={action.label}
                         image={action.image}
+                        imageLocation=""
                         hint={action.hint}
                         on:click={() =>
                         submittedApiAction = {

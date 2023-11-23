@@ -1,13 +1,14 @@
 export function executeFormulaForRowData(formula: string,
+                                         i: number,
                                          row: RowData,
-                                         totalRow: RowData,
-                                         matrix: MatrixData){
+                                         totalRow: RowData){
 
     // These fictitious calls need to prevent arguments removing by compiler optimisation.
     // They all can be used in the formula
     row.length
     totalRow.length
-    matrix.length
 
-    return new Function("row", "totalRow", "matrix", formula)(row, totalRow, matrix)
+    const fun = new Function("i", "row", "totalRow", `return ${formula}`)
+
+    return fun(i, row, totalRow)
 }

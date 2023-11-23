@@ -54,7 +54,7 @@ export class Head extends InlineFragment<ReportSlot>{
 
     private createToTopButton(): Button{
         return new Button(
-            {hint:  "Наверх", image: "to_top_blue.svg"},
+            {hint:  "Наверх", image: "to_top.svg"},
             () => scrollIntoElement(document.body)
         )
     }

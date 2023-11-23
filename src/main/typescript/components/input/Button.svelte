@@ -3,14 +3,15 @@
     import Image from "../misc/Image.svelte"
 
     export let
-        unavailable = false,
-        frameless   = false,
-        submit      = false,
-        cancel      = false,
-        active      = false,
-        hint        = "",
-        text        = "",
-        image       = "",
+        unavailable   = false,
+        frameless     = false,
+        submit        = false,
+        cancel        = false,
+        active        = false,
+        hint          = "",
+        text          = "",
+        image         = "",
+        imageLocation = undefined,
         root: HTMLButtonElement = null
 
 </script>
@@ -29,7 +30,7 @@
         on:mouseenter>
 
     {#if image && image.length > 0}
-        <Image {hint} name={image}/>
+        <Image {hint} name={image} location={imageLocation}/>
     {/if}
 
     {text}

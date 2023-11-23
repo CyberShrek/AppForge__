@@ -2,7 +2,7 @@ export const form = {
     title: "title",
     submitText: "submitText",
     submitPath: "submitPath",
-    statePath: "debug/statement",
+    // statePath: "debug/statement",
     firstSection: {
         firstField: {
             type: "calendar",

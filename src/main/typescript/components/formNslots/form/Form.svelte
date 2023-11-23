@@ -71,6 +71,7 @@
     }
 
     async function dispatchNewReport(){
+        submitIsUnavailable = true
         const reportModel = await reportAccessor.fetch(submittedValues)
         reportModel.usedValues = deepCopyOf(submittedValues)
         dispatch("report", reportModel)
