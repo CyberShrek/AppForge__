@@ -78,22 +78,22 @@
     {#each data as cellData, colI}
         {#if colI < width}
             {#if   colI >= primaryColumnsNumber - 1
-                || !features[colI]?.totalize && (totalColI === -1 || colI < totalColI)
-                || primaryGroupSizes[colI] && isGroupStart
+                || !features?.[colI]?.totalize && (totalColI === -1 || colI < totalColI)
+                || primaryGroupSizes?.[colI] && isGroupStart
             }
                 <td class={typeof cellData}
                     class:total={totalColI > -1 && colI >= totalColI}
                     class:collapsed={collapseStartIndex !== -1 && colI > collapseStartIndex}
-                    class:positive={typeof cellData === "number" && cellData > 0 && features[colI]?.colorize?.positive}
-                    class:negative={typeof cellData === "number" && cellData < 0 && features[colI]?.colorize?.negative}
+                    class:positive={typeof cellData === "number" && cellData > 0 && features?.[colI]?.colorize?.positive}
+                    class:negative={typeof cellData === "number" && cellData < 0 && features?.[colI]?.colorize?.negative}
                     class:link={isCellHasAction(colI, cellData)}
-                    class:labelized={features[colI]?.labelize}
-                    class:framed={features[colI]?.labelize?.frame}
-                    rowspan={isGroupStart && features[colI]?.totalize && primaryGroupSizes[colI] ? primaryGroupSizes[colI] : 1}
+                    class:labelized={features?.[colI]?.labelize}
+                    class:framed={features?.[colI]?.labelize?.frame}
+                    rowspan={isGroupStart && features?.[colI]?.totalize && primaryGroupSizes?.[colI] ? primaryGroupSizes?.[colI] : 1}
                     colspan={totalColI > -1 && colI === primaryColumnsNumber - 1 ? primaryColumnsNumber - totalColI : 0}
                     on:click={() => {if(isCellHasAction(colI, cellData)) dispatchApiAction(colI)}}>
 
-                    {#if features[colI]?.labelize}
+                    {#if features?.[colI]?.labelize}
                         <Label {data}
                                config={{
                                    valueCell: colI,
@@ -104,8 +104,8 @@
                         {cellData}
                     {/if}
 
-                    {#if isGroupStart && features[colI]?.totalize && (colI === 0 || features?.findIndex(feature => feature?.totalize) < colI) && primaryGroupSizes[colI] > 1}
-                        <Button text={collapseButtonsValues[colI] ? '➕' : '➖'}
+                    {#if isGroupStart && features?.[colI]?.totalize && (colI === 0 || features?.findIndex(feature => feature?.totalize) < colI) && primaryGroupSizes?.[colI] > 1}
+                        <Button text={collapseButtonsValues[colI] ? "▼" : "▲"}
                                 on:click={() => toggleCollapse(colI)}/>
                     {/if}
                 </td>

@@ -37,6 +37,7 @@
   align-items: end;
   margin: auto;
   justify-items: center;
+  align-content: center;
   grid-template-rows: 1fr auto auto;
   grid-template-areas: 
     "value vunit"
@@ -46,6 +47,7 @@
 
 .report .label .value{
   grid-area: value;
+  margin-left: auto;
 }
 .report .label .value:is(:not(:last-child)){
   font-size: xx-large;
@@ -53,6 +55,7 @@
 }
 .report .label .value-unit{
   grid-area: vunit;
+  margin-right: auto;
 }
 .report .label .percent-name{
   grid-area: pname;

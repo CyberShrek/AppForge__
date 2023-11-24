@@ -6,16 +6,14 @@
     export let
         modelWizard: ReportModelWizard
 
-    function showContextReportData(dataConfig: ContextConfig["reportData"]){
-
-        const dataToShow: MatrixData = modelWizard.properData.map(rowData => {
+    function showContextPickedData(dataConfig: ContextConfig["pickedData"]){
+        const dataToShow: MatrixData = modelWizard.model.usedData.map(rowData => {
             let rowDataToShow: RowData = []
             dataConfig.columns.forEach(colI => {
                 rowDataToShow.push(rowData[colI])
             })
             return rowDataToShow
         })
-
         popupTable(dataConfig.title, dataToShow)
     }
 
@@ -25,9 +23,9 @@
     {#each modelWizard.visibleContextValues as contextValue}
         <span>{contextValue}</span>
     {/each}
-    {#if modelWizard.model.context.reportData}
-        {#each modelWizard.model.context.reportData as dataConfig}
-            <span class="link" on:click={() => showContextReportData(dataConfig)}>
+    {#if modelWizard.model.context.pickedData}
+        {#each modelWizard.model.context.pickedData as dataConfig}
+            <span class="link" on:click={() => showContextPickedData(dataConfig)}>
                 {dataConfig.title}
             </span>
         {/each}

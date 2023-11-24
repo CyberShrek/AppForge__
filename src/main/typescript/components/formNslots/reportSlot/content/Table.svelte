@@ -148,8 +148,7 @@
                 <p>{config.checkboxes.title}</p>
             {/if}
             {#each config.checkboxes.actions as action}
-                <Button text={action.label}
-                        image={action.image}
+                <Button image={action.image}
                         imageLocation=""
                         hint={action.hint}
                         on:click={() =>

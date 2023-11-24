@@ -11,6 +11,7 @@
 }
 
 .modal .report{
+    padding-top: 1px;
     width: 95vw;
     max-height: 95vh;
 }
@@ -37,6 +38,7 @@
 
 .report .context{
     display: flex;
+    width: max-content;
     flex-direction: column;
     margin: 0 var(--indent);
     padding: 0 var(--indent);

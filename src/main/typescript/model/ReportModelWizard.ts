@@ -4,9 +4,9 @@ import {popupMessage} from "../util/alert"
 
 export class ReportModelWizard {
 
-    readonly properData: MatrixData // properData is model.data modified by formulas and sorted.
-    readonly totalRow: RowData
-    readonly visibleContextValues: string[]
+    readonly properData: MatrixData         = [] // properData is model.data modified by formulas and sorted.
+    readonly totalRow: RowData              = []
+    readonly visibleContextValues: string[] = []
 
     constructor(readonly model: ReportModel) {
         if(model.data && model.data.length > 0) {
@@ -18,19 +18,14 @@ export class ReportModelWizard {
             // Then calculate the proper data and find primary columns
             this.properData = deepCopyOf(model.data)
             this.properData.forEach(row => this.applyFormulasToRow(row))
-            this.properData.sort()
 
             // Find visible context values by associated fields with used values
             if (model.context?.fields && model.usedValues)
             this.visibleContextValues = Object.entries(model.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
         }
-        else {
-            this.properData = []
-            this.totalRow = []
-            this.visibleContextValues = []
+        else
             popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
-        }
     }
 
 
@@ -51,17 +46,17 @@ export class ReportModelWizard {
             )
         }
         if(applyFormulas)
-            this.applyFormulasToRow(total)
+            this.applyFormulasToRow(total, true)
 
         return total
     }
 
-    private applyFormulasToRow(row: RowData) {
+    private applyFormulasToRow(row: RowData, isTotalRow: boolean = false) {
         // The copy is used to avoid changing the original data
         const rowCopy = [...row]
         this.model.formulas?.forEach((formula, i) => {
             if(formula && formula.length > 0)
-                row[i] = executeFormulaForRowData(formula, i, rowCopy, this.totalRow)
+                row[i] = executeFormulaForRowData(formula, i, rowCopy, this.totalRow, isTotalRow)
         })
     }
 }

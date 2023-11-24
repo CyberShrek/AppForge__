@@ -22,6 +22,10 @@ export class ChartJsModule extends Module{
         }
     }
 
+    destroy() {
+        this.chartJs.destroy()
+    }
+
     private getDatasets(): ChartDataset[] {
         return (this.config.content as ChartContentConfig[]).map(config =>
             config.type === "line" ? this.getLineDataset(config as LineGraphConfig) :
@@ -96,6 +100,11 @@ export class ChartJsModule extends Module{
     }
 
     private getColumn(columnId: number): CellData[]{
-        return this.data.map(row => row[columnId])
+        const column: CellData[] = []
+        this.data.forEach(row => {
+            if(row[columnId] || row[columnId + 1])
+                column.push(row[columnId])
+        })
+        return column
     }
 }

@@ -9,10 +9,15 @@
         data: MatrixData,
         config: ChartConfig
 
-    let rootCanvas: HTMLCanvasElement
+    let rootCanvas: HTMLCanvasElement,
+        chartJsModule: ChartJsModule
 
-    $: if (rootCanvas)
-        new ChartJsModule(rootCanvas, data, config)
+    $: if (rootCanvas) {
+        if(chartJsModule)
+            chartJsModule.destroy()
+
+        chartJsModule = new ChartJsModule(rootCanvas, data, config)
+    }
 
 </script>
 

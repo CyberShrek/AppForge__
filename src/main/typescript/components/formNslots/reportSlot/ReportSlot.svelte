@@ -41,28 +41,22 @@
 
     async function dispatchNewReport(){
         const reportModel = await new ReportAccessor(submittedApiAction.linkToReport)
-            .fetch({...model.usedOptions, data: submittedApiAction.pickedData})
+            .fetch({
+                ...model.usedOptions,
+                ...model.usedValues,
+                pickedData: submittedApiAction.pickedData})
 
         reportModel.usedValues = deepCopyOf(model.usedValues)
         reportModel.usedData = deepCopyOf(submittedApiAction.pickedData)
         dispatch("report", reportModel)
     }
 
-    function toggleReportFullscreen(){
-        toggleFullscreen(rootElement)
-        fullScreen = !!getFullscreenElement()
-    }
-
-    // Also set the fullscreen to false on escape key press
-    window.addEventListener("keydown", (e) => {
-        if (e.key === "Escape")
-            toggleReportFullscreen()
+    window.addEventListener("fullscreenchange", () => {
+        fullScreen = getFullscreenElement() === rootElement
     })
 
-    afterUpdate(() => {
-        if(!collapsed && model?.data?.length > 0)
+    $: if(!collapsed && model?.data?.length > 0)
         setTimeout(() => scrollIntoElement(rootElement), 100)
-    })
 
 </script>
 
@@ -95,7 +89,7 @@
                         hint={collapsed ? "Развернуть" : "Свернуть"}
                         on:click={() => collapsed = !collapsed}/>
             {/if}
-            <Button image={fullScreen ? "restore.svg" : "expand.svg"} hint={fullScreen ? "Нормальный вид" : "На весь экран"} on:click={() => toggleReportFullscreen()}/>
+            <Button image={fullScreen ? "restore.svg" : "expand.svg"} hint={fullScreen ? "Нормальный вид" : "На весь экран"} on:click={() => toggleFullscreen(rootElement)}/>
             {#if config.modal}
                 <Button image="close.svg"
                         hint="Закрыть"

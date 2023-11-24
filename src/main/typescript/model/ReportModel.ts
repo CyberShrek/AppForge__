@@ -103,7 +103,7 @@ interface XlsxTableModel {
 /////////////
 interface ContextConfig {
     fields: { [label: string]: string }
-    reportData: {
+    pickedData: {
         title: string
         columns: string[]
     }[]

@@ -99,6 +99,14 @@ table input[type=checkbox]{
     background-color: aqua;
 }
 
+td > button{
+    margin-left: auto !important;
+    height: 0 !important;
+    background: transparent !important;
+    filter: none !important;
+    transform: translateY(-15px) !important;
+}
+
 table .number, table .primary.string {
     text-align: right;
 }
