@@ -30,6 +30,7 @@
 
     $: if(config && modelWizard) {
         tableWizard = new TableWizard(modelWizard, config)
+        pageSize = config.pageSize
     }
 
     $: if(rootElement){
@@ -56,10 +57,6 @@
             scrollIntoElement(rootElement)
         }
     }
-
-    onMount(() => {
-        pageSize = config.pageSize
-    })
 
 </script>
 
