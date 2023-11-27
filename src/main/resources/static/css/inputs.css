@@ -211,11 +211,11 @@ label.switch input:checked + .slider:before {
 .datepicker input{
     width: 100%;
     font-size: medium;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 .datepicker button{
     font-size: large;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
 }

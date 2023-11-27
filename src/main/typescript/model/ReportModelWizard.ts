@@ -8,7 +8,9 @@ export class ReportModelWizard {
     readonly totalRow: RowData              = []
     readonly visibleContextValues: string[] = []
 
-    constructor(readonly model: ReportModel) {
+    protected readonly precision = 1000
+
+    constructor(readonly config: ReportSlotConfig, readonly model: ReportModel) {
         if(model.data?.length > 0) {
             // Firstly calculate the total data to use it in the formulas
             this.totalRow = this.getMatrixTotal(model.data, false)
@@ -22,6 +24,9 @@ export class ReportModelWizard {
             if (model.context?.fields && model.usedValues)
             this.visibleContextValues = Object.entries(model.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
+
+            if(!model.title)
+                model.title = config.title
         }
     }
 
@@ -35,7 +40,7 @@ export class ReportModelWizard {
                 (cellData, cellIndex) => {
                     if(typeof cellData === "number") {
                         total[cellIndex] = total[cellIndex]
-                            ? numberOf(total[cellIndex]) + cellData
+                            ? ((numberOf(total[cellIndex]) * this.precision + cellData * this.precision) / this.precision)
                             : cellData
                     }
                     else total[cellIndex] = valueOrDefault(total[cellIndex], '')

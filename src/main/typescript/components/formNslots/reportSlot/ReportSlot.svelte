@@ -32,7 +32,7 @@
         showCharts = model?.charts && !model?.table,
         fullScreen = false
 
-    $: modelWizard = model && new ReportModelWizard(model)
+    $: modelWizard = model && new ReportModelWizard(config, model)
 
     $: if(modelWizard)
         collapsed = false
