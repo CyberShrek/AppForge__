@@ -12,7 +12,7 @@ function createMatrixData(primaryCellsSize, valueCellsSize, tableHeight) {
         }
         const valueCells = []
         for(let j = 0; j < valueCellsSize; j++)
-            valueCells[j] = Math.floor(Math.random()*1000);
+            valueCells[j] = Math.round(Math.random()*1000)/10;
         matrixData[i] = [...primaryCells, ...valueCells]
     }
     return matrixData
@@ -23,13 +23,9 @@ function randomWord() {
     return words[Math.floor(Math.random()*(words.length))];
 }
 
-const data = createMatrixData(3, 4, 1)
-
-export const reportModel ={"slot":"report1Slot","table":{"pageSize":50,"head":[[{"value":"$waypoint отправления"},{"value":"$waypoint назначения"},{"value":"Вес, тонны"},{"value":"Количество, шт."},{"value":"Количество мест, шт."},{"value":"Платежи, тыс. руб."}]],"columnFeatures":[{"filter":true},{"filter":true}]},"data":[["РОССИЯ              ","РОССИЯ              ",95998456,25592,0,1506790058.00]]}
-
-export const _reportModel = {
+export const reportModel = {
     title: "Debug",
-    data: [["РОССИЯ              ","РОССИЯ              ",95998456,25592,0,1506790058.00]],
+    data: createMatrixData(2, 4, 10),
     // labels: [
     //     {
     //         title: "Label 1",
@@ -114,7 +110,6 @@ export const _reportModel = {
     //         }]
     //     }
     // ],
-    table: {"pageSize":50,"head":[[{"value":"$waypoint отправления"},{"value":"$waypoint назначения"},{"value":"Вес, тонны"},{"value":"Количество, шт."},{"value":"Количество мест, шт."},{"value":"Платежи, тыс. руб."}]],"columnFeatures":[{"filter":true},{"filter":true}]},
     // context: {
     //     reportData: [{
     //         title: "First data",
@@ -129,6 +124,87 @@ export const _reportModel = {
     //         "third.third": "Третий"
     //     }
     // },
+    table: {
+        pageSize: 50,
+        head: [
+            [
+                {
+                    value: "Primary 1"
+                },
+                {
+                    value: "Primary 2"
+                },
+                {
+                    value: "Value 1"
+                },
+                {
+                    value: "Value 2"
+                },
+                {
+                    value: "Value 3"
+                },
+                {
+                    value: "Value 4"
+                }
+            ]
+        ],
+        columnFeatures: [
+            {
+                filter: true
+            },
+            {
+                filter: true
+            }
+        ],
+        total: true
+    },
+    usedValues: {
+        "first.first": 111,
+        "second.second": [222, 222],
+        "third.third": true,
+        "fourth.fourth": "444",
+        "fifth.fifth": "555"
+    },
+    usedData: data
+}
+
+export const reportModel2 = {
+    title: "Debug",
+    data: createMatrixData(2, 4, 100),
+    table: {
+        pageSize: 50,
+        head: [
+            [
+                {
+                    value: "Primary 1"
+                },
+                {
+                    value: "Primary 2"
+                },
+                {
+                    value: "Value 1"
+                },
+                {
+                    value: "Value 2"
+                },
+                {
+                    value: "Value 3"
+                },
+                {
+                    value: "Value 4"
+                }
+            ]
+        ],
+        columnFeatures: [
+            {
+                filter: true
+            },
+            {
+                filter: true
+            }
+        ],
+        total: true
+    },
     usedValues: {
         "first.first": 111,
         "second.second": [222, 222],

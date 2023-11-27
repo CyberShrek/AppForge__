@@ -28,8 +28,13 @@
         pickedPageI = 0,
         pageSize = modelWizard.properData.length
 
-    $: if(config && modelWizard)
+    $: if(config && modelWizard) {
         tableWizard = new TableWizard(modelWizard, config)
+    }
+
+    $: if(rootElement){
+        xlsxAccessor = new XlsxAccessor(tableWizard.extractXlsxModelUsingElement(rootElement.querySelector("table")))
+    }
 
     $: allRowsAreChecked =
         checkedRowsSet.size === modelWizard.properData.length
@@ -53,7 +58,6 @@
     }
 
     onMount(() => {
-        xlsxAccessor = new XlsxAccessor(tableWizard.extractXlsxModelUsingElement(rootElement.querySelector("table")))
         pageSize = config.pageSize
     })
 

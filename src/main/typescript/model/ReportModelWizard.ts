@@ -8,7 +8,7 @@ export class ReportModelWizard {
     readonly totalRow: RowData              = []
     readonly visibleContextValues: string[] = []
 
-    protected readonly precision = 1000
+    protected readonly precision = 10
 
     constructor(readonly config: ReportSlotConfig, readonly model: ReportModel) {
         if(model.data?.length > 0) {
@@ -39,9 +39,11 @@ export class ReportModelWizard {
             rowData.forEach(
                 (cellData, cellIndex) => {
                     if(typeof cellData === "number") {
+                        console.log(`${total[cellIndex]} + ${cellData} = `)
                         total[cellIndex] = total[cellIndex]
-                            ? ((numberOf(total[cellIndex]) * this.precision + cellData * this.precision) / this.precision)
+                            ? ((Number(total[cellIndex]) * this.precision + cellData * this.precision) / this.precision)
                             : cellData
+                        console.log(`\t${total[cellIndex]}`)
                     }
                     else total[cellIndex] = valueOrDefault(total[cellIndex], '')
                 }
