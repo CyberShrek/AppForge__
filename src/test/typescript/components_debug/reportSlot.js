@@ -23,176 +23,112 @@ function randomWord() {
     return words[Math.floor(Math.random()*(words.length))];
 }
 
-const data = createMatrixData(3, 4, 30)
+const data = createMatrixData(3, 4, 1)
 
-export const reportModel = {
+export const reportModel ={"slot":"report1Slot","table":{"pageSize":50,"head":[[{"value":"$waypoint отправления"},{"value":"$waypoint назначения"},{"value":"Вес, тонны"},{"value":"Количество, шт."},{"value":"Количество мест, шт."},{"value":"Платежи, тыс. руб."}]],"columnFeatures":[{"filter":true},{"filter":true}]},"data":[["РОССИЯ              ","РОССИЯ              ",95998456,25592,0,1506790058.00]]}
+
+export const _reportModel = {
     title: "Debug",
-    data,
-    labels: [
-        {
-            title: "Label 1",
-            valueCell: 3,
-            valueUnit: "Items",
-            image: "passenger.svg"
-        },
-        {
-            title: "Label 2",
-            valueCell: 5,
-            valueUnit: "Items",
-            image: "woman.svg",
-            frame: true
-        },
-        {
-            title: "Label 3",
-            valueCell: 4,
-            valueUnit: "Items",
-            image: "ruble.svg",
-            background: "lime"
-        },
-        {
-            title: "Label 3",
-            valueCell: 3,
-            valueUnit: "Items",
-            image: "loan_document.svg",
-            frame: true,
-            background: "coral"
-        }
-    ],
-    charts: [
-        {
-            title: "Line graph",
-            keyColumn: 0,
-            content: [{
-                type: "line",
-                name: "Line 1",
-                column: 3,
-                color: "red",
-                dash: true
-            },{
-                type: "line",
-                name: "Line 2",
-                column: 4,
-                color: "green",
-                curve: true
-            },{
-                type: "line",
-                name: "Line 3",
-                column: 5,
-                color: "blue",
-                fill: "rgba(255, 99, 132, 0.2)"
-            }]
-        },
-        {
-            title: "Bar chart",
-            keyColumn: 0,
-            content: [{
-                type: "bar",
-                name: "bar 1",
-                column: 3,
-                // color: "red"
-            },{
-                type: "bar",
-                name: "bar 1",
-                column: 4,
-                // color: "green"
-            }]
-        },
-        {
-            title: "Doughnut chart",
-            keyColumn: 0,
-            content: [{
-                type: "donut",
-                name: "donut 1",
-                column: 5
-            },{
-                type: "donut",
-                name: "donut 2",
-                column: 6,
-                color: ["red", "green", "blue"]
-            }]
-        }
-    ],
-    table: {
-        head: [
-            [
-                {value: "Primary 1", rowspan: 2},
-                {value: "Primary 2", rowspan: 2},
-                {value: "Primary 3", rowspan: 2},
-                {value: "Value group 1", colspan: 2}, {value: "Value group 2", colspan: 2}
-            ],
-            [
-                {value: "Value 1"}, {value: "Value 2"}, {value: "Value 1"}, {value: "Value 2"}
-            ]
-        ],
-        checkboxes: {
-            actions: [
-                {
-                    label: "XXX",
-                    onClick: {
-                        fetchReport: ""
-                    }
-                }
-            ]
-        },
-        total: true,
-        pageSize: 100,
-        columnFeatures: [
-            {
-                // totalize: true,
-                labelize: {
-                    image: {
-                        "apple": "ф.svg",
-                    }
-                },
-                onClick: {
-                    forCells: ["apple", "cherimoya"],
-                    fetchReport: "1"
-                },
-                filter: true
-            },
-            {
-                // totalize: true,
-                filter: true
-            },
-            {
-                colorize: {
-                    positive: true,
-                    negative: true
-                }
-            },
-            {
-                colorize: {
-                    positive: true,
-                    negative: true
-                },
-                labelize: {
-                    // valueCell: 5,
-                    valueUnit: "Items",
-                    frame: true
-                },
-                filter: true
-            },
-            {
-                onClick: {
-                    fetchReport: "1"
-                }
-            }
-        ]
-    },
-    context: {
-        reportData: [{
-            title: "First data",
-            columns: [0, 1, 2]
-        },{
-            title: "Second data",
-            columns: [3, 4, 5, 6]
-        }],
-        fields: {
-            "first.first": "Первый",
-            "second.second": "Второй",
-            "third.third": "Третий"
-        }
-    },
+    data: [["РОССИЯ              ","РОССИЯ              ",95998456,25592,0,1506790058.00]],
+    // labels: [
+    //     {
+    //         title: "Label 1",
+    //         valueCell: 3,
+    //         valueUnit: "Items",
+    //         image: "passenger.svg"
+    //     },
+    //     {
+    //         title: "Label 2",
+    //         valueCell: 5,
+    //         valueUnit: "Items",
+    //         image: "woman.svg",
+    //         frame: true
+    //     },
+    //     {
+    //         title: "Label 3",
+    //         valueCell: 4,
+    //         valueUnit: "Items",
+    //         image: "ruble.svg",
+    //         background: "lime"
+    //     },
+    //     {
+    //         title: "Label 3",
+    //         valueCell: 3,
+    //         valueUnit: "Items",
+    //         image: "loan_document.svg",
+    //         frame: true,
+    //         background: "coral"
+    //     }
+    // ],
+    // charts: [
+    //     {
+    //         title: "Line graph",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "line",
+    //             name: "Line 1",
+    //             column: 3,
+    //             color: "red",
+    //             dash: true
+    //         },{
+    //             type: "line",
+    //             name: "Line 2",
+    //             column: 4,
+    //             color: "green",
+    //             curve: true
+    //         },{
+    //             type: "line",
+    //             name: "Line 3",
+    //             column: 5,
+    //             color: "blue",
+    //             fill: "rgba(255, 99, 132, 0.2)"
+    //         }]
+    //     },
+    //     {
+    //         title: "Bar chart",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "bar",
+    //             name: "bar 1",
+    //             column: 3,
+    //             // color: "red"
+    //         },{
+    //             type: "bar",
+    //             name: "bar 1",
+    //             column: 4,
+    //             // color: "green"
+    //         }]
+    //     },
+    //     {
+    //         title: "Doughnut chart",
+    //         keyColumn: 0,
+    //         content: [{
+    //             type: "donut",
+    //             name: "donut 1",
+    //             column: 5
+    //         },{
+    //             type: "donut",
+    //             name: "donut 2",
+    //             column: 6,
+    //             color: ["red", "green", "blue"]
+    //         }]
+    //     }
+    // ],
+    table: {"pageSize":50,"head":[[{"value":"$waypoint отправления"},{"value":"$waypoint назначения"},{"value":"Вес, тонны"},{"value":"Количество, шт."},{"value":"Количество мест, шт."},{"value":"Платежи, тыс. руб."}]],"columnFeatures":[{"filter":true},{"filter":true}]},
+    // context: {
+    //     reportData: [{
+    //         title: "First data",
+    //         columns: [0, 1, 2]
+    //     },{
+    //         title: "Second data",
+    //         columns: [3, 4, 5, 6]
+    //     }],
+    //     fields: {
+    //         "first.first": "Первый",
+    //         "second.second": "Второй",
+    //         "third.third": "Третий"
+    //     }
+    // },
     usedValues: {
         "first.first": 111,
         "second.second": [222, 222],

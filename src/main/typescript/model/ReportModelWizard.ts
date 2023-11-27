@@ -9,8 +9,7 @@ export class ReportModelWizard {
     readonly visibleContextValues: string[] = []
 
     constructor(readonly model: ReportModel) {
-        if(model.data && model.data.length > 0) {
-
+        if(model.data?.length > 0) {
             // Firstly calculate the total data to use it in the formulas
             this.totalRow = this.getMatrixTotal(model.data, false)
             this.applyFormulasToRow(this.totalRow)
@@ -24,8 +23,6 @@ export class ReportModelWizard {
             this.visibleContextValues = Object.entries(model.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
         }
-        else
-            popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
     }
 
 

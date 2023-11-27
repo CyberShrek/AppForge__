@@ -7,7 +7,7 @@
     import Button from "../../input/Button.svelte"
     import {exportAsJpeg, getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../../util/domWizard"
     import {slide} from "svelte/transition"
-    import {deepCopyOf} from "../../../util/data";
+    import {compare, deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
     import {afterUpdate, createEventDispatcher} from "svelte"
     import Charts from "./content/Charts.svelte"
@@ -24,6 +24,7 @@
         model:  ReportModel
 
     let rootElement: HTMLDivElement,
+        prevModel: ReportModel,
         collapsed = false,
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor,
@@ -55,8 +56,10 @@
         fullScreen = getFullscreenElement() === rootElement
     })
 
-    $: if(!collapsed && model?.data?.length > 0)
+    $: if(!collapsed && model?.data?.length > 0 && !compare(model, prevModel)) {
         setTimeout(() => scrollIntoElement(rootElement), 100)
+        prevModel = deepCopyOf(model)
+    }
 
 </script>
 

@@ -6,6 +6,7 @@
     import {FormStateAccessor} from "../../../api/FormStateAccessor"
     import {ReportAccessor} from "../../../api/ReportAccessor"
     import {createEventDispatcher} from "svelte"
+    import {popupMessage} from "../../../util/alert";
 
     resolveStyle("form")
 
@@ -67,6 +68,7 @@
             parseFormStatementKeys(state.hidden, hiddenSections, hiddenSectionFields)
             onValuesChange()
         }
+
         previousState = deepCopyOf(state)
     }
 
@@ -74,7 +76,10 @@
         submitIsUnavailable = true
         const reportModel = await reportAccessor.fetch(submittedValues)
         reportModel.usedValues = deepCopyOf(submittedValues)
-        dispatch("report", reportModel)
+        if(reportModel?.data?.length > 0)
+            dispatch("report", reportModel)
+        else
+            popupMessage("Отчёт пуст", "Отсутствуют подходящие данные")
     }
 
 </script>

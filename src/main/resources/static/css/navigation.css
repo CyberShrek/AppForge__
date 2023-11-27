@@ -44,6 +44,7 @@
 
 .nav-pages .pages {
     display: flex;
+  max-width: 50vw;
    padding: var(--light-indent) 0;
     margin: 0 var(--light-indent);
     overflow-x: auto;

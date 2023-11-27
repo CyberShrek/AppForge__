@@ -116,7 +116,7 @@
                         {tableTotalWord}
                     </td>
                     {#each tableWizard.getMatrixTotal(filteredData) as totalCellData, i}
-                        {#if i >= tableWizard.primaryColumnsNumber}
+                        {#if i >= tableWizard.primaryColumnsNumber && i < tableWizard.tableWidth}
                             <td class={typeof totalCellData}>
                                 {totalCellData}
                             </td>

@@ -7,7 +7,7 @@
         modelWizard: ReportModelWizard,
         configs: ChartConfig[],
         rootElement: HTMLDivElement,
-        show = true
+        show = false
 
 </script>
 
