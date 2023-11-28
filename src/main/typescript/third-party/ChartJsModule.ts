@@ -102,7 +102,7 @@ export class ChartJsModule extends Module{
     private getColumn(columnId: number): CellData[]{
         const column: CellData[] = []
         this.data.forEach(row => {
-            if(row[columnId] || row[columnId + 1])
+            if(row[columnId] !== null || row[columnId + 1] !== null)
                 column.push(row[columnId])
         })
         return column

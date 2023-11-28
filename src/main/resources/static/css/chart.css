@@ -1,14 +1,16 @@
 .charts {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   background: white;
   padding: var(--indent);
   grid-gap: var(--indent);
-  grid-template-columns: repeat(2, 1fr);
 }
 
 .chart {
   display: grid;
   height: min-content;
+  width: calc(50% - var(--indent) * 2 - 9.5px);
   padding: var(--indent);
   border: var(--light-border);
   border-radius: var(--border-radius);

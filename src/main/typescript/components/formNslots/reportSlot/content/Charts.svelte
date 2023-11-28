@@ -17,10 +17,8 @@
          bind:this={rootElement}>
 
         {#each configs as chart}
-            <div class="chart">
-                <Chart data={modelWizard.properData}
-                       config={chart}/>
-            </div>
+            <Chart data={modelWizard.properData}
+                   config={chart}/>
         {/each}
     </div>
 {/if}

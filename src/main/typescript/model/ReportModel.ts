@@ -37,6 +37,7 @@ interface ChartConfig {
     title?: string
     keyColumn?: number
     content?: ChartContentConfig | ChartContentConfig[]
+    size?: number
 }
 
 interface ChartContentConfig {
