@@ -1,14 +1,13 @@
 import {deepCopyOf, numberOf, valueOrDefault} from "../util/data"
 import {executeFormulaForRowData} from "../util/DANGEROUS"
 import {popupMessage} from "../util/alert"
+import Decimal from "decimal.js";
 
 export class ReportModelWizard {
 
     readonly properData: MatrixData         = [] // properData is model.data modified by formulas and sorted.
     readonly totalRow: RowData              = []
     readonly visibleContextValues: string[] = []
-
-    protected readonly precision = 10
 
     constructor(readonly config: ReportSlotConfig, readonly model: ReportModel) {
         if(model.data?.length > 0) {
@@ -41,7 +40,7 @@ export class ReportModelWizard {
                     if(typeof cellData === "number") {
                         console.log(`${total[cellIndex]} + ${cellData} = `)
                         total[cellIndex] = total[cellIndex]
-                            ? ((Number(total[cellIndex]) * this.precision + cellData * this.precision) / this.precision)
+                            ? new Decimal(total[cellIndex]).plus(cellData).toNumber()
                             : cellData
                         console.log(`\t${total[cellIndex]}`)
                     }
