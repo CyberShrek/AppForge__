@@ -2,7 +2,7 @@ import {JsonAccessor} from "./abstract/JsonAccessor"
 import {appConfig} from "../store/appConfig"
 
 export class UserCheck extends JsonAccessor<UserInfo>{
-    path = "/appforge/ucheck"
+    path = "appforge/ucheck"
     override errorFooter = "Не удалось пройти проверку"
 
     constructor() {
