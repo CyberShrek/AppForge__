@@ -8,7 +8,7 @@ export class ChartJsModule extends Module{
 
     constructor(private rootCanvas: HTMLCanvasElement,
                 private data: MatrixData,
-                private config: ChartConfig) {
+                private config: ChartMeta) {
         super()
         if (this.config.content) {
             if (!Array.isArray(this.config.content))
@@ -28,13 +28,13 @@ export class ChartJsModule extends Module{
 
     private getDatasets(): ChartDataset[] {
         return (this.config.content as ChartContentConfig[]).map(config =>
-            config.type === "line" ? this.getLineDataset(config as LineGraphConfig) :
-                config.type === "bar" ? this.getBarDataset(config as BarGraphConfig) :
-                    config.type === "pie" || config.type === "donut" ? this.getPieDataset(config as PieGraphConfig) : null
+            config.type === "line" ? this.getLineDataset(config as LineGraphMeta) :
+                config.type === "bar" ? this.getBarDataset(config as BarGraphMeta) :
+                    config.type === "pie" || config.type === "donut" ? this.getPieDataset(config as PieGraphMeta) : null
         )
     }
 
-    private getLineDataset(config: LineGraphConfig): ChartDataset{
+    private getLineDataset(config: LineGraphMeta): ChartDataset{
         // @ts-ignore
         return {
             ...this.getCommonDataset(config),
@@ -51,7 +51,7 @@ export class ChartJsModule extends Module{
         }
     }
 
-    private getBarDataset(config: BarGraphConfig): ChartDataset{
+    private getBarDataset(config: BarGraphMeta): ChartDataset{
         return {
             type: "bar",
             // @ts-ignore
@@ -60,7 +60,7 @@ export class ChartJsModule extends Module{
         }
     }
 
-    private getPieDataset(config: PieGraphConfig): ChartDataset {
+    private getPieDataset(config: PieGraphMeta): ChartDataset {
         // @ts-ignore
         return {
             type: config.type === "donut" ? "doughnut" : "pie",

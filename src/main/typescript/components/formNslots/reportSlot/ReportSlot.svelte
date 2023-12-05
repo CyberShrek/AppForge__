@@ -100,6 +100,7 @@
             {/if}
         {/if}
     </div>
+
     {#if model && !collapsed && modelWizard.properData.length > 0}
         <div class="body"
              transition:slide>

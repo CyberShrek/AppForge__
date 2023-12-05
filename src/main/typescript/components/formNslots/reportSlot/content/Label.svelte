@@ -7,7 +7,7 @@
 
     export let
         data: RowData,
-        config: LabelConfig
+        config: LabelMeta
 
 </script>
 
@@ -26,8 +26,8 @@
             {#if config.valueCell !== undefined}
                 <span class="value" style:color={config.background}>{data[config.valueCell]}</span>
             {/if}
-            {#if config.valueUnit !== undefined}
-                <span class="value-unit">{config.valueUnit}</span>
+            {#if config.unit !== undefined}
+                <span class="value-unit">{config.unit}</span>
             {/if}
             {#if config.percentName !== undefined}
                 <span class="percent-name">{config.percentName}</span>

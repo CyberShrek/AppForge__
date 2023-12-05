@@ -4,20 +4,20 @@
     import TableBodyRow from "./TableBodyRow.svelte"
 
     export let
-        config: TableConfig,
+        config: TableColumnMeta,
         matrixData: MatrixData,
         tableWizard: TableWizard,
         size: number = null,
         groupSizes: number[] = null,
         checkedRowsSet: Set<RowData>,
-        collapseStartIndex: number = config.columnFeatures?.findIndex(feature => feature?.totalize === "collapse") ?? -1,
+        collapseStartIndex: number = config.columns?.findIndex(feature => feature?.totalize === "collapse") ?? -1,
         nesting = 0
 
     $: innerSizes = [matrixData.length]
 
     let checkedRows: boolean[] = []
 
-    $: totalize = matrixData.length > 1 && !!config.columnFeatures?.[nesting - 1]?.totalize
+    $: totalize = matrixData.length > 1 && !!config.columns?.[nesting - 1]?.totalize
 
     // The sum of all inner sizes + 1 if has total
     $: size = innerSizes.reduce((sum, size) => sum + size, Number(totalize))
@@ -71,12 +71,12 @@
     {#each matrixData as rowData, rowI}
         <TableBodyRow data={rowData}
                       width={tableWizard.tableWidth}
-                      features={config.columnFeatures}
+                      features={config.columns}
                       isGroupStart={rowI === 0}
                       primaryColumnsNumber={tableWizard.primaryColumnsNumber}
                       primaryGroupSizes={groupSizes}
                       {collapseStartIndex}
-                      addCheckbox={!!config.checkboxes}
+                      addCheckbox={!!config.checkboxButtons}
                       bind:checked={checkedRows[rowI]}
                       on:collapse
                       on:collapse={event => toggleCollapse(true,  event.detail)}
@@ -88,7 +88,7 @@
 {#if totalize}
     <TableBodyRow data={tableWizard.getMatrixTotal(matrixData, nesting - 1)}
                   width={tableWizard.tableWidth}
-                  features={config.columnFeatures}
+                  features={config.columns}
                   primaryColumnsNumber={tableWizard.primaryColumnsNumber}
                   totalColI={nesting}
                   collapseStartIndex={collapseStartIndex > -1 && collapseStartIndex < nesting - 1 ? collapseStartIndex : -1}/>

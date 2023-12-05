@@ -78,8 +78,8 @@ export const form = {
             serviceBankSource: {
                 type: "countries",
                 propertiesTriggerKeys: {
-                    date: "firstSection.firstField",
-                    postSoviet: "departureSection.switchField"
+                    date: "firstSection_firstField",
+                    postSoviet: "departureSection_switchField"
                 }
             }
         },
@@ -92,8 +92,8 @@ export const form = {
             serviceBankSource: {
                 type: "roads",
                 propertiesTriggerKeys: {
-                    date: "firstSection.firstField",
-                    countries: "departureSection.countriesField"
+                    date: "firstSection_firstField",
+                    countries: "departureSection_countriesField"
                 }
             }
         },

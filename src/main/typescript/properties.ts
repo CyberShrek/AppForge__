@@ -1,7 +1,7 @@
 export const
-    imagesLocation = "appforge/img/",
-    stylesLocation = "appforge/css/",
-    modulesLocation = "/corresp/appforge/js/",
+    imagesLocation = "/appforge/img/",
+    stylesLocation = "/appforge/css/",
+    modulesLocation = "/appforge/js/",
 
     tableTotalWord = "Итого",
 

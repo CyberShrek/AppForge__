@@ -23,8 +23,8 @@ export class Table extends InlineFragment<Body>{
 
     constructor(body: Body,
                 private readonly data: MatrixData,
-                private readonly colFeatures: ColumnFeature[],
-                private readonly model: TableConfig)
+                private readonly colFeatures: ColumnMeta[],
+                private readonly model: TableColumnMeta)
     {
         super(body, `
             <div class="table">

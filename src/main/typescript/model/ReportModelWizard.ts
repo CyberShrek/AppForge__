@@ -38,11 +38,9 @@ export class ReportModelWizard {
             rowData.forEach(
                 (cellData, cellIndex) => {
                     if(typeof cellData === "number") {
-                        console.log(`${total[cellIndex]} + ${cellData} = `)
                         total[cellIndex] = total[cellIndex]
                             ? new Decimal(total[cellIndex]).plus(cellData).toNumber()
                             : cellData
-                        console.log(`\t${total[cellIndex]}`)
                     }
                     else total[cellIndex] = valueOrDefault(total[cellIndex], '')
                 }

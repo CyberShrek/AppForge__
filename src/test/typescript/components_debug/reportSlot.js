@@ -23,9 +23,11 @@ function randomWord() {
     return words[Math.floor(Math.random()*(words.length))];
 }
 
+const data =  createMatrixData(2, 4, 10)
+
 export const reportModel = {
     title: "Debug",
-    data: createMatrixData(2, 4, 10),
+    data,
     // labels: [
     //     {
     //         title: "Label 1",

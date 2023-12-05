@@ -10,7 +10,7 @@ export class TableWizard {
     tableWidth: number = 0
 
     constructor(private modelWizard: ReportModelWizard,
-                private config: TableConfig) {
+                private config: TableColumnMeta) {
 
         // Find primary columns number
         this.modelWizard.properData.forEach(row => {

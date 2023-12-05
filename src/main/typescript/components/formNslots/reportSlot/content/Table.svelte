@@ -16,7 +16,7 @@
     resolveStyle("table")
 
     export let
-        config: TableConfig,
+        config: TableColumnMeta,
         modelWizard: ReportModelWizard,
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor
@@ -68,7 +68,7 @@
         <thead>
         {#if config.pageSize && modelWizard.properData.length >= config.pageSize}
             <tr class="tool-bar">
-                <td colspan={tableWizard.tableWidth + (config.checkboxes ? 1 : 0)}>
+                <td colspan={tableWizard.tableWidth + (config.checkboxButtons ? 1 : 0)}>
                     <PagesBar pageSize={config.pageSize}
                               itemsCount={filteredData.length}
                               bind:pickedPageI/>
@@ -77,7 +77,7 @@
         {/if}
         {#each config.head as headRow, rowI}
             <tr>
-                {#if config.checkboxes && rowI === 0}
+                {#if config.checkboxButtons && rowI === 0}
                     <th class="checkbox"
                         rowspan={config.head.length}>
                         <input type="checkbox"
@@ -94,11 +94,11 @@
             </tr>
         {/each}
         <tr class="filters-bar">
-            {#if config.checkboxes}
+            {#if config.checkboxButtons}
                 <th class="checkbox"></th>
             {/if}
             {#each Array(tableWizard.tableWidth) as _, i}
-                <th>{#if config.columnFeatures?.[i]?.filter}
+                <th>{#if config.columns?.[i]?.filter}
                         <Text bind:value={filterValues[i]}/>
                     {/if}</th>
             {/each}
@@ -110,7 +110,7 @@
             <tfoot>
             {#if config.total && filteredData.length > 0}
                 <tr class="total">
-                    {#if config.checkboxes}
+                    {#if config.checkboxButtons}
                         <td class="checkbox"></td>
                     {/if}
                     <td colspan={tableWizard.primaryColumnsNumber}>
@@ -141,14 +141,14 @@
         {/if}
     </table>
 
-    {#if checkedRowsSet.size > 0 && config.checkboxes}
+    {#if checkedRowsSet.size > 0 && config.checkboxButtons}
         <Fix framed={true}
              left={true}
              bottom={true}>
-            {#if config.checkboxes.title}
-                <p>{config.checkboxes.title}</p>
+            {#if config.checkboxButtons.title}
+                <p>{config.checkboxButtons.title}</p>
             {/if}
-            {#each config.checkboxes.actions as action}
+            {#each config.checkboxButtons.actions as action}
                 <Button image={action.image}
                         imageLocation=""
                         hint={action.hint}

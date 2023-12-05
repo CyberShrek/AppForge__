@@ -7,7 +7,7 @@
     export let
         data: RowData,
         width: number,
-        features: ColumnFeature[] = [],
+        features: ColumnMeta[] = [],
         primaryColumnsNumber: number = 0,
         primaryGroupSizes: number[] = [],
         addCheckbox = false,

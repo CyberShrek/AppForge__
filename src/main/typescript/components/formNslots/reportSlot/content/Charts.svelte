@@ -5,7 +5,7 @@
 
     export let
         modelWizard: ReportModelWizard,
-        configs: ChartConfig[],
+        configs: ChartMeta[],
         rootElement: HTMLDivElement,
         show = false
 

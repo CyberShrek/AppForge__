@@ -1,13 +1,10 @@
 interface ReportModel {
     title?: string
-    data?: MatrixData
-    formulas?: string[]
-    charts?: ChartConfig[]
-    labels?: LabelConfig[]
+    data: MatrixData
+    meta: {[colName: string]: ColumnMeta}
+    charts?: {[chartName: string]: ChartConfig}
     table?: TableConfig
-    html?: string
     context?: ContextConfig
-    slot?: string
 
     // Apply after fetching the report from server
     usedValues?: FormValues
@@ -16,18 +13,22 @@ interface ReportModel {
     usedData?: MatrixData
 }
 
+interface ColumnMeta {
+    formula?: string
+    inLabel?: LabelMeta
+    inChart?: ChartMeta
+    inTable?: TableColumnMeta
+}
+
 ///////////
 // LABEL //
 ///////////
-interface LabelConfig{
+interface LabelMeta {
     title?: string
-    valueCell?: number
-    valueUnit?: string
-    percentName?: string
-    percentCell?: number
-    image?: string | {[forCell: string]: string}
-    background?: string
-    frame?: boolean
+    unit?: string
+    share?: boolean
+    compare?: boolean
+    image?: string
 }
 
 ///////////
@@ -35,30 +36,32 @@ interface LabelConfig{
 ///////////
 interface ChartConfig {
     title?: string
-    keyColumn?: number
-    content?: ChartContentConfig | ChartContentConfig[]
+    keyColumn: string
     size?: number
+
+    // Extra graphs
+    average?: boolean
 }
 
-interface ChartContentConfig {
+
+interface ChartMeta {
+    chart: string
     type: "line" | "bar" | "pie" | "donut"
     name: string
-    column: number
-    color?: string|string[]
 }
 
-interface LineGraphConfig extends ChartContentConfig {
+interface LineGraphMeta extends ChartMeta {
     type:   "line"
     dash?:  boolean
     curve?: boolean
     fill?:  boolean
 }
 
-interface BarGraphConfig extends ChartContentConfig {
+interface BarGraphMeta extends ChartMeta {
     type: "bar"
 }
 
-interface PieGraphConfig extends ChartContentConfig {
+interface PieGraphMeta extends ChartMeta {
     type: "pie" | "donut"
 }
 
@@ -66,15 +69,23 @@ interface PieGraphConfig extends ChartContentConfig {
 // TABLE //
 ///////////
 interface TableConfig {
-    head: CompleteRow[]
     total?: boolean,
-    pageSize?: number,
-    columnFeatures?: ColumnFeature[]
-    checkboxes?: {
+    checkboxButtons?: {
         title?: string
         actions?: ActionButton[]
     }
 }
+interface TableColumnMeta extends ApiAction {
+    head?: string
+    filter?: boolean
+    totalize?: boolean,
+    collapse?: boolean,
+    labelize?: boolean,
+    share?: boolean,
+    compare?: boolean,
+    linkCells?: string[]
+}
+
 type CompleteCell = {
     value: any,
     rowspan?: number,
@@ -113,21 +124,9 @@ interface ContextConfig {
 //////////////
 // FEATURES //
 //////////////
-interface ColumnFeature extends ApiAction {
-    filter?: boolean
-    hidden?:  boolean
-    totalize?: boolean,
-    collapse?: boolean,
-    colorize?: {
-        positive?: boolean | string
-        negative?: boolean | string
-    }
-    labelize?: LabelConfig
-    linkCells?: string[]
-}
 
 interface ActionButton extends ApiAction {
-    label?: string
+    title?: string
     image?: string
     hint?: string
 }
