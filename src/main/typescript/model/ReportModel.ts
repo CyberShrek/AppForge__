@@ -1,6 +1,8 @@
 interface ReportModel {
+    slot: string
     title?: string
     data: MatrixData
+    dataToCompare?: MatrixData
     meta: {[colName: string]: ColumnMeta}
     charts?: {[chartName: string]: ChartConfig}
     table?: TableConfig

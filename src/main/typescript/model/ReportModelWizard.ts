@@ -1,23 +1,49 @@
-import {deepCopyOf, numberOf, valueOrDefault} from "../util/data"
-import {executeFormulaForRowData} from "../util/DANGEROUS"
-import {popupMessage} from "../util/alert"
-import Decimal from "decimal.js";
+import {deepCopyOf, valueOrDefault} from "../util/data"
+import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
+    // The first columns with type
+    primaryColumnsNum = 0
+
     readonly properData: MatrixData         = [] // properData is model.data modified by formulas and sorted.
     readonly totalRow: RowData              = []
+    readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
+
+    // Key of the columns meta used in the formulas and associated with the columns data
+    private readonly columnNames:        string[] = Object.keys(this.model.meta)
+    private readonly formulaFunctions: Function[] = Object.values(this.model.meta)
+        .map(column =>
+            column.formula && column.formula.length > 0 ?
+                new Function(
+                    ...this.columnNames,
+                    `return ${column.formula}`
+                )
+                : null )
 
     constructor(readonly config: ReportSlotConfig, readonly model: ReportModel) {
         if(model.data?.length > 0) {
-            // Firstly calculate the total data to use it in the formulas
-            this.totalRow = this.getMatrixTotal(model.data, false)
-            this.applyFormulasToRow(this.totalRow)
 
-            // Then calculate the proper data and find primary columns
+            // Calculate the total and average to use them in the formulas
+            this.totalRow   = this.getMatrixTotal(model.data, false)
+            this.averageRow = this.totalRow.map(cellData => typeof cellData === "number" ? cellData/this.totalRow.length : cellData)
+            this.applyFormulasToRow(this.totalRow)
+            this.applyFormulasToRow(this.averageRow)
+
+            // Calculate the proper data and determine primary columns num
             this.properData = deepCopyOf(model.data)
-            this.properData.forEach(row => this.applyFormulasToRow(row))
+            this.properData.forEach(row => {
+                this.applyFormulasToRow(row)
+                for (let i = 0; i < row.length; i++) {
+                    if(i > this.primaryColumnsNum
+                        && typeof row[i] === "string"
+                        && typeof row[i + 1] !== "string"){
+                        this.primaryColumnsNum = i
+                        break
+                    }
+                }
+            })
 
             // Find visible context values by associated fields with used values
             if (model.context?.fields && model.usedValues)
@@ -28,7 +54,6 @@ export class ReportModelWizard {
                 model.title = config.title
         }
     }
-
 
     // Calculates total row for the given data
     getMatrixTotal(matrix: MatrixData, applyFormulas: boolean = true): RowData{
@@ -55,9 +80,10 @@ export class ReportModelWizard {
     private applyFormulasToRow(row: RowData, isTotalRow: boolean = false) {
         // The copy is used to avoid changing the original data
         const rowCopy = [...row]
-        this.model.formulas?.forEach((formula, i) => {
-            if(formula && formula.length > 0)
-                row[i] = executeFormulaForRowData(formula, i, rowCopy, this.totalRow, isTotalRow)
+        this.formulaFunctions.forEach((formula, i) => {
+            if(formula) {
+                row[i] = formula(...rowCopy)
+            }
         })
     }
 }
