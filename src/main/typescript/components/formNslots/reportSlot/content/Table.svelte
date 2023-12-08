@@ -12,11 +12,12 @@
     import PagesBar from "../../../navigation/PagesBar.svelte"
     import {XlsxAccessor} from "../../../../api/XlsxAccessor"
     import {onMount} from "svelte";
+    import TableHead from "./TableHead.svelte";
 
     resolveStyle("table")
 
     export let
-        config: TableColumnMeta,
+        config: TableConfig,
         modelWizard: ReportModelWizard,
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor
@@ -25,24 +26,18 @@
         tableWizard: TableWizard,
         checkedRowsSet = new Set<RowData>(),
         filterValues: string[] = [],
-        pickedPageI = 0,
-        pageSize = modelWizard.properData.length
+        pickedPageI = 0
 
-    $: if(config && modelWizard) {
+    $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
-        pageSize = config.pageSize
-    }
 
-    $: if(rootElement){
-        xlsxAccessor = new XlsxAccessor(tableWizard.extractXlsxModelUsingElement(rootElement.querySelector("table")))
-    }
+    $: if(rootElement)
+        xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
     $: allRowsAreChecked =
         checkedRowsSet.size === modelWizard.properData.length
 
     $: filteredData = tableWizard.getFiltratedData(filterValues)
-
-    $: paginatedData = tableWizard.paginateData(filteredData, pageSize)
 
     function togglePickAll() {
         if(!allRowsAreChecked)
@@ -65,47 +60,18 @@
      on:scroll={handleScroll}>
 
     <table>
-        <thead>
-        {#if config.pageSize && modelWizard.properData.length >= config.pageSize}
-            <tr class="tool-bar">
-                <td colspan={tableWizard.tableWidth + (config.checkboxButtons ? 1 : 0)}>
-                    <PagesBar pageSize={config.pageSize}
-                              itemsCount={filteredData.length}
-                              bind:pickedPageI/>
-                </td>
-            </tr>
-        {/if}
-        {#each config.head as headRow, rowI}
-            <tr>
-                {#if config.checkboxButtons && rowI === 0}
-                    <th class="checkbox"
-                        rowspan={config.head.length}>
-                        <input type="checkbox"
-                               on:change={togglePickAll}
-                               bind:checked={allRowsAreChecked}/>
-                    </th>
-                {/if}
-                {#each headRow as headCell}
-                    <th rowspan={headCell.rowspan}
-                        colspan={headCell.colspan}>
-                        {headCell.value}
-                    </th>
-                {/each}
-            </tr>
-        {/each}
-        <tr class="filters-bar">
-            {#if config.checkboxButtons}
-                <th class="checkbox"></th>
-            {/if}
-            {#each Array(tableWizard.tableWidth) as _, i}
-                <th>{#if config.columns?.[i]?.filter}
-                        <Text bind:value={filterValues[i]}/>
-                    {/if}</th>
-            {/each}
-        </tr>
-        </thead>
 
         {#if tableWizard}
+
+            <TableHead {tableWizard}
+                       on:check={togglePickAll}
+                       bind:checked={allRowsAreChecked}>
+
+                <PagesBar pageSize={tableWizard.pageSize}
+                          itemsCount={filteredData.length}
+                          bind:pickedPageI/>
+
+            </TableHead>
 
             <tfoot>
             {#if config.total && filteredData.length > 0}
@@ -127,7 +93,7 @@
             {/if}
             </tfoot>
 
-            {#each paginatedData as pageData, pageI}
+            {#each tableWizard.splitData(filteredData, pageSize) as pageData, pageI}
                 {#if pageI === pickedPageI}
                     <tbody>
                         <TableRowsGroup matrixData={pageData}

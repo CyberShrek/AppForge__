@@ -104,21 +104,21 @@
     {#if model && !collapsed && modelWizard.properData.length > 0}
         <div class="body"
              transition:slide>
-            {#if model.context}
-                <Context {modelWizard}/>
-            {/if}
-            {#if model.labels}
-                <div class="labels">
-                    {#each model.labels as labelConfig}
-                        <Label config={labelConfig}
-                               data={modelWizard.totalRow}
-                        />
-                    {/each}
-                </div>
-            {/if}
-            {#if model.charts}
-                <Charts configs={model.charts} {modelWizard} show={showCharts} bind:rootElement={chartsElement}/>
-            {/if}
+            <!--{#if model.context}-->
+            <!--    <Context {modelWizard}/>-->
+            <!--{/if}-->
+            <!--{#if model.labels}-->
+            <!--    <div class="labels">-->
+            <!--        {#each model.labels as labelConfig}-->
+            <!--            <Label config={labelConfig}-->
+            <!--                   data={modelWizard.totalRow}-->
+            <!--            />-->
+            <!--        {/each}-->
+            <!--    </div>-->
+            <!--{/if}-->
+            <!--{#if model.charts}-->
+            <!--    <Charts configs={model.charts} {modelWizard} show={showCharts} bind:rootElement={chartsElement}/>-->
+            <!--{/if}-->
             {#if model.table}
                 <Table config={model.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
             {/if}

@@ -38,7 +38,7 @@ export class Table extends InlineFragment<Body>{
         this.thead = this.select("thead")
         this.tbody = this.select("tbody")
         this.tfoot = this.select("tfoot")
-        if(model.head) this.head = model.head
+        if(model.title) this.head = model.title
         if(data && data.length > 0) this.appendData(data)
         this.xlsxAccessor = new XlsxAccessor({
             name:    this.parent.parent.head.title,

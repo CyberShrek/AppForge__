@@ -2,8 +2,7 @@ interface ReportModel {
     slot: string
     title?: string
     data: MatrixData
-    dataToCompare?: MatrixData
-    meta: {[colName: string]: ColumnMeta}
+    columns: {[colName: string]: ColumnMeta}
     charts?: {[chartName: string]: ChartConfig}
     table?: TableConfig
     context?: ContextConfig
@@ -28,8 +27,7 @@ interface ColumnMeta {
 interface LabelMeta {
     title?: string
     unit?: string
-    share?: boolean
-    compare?: boolean
+    compare?: string
     image?: string
 }
 
@@ -49,7 +47,7 @@ interface ChartConfig {
 interface ChartMeta {
     chart: string
     type: "line" | "bar" | "pie" | "donut"
-    name: string
+    title: string
 }
 
 interface LineGraphMeta extends ChartMeta {
@@ -72,19 +70,19 @@ interface PieGraphMeta extends ChartMeta {
 ///////////
 interface TableConfig {
     total?: boolean,
+    labelize?: boolean,
     checkboxButtons?: {
         title?: string
         actions?: ActionButton[]
     }
 }
 interface TableColumnMeta extends ApiAction {
-    head?: string
+    title?: string
     filter?: boolean
     totalize?: boolean,
     collapse?: boolean,
-    labelize?: boolean,
+    compare?: string,
     share?: boolean,
-    compare?: boolean,
     linkCells?: string[]
 }
 

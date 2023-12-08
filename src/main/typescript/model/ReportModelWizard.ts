@@ -3,19 +3,21 @@ import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
-    // The first columns with type
-    primaryColumnsNum = 0
-
-    readonly properData: MatrixData         = [] // properData is model.data modified by formulas and sorted.
+    readonly properData: MatrixData         = [] // properData is model.data modified by formulas
     readonly totalRow: RowData              = []
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
 
     // Key of the columns meta used in the formulas and associated with the columns data
-    private readonly columnNames:        string[] = Object.keys(this.model.meta)
-    private readonly formulaFunctions: Function[] = Object.values(this.model.meta)
+    readonly columnNames:        string[] = Object.keys(this.model.columns)
+
+    readonly chartMetas: ChartMeta[] = []
+    readonly labelMetas: LabelMeta[] = []
+    readonly tableColumnMetas: TableColumnMeta[] = []
+
+    private readonly formulaFunctions: Function[] = Object.values(this.model.columns)
         .map(column =>
-            column.formula && column.formula.length > 0 ?
+            column.formula?.length > 0 ?
                 new Function(
                     ...this.columnNames,
                     `return ${column.formula}`
@@ -31,18 +33,15 @@ export class ReportModelWizard {
             this.applyFormulasToRow(this.totalRow)
             this.applyFormulasToRow(this.averageRow)
 
-            // Calculate the proper data and determine primary columns num
+            // Calculate the proper data
             this.properData = deepCopyOf(model.data)
-            this.properData.forEach(row => {
-                this.applyFormulasToRow(row)
-                for (let i = 0; i < row.length; i++) {
-                    if(i > this.primaryColumnsNum
-                        && typeof row[i] === "string"
-                        && typeof row[i + 1] !== "string"){
-                        this.primaryColumnsNum = i
-                        break
-                    }
-                }
+            this.properData.forEach(row => this.applyFormulasToRow(row))
+
+            // Distribute meta
+            Object.values(model.columns).forEach(meta => {
+                if(meta.inLabel) this.labelMetas.push(meta.inLabel)
+                if(meta.inChart) this.chartMetas.push(meta.inChart)
+                if(meta.inTable) this.tableColumnMetas.push(meta.inTable)
             })
 
             // Find visible context values by associated fields with used values

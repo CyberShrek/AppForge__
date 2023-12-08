@@ -26,22 +26,6 @@ export function swapElements(element1: HTMLElement, element2: HTMLElement) {
     temp.replaceWith(element2)
 }
 
-const setOfUniqueIds = new Set<string>()
-// Returns startName with serial number
-export function generateUniqueId(startName: string = "element"){
-    let serialNumber = 0,
-        id: string
-
-    do {
-        id = startName + "-" + serialNumber
-        serialNumber++
-    }
-
-    while (setOfUniqueIds.has(id) || document.getElementById(id) !== null)
-    setOfUniqueIds.add(id)
-    return id
-}
-
 export function scrollIntoElement(element: HTMLElement) {
     element.scrollIntoView({behavior: "smooth", block: "start"})
 }
@@ -81,4 +65,24 @@ export function exportAsJpeg(element: HTMLElement, jpegName: string = "element")
             link.click()
             link.remove()
         })
+}
+
+export function convertHtmlTableSectionToCompleteRows(htmlTableSection: HTMLTableSectionElement): CompleteRow[]{
+    const completeRows: CompleteRow[] = []
+    for (const tableRow of htmlTableSection.rows) {
+        let row: CompleteRow = []
+        for (const tableCell of tableRow.cells) {
+            if (!tableCell.classList.contains("checkbox")) {
+                row.push({
+                    value:   tableCell.innerText.trim(),
+                    colspan: tableCell.colSpan,
+                    rowspan: tableCell.rowSpan,
+                    total:   tableRow.classList.contains("total") || tableCell.classList.contains("total"),
+                    type:    tableCell.classList.contains("number") ? "number" : "string"
+                })
+            }
+        }
+        completeRows.push(row)
+    }
+    return completeRows
 }

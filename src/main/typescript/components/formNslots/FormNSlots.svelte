@@ -11,7 +11,6 @@
 
     function setReport(report: ReportModel): void {
         reportModels[report.slot] = report
-        console.log(report)
     }
 
 </script>
