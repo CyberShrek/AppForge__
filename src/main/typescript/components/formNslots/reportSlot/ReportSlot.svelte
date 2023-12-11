@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "../../../model/ReportModelWizard"
+    import {ReportModelWizard} from "./ReportModelWizard"
     import Table from "./content/Table.svelte"
     import {resolveStyle} from "../../../util/resolver"
     import Label from "./content/Label.svelte"

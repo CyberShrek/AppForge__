@@ -1,4 +1,4 @@
-import {deepCopyOf, valueOrDefault} from "../util/data"
+import {deepCopyOf, valueOrDefault} from "../../../util/data"
 import Decimal from "decimal.js"
 
 export class ReportModelWizard {
@@ -9,13 +9,13 @@ export class ReportModelWizard {
     readonly visibleContextValues: string[] = []
 
     // Key of the columns meta used in the formulas and associated with the columns data
-    readonly columnNames:        string[] = Object.keys(this.model.columns)
+    readonly columnNames:        string[] = Object.keys(this.model.config.columns)
 
     readonly chartMetas: ChartMeta[] = []
     readonly labelMetas: LabelMeta[] = []
     readonly tableColumnMetas: TableColumnMeta[] = []
 
-    private readonly formulaFunctions: Function[] = Object.values(this.model.columns)
+    private readonly formulaFunctions: Function[] = Object.values(this.model.config.columns)
         .map(column =>
             column.formula?.length > 0 ?
                 new Function(
@@ -24,7 +24,7 @@ export class ReportModelWizard {
                 )
                 : null )
 
-    constructor(readonly config: ReportSlotConfig, readonly model: ReportModel) {
+    constructor(readonly model: ReportModel) {
         if(model.data?.length > 0) {
 
             // Calculate the total and average to use them in the formulas
@@ -38,19 +38,16 @@ export class ReportModelWizard {
             this.properData.forEach(row => this.applyFormulasToRow(row))
 
             // Distribute meta
-            Object.values(model.columns).forEach(meta => {
+            Object.values(model.config.columns).forEach(meta => {
                 if(meta.inLabel) this.labelMetas.push(meta.inLabel)
                 if(meta.inChart) this.chartMetas.push(meta.inChart)
                 if(meta.inTable) this.tableColumnMetas.push(meta.inTable)
             })
 
             // Find visible context values by associated fields with used values
-            if (model.context?.fields && model.usedValues)
-            this.visibleContextValues = Object.entries(model.context.fields)
+            if (model.config.context?.fields && model.usedValues)
+            this.visibleContextValues = Object.entries(model.config.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
-
-            if(!model.title)
-                model.title = config.title
         }
     }
 

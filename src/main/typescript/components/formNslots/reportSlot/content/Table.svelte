@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+    import {ReportModelWizard} from "../ReportModelWizard"
     import {resolveStyle} from "../../../../util/resolver"
     import {TableWizard} from "./TableWizard"
     import {tableTotalWord} from "../../../../properties"

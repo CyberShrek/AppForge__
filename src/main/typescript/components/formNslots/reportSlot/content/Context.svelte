@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+    import {ReportModelWizard} from "../ReportModelWizard"
     import {popupList, popupTable} from "../../../../util/alert";
 
     export let

@@ -10,7 +10,9 @@
         tableWizard: TableWizard,
         checked = false
 
-    const isComplex: boolean = !!tableWizard.columnMetas.find(meta => !!meta.compare || !!meta.share)
+    const isComplex: boolean = !!tableWizard.columnMetas.find(column => isColumnComplex(column))
+
+    const isColumnComplex = (column: TableColumnMeta) => !!column.compare || !!column.share || !!column.filter
 
 </script>
 
@@ -33,34 +35,30 @@
                        bind:checked/>
             </th>
         {/if}
-        {#each tableWizard.columnMetas as meta}
-            <th rowspan={1 + Number(!meta.compare && !meta.share)}
-                colspan={1 + Number(!!meta.compare) + Number(!!meta.share)}>
-                {meta.title}
+        {#each tableWizard.columnMetas as column}
+            <th rowspan={1 + Number(isComplex && !isColumnComplex(column))}
+                colspan={1 + Number(!!column.compare) + Number(!!column.share)}>
+                {column.title}
             </th>
         {/each}
     </tr>
 
-    <!-- Row for share or compare columns -->
+    <!-- Row for filter, share or compare columns -->
     {#if isComplex}
         <tr>
-            {#each tableWizard.columnMetas as meta}
-                <th rowspan={1 + Number(!meta.compare && !meta.share)}
-                    colspan={1 + Number(!!meta.compare) + Number(!!meta.share)}>
-                    {meta.title}
-                </th>
+            {#if tableWizard.hasCheckboxes}
+                <th class="checkbox"></th>
+            {/if}
+            {#each tableWizard.columnMetas as column}
+                {#if isColumnComplex(column)}
+                    <th>
+                        {#if column.filter}
+                            <Text bind:value={filterValues[i]}/>
+                        {/if}
+                    </th>
+                {/if}
+
             {/each}
         </tr>
     {/if}
-
-    <tr class="filters-bar">
-        {#if config.checkboxButtons}
-            <th class="checkbox"></th>
-        {/if}
-        {#each Array(tableWizard.tableWidth) as _, i}
-            <th>{#if config.columns?.[i]?.filter}
-                <Text bind:value={filterValues[i]}/>
-            {/if}</th>
-        {/each}
-    </tr>
 </thead>

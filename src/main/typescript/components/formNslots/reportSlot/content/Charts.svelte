@@ -1,6 +1,6 @@
 <script lang="ts">
     import Chart from "./Chart.svelte"
-    import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+    import {ReportModelWizard} from "../ReportModelWizard"
     import {slide} from "svelte/transition"
 
     export let

@@ -1,4 +1,4 @@
-import {ReportModelWizard} from "../../../../model/ReportModelWizard"
+import {ReportModelWizard} from "../ReportModelWizard"
 import {tableTotalWord} from "../../../../properties"
 import {convertHtmlTableSectionToCompleteRows, swapElements} from "../../../../util/domWizard"
 import {numberOf, valueOrDefault} from "../../../../util/data";
@@ -73,7 +73,7 @@ export class TableWizard {
 
     convertHtmlTableToXlsxModel(htmlTable: HTMLTableElement): XlsxTableModel{
         return {
-            title: this.modelWizard.model.title,
+            title: this.modelWizard.model.config.title,
             context: this.modelWizard.visibleContextValues,
             head:  convertHtmlTableSectionToCompleteRows(htmlTable.tHead),
             body: [
