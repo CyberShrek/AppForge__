@@ -66,7 +66,7 @@
 <div class="report" bind:this={rootElement}>
     <div class="head">
         <h3>{model?.title ? model.title : config.title}</h3>
-        {#if model && modelWizard.properData.length > 0}
+        {#if model && modelWizard.data.length > 0}
             {#if !config.modal}
                 <ToTopButton/>
             {/if}
@@ -101,7 +101,7 @@
         {/if}
     </div>
 
-    {#if model && !collapsed && modelWizard.properData.length > 0}
+    {#if model && !collapsed && modelWizard.data.length > 0}
         <div class="body"
              transition:slide>
             <!--{#if model.context}-->

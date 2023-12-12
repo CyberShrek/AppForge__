@@ -1,6 +1,7 @@
 <script lang="ts">
 
     import {TableWizard} from "./TableWizard"
+    import {tableText} from "../../../../properties";
 
     export let
         tableWizard: TableWizard,
@@ -15,12 +16,12 @@
                 <td class="checkbox"></td>
             {/if}
             <td colspan={tableWizard.primaryColumnsNumber}>
-                {tableTotalWord}
+                {tableText.foot.total}
             </td>
-            {#each tableWizard.getMatrixTotal(filteredData) as totalCellData, i}
-                {#if i >= tableWizard.primaryColumnsNumber && i < tableWizard.tableWidth}
-                    <td class={typeof totalCellData}>
-                        {totalCellData}
+            {#each tableWizard.getMatrixTotal(tableWizard.filteredData) as cellData, i}
+                {#if i >= tableWizard.primaryColumnsNumber}
+                    <td class={typeof cellData}>
+                        {cellData}
                     </td>
                 {/if}
             {/each}

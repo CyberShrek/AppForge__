@@ -11,14 +11,19 @@ export class TableWizard {
     // Some boolean properties for convenience
     readonly hasCheckboxes = !!this.config.checkboxButtons
 
-    filteredData: MatrixData = this.modelWizard.properData
+    readonly data = this.modelWizard.data.map(rowData => {
+        const tableRowData: RowData = []
+        rowData.forEach(cell)
+    })
+
+    filteredData: MatrixData = []
 
     constructor(private readonly modelWizard: ReportModelWizard,
                 private readonly config: TableConfig) {
 
         // Find primary columns number
         let primaryColumnsNumber = 0
-        this.modelWizard.properData.forEach(row => {
+        this.modelWizard.data.forEach(row => {
             for (let i = 1; i <= row.length; i++) {
                 if (typeof row[i - 1] !== "string") break
                 if (i > primaryColumnsNumber) primaryColumnsNumber = i
@@ -27,10 +32,10 @@ export class TableWizard {
         this.primaryColumnsNumber = primaryColumnsNumber
     }
 
-    // Filtrate the modelWizard.properData by given filter values where each value refers to each column and apply the result to filteredData.
+    // Filtrate the properData by given filter values where each value refers to each column and apply the result to filteredData.
     // Return filteredData
     filtrateData(filterValues: string[]): MatrixData {
-        return this.filteredData = this.modelWizard.properData.filter(row =>
+        return this.filteredData = this.data.filter(row =>
             filterValues.every((filterValue, index) =>
                 filterValue === undefined
                 || filterValue === ""

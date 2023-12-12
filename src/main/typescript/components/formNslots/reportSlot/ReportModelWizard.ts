@@ -3,7 +3,7 @@ import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
-    readonly properData: MatrixData         = [] // properData is model.data modified by formulas
+    readonly data: MatrixData     = [] // model.data modified by formulas
     readonly totalRow: RowData              = []
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
@@ -34,8 +34,8 @@ export class ReportModelWizard {
             this.applyFormulasToRow(this.averageRow)
 
             // Calculate the proper data
-            this.properData = deepCopyOf(model.data)
-            this.properData.forEach(row => this.applyFormulasToRow(row))
+            this.data = deepCopyOf(model.data)
+            this.data.forEach(row => this.applyFormulasToRow(row))
 
             // Distribute meta
             Object.values(model.config.columns).forEach(meta => {

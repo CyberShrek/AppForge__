@@ -30,11 +30,11 @@
         xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
     $: allRowsAreChecked =
-        checkedRowsSet.size === modelWizard.properData.length
+        checkedRowsSet.size === modelWizard.data.length
 
     function togglePickAll() {
         if(!allRowsAreChecked)
-            checkedRowsSet = new Set(modelWizard.properData)
+            checkedRowsSet = new Set(modelWizard.data)
         else
             checkedRowsSet = new Set()
     }
