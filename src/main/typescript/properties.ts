@@ -3,7 +3,15 @@ export const
     stylesLocation = "/appforge/css/",
     modulesLocation = "/appforge/js/",
 
-    tableTotalWord = "Итого",
+    tableText = {
+        head: {
+            shareInTotal: "Доля в общем объёме, %",
+            compare: "Рост/падение, %"
+        },
+        foot: {
+            total: "Итого"
+        }
+    },
 
     virtualSelectProperties = {
         additionalClasses: "multiselect",

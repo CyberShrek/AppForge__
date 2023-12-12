@@ -1,8 +1,6 @@
 import {ReportModelWizard} from "../ReportModelWizard"
-import {tableTotalWord} from "../../../../properties"
-import {convertHtmlTableSectionToCompleteRows, swapElements} from "../../../../util/domWizard"
-import {numberOf, valueOrDefault} from "../../../../util/data";
-
+import {convertHtmlTableSectionToCompleteRows} from "../../../../util/domWizard"
+import {tableText} from "../../../../properties";
 export class TableWizard {
 
     // The primary columns are the most left columns consist of "string" type cells
@@ -12,6 +10,8 @@ export class TableWizard {
 
     // Some boolean properties for convenience
     readonly hasCheckboxes = !!this.config.checkboxButtons
+
+    filteredData: MatrixData = this.modelWizard.properData
 
     constructor(private readonly modelWizard: ReportModelWizard,
                 private readonly config: TableConfig) {
@@ -27,7 +27,20 @@ export class TableWizard {
         this.primaryColumnsNumber = primaryColumnsNumber
     }
 
-    // Splits the matrix into groups by the given colIndex. Returns an array of matrices where each matrix is a group.
+    // Filtrate the modelWizard.properData by given filter values where each value refers to each column and apply the result to filteredData.
+    // Return filteredData
+    filtrateData(filterValues: string[]): MatrixData {
+        return this.filteredData = this.modelWizard.properData.filter(row =>
+            filterValues.every((filterValue, index) =>
+                filterValue === undefined
+                || filterValue === ""
+                || String(row[index]).toLowerCase().includes(filterValue.toLowerCase())
+            )
+        )
+    }
+
+    // Split the matrix into groups by the given colIndex.
+    // Return an array of matrices where each matrix is a group.
     splitMatrixByColIndex(matrix: MatrixData, colIndex: number): MatrixData[]{
         let result: MatrixData[] = [],
             prevColValue: string | number
@@ -43,27 +56,17 @@ export class TableWizard {
         return result
     }
 
-    // Calculates total row for the given data
+    // Calculate total row for the given data
     getMatrixTotal(matrix: MatrixData, primaryColumnI: number = this.primaryColumnsNumber - 1): RowData{
         return this.modelWizard.getMatrixTotal(matrix)
             .map((cellData, index) =>
                 index <= primaryColumnI ? matrix[0][index]
-                    : index < this.primaryColumnsNumber ? tableTotalWord
+                    : index < this.primaryColumnsNumber ? tableText.foot.total
                         : cellData
             )
     }
 
-    getFiltratedData(filterValues: string[]): MatrixData{
-        return this.modelWizard.properData.filter(row => {
-            return filterValues.every((filterValue, index) => {
-                return filterValue === undefined
-                    || filterValue === ""
-                    || String(row[index]).toLowerCase().includes(filterValue.toLowerCase())
-            })
-        })
-    }
-
-    // Splits the data into pages with the given pageSize
+    // Split the data into pages with the given pageSize
     splitData(data: MatrixData, pageSize: number = data.length): MatrixData[]{
         let result: MatrixData[] = []
         for (let i = 0; i < data.length; i += pageSize)
