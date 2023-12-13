@@ -10,8 +10,7 @@
 
     export let
         tableWizard: TableWizard,
-        checked = false,
-        pickedPageI = 0
+        checked = false
 
     let filterValues: string[] = []
 
@@ -30,7 +29,7 @@
         <td colspan=-1>
             <PagesBar pageSize={tableWizard.pageSize}
                       itemsCount={tableWizard.filteredData.length}
-                      bind:pickedPageI/>
+                      bind:pickedPageI={tableWizard.pickedPageI}/>
         </td>
     </tr>
 
@@ -45,10 +44,12 @@
             </th>
         {/if}
         {#each tableWizard.columnMetas as column}
-            <th rowspan={1 + Number(isComplex && !isColumnComplex(column))}
-                colspan={1 + Number(!!column.compare) + Number(!!column.share)}>
-                {column.title}
-            </th>
+            {#if column}
+                <th rowspan={1 + Number(isComplex && !isColumnComplex(column))}
+                    colspan={1 + Number(!!column.compare) + Number(!!column.share)}>
+                    {column.title}
+                </th>
+            {/if}
         {/each}
     </tr>
 
@@ -59,22 +60,24 @@
                 <th class="checkbox"></th>
             {/if}
             {#each tableWizard.columnMetas as column, i}
-                {#if isColumnComplex(column)}
-                    <th>
-                        {#if column.filter}
-                            <Text bind:value={filterValues[i]}/>
-                        {/if}
-                    </th>
-                {/if}
-                {#if column.compare}
-                    <th>
-                        {tableText.head.compare}
-                    </th>
-                {/if}
-                {#if column.share}
-                    <th>
-                        {tableText.head.shareInTotal}
-                    </th>
+                {#if column}
+                    {#if isColumnComplex(column)}
+                        <th>
+                            {#if column.filter}
+                                <Text bind:value={filterValues[i]}/>
+                            {/if}
+                        </th>
+                    {/if}
+                    {#if column.compare}
+                        <th>
+                            {tableText.head.compare}
+                        </th>
+                    {/if}
+                    {#if column.share}
+                        <th>
+                            {tableText.head.shareInTotal}
+                        </th>
+                    {/if}
                 {/if}
             {/each}
         </tr>

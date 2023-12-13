@@ -1,29 +1,29 @@
 import {ReportModelWizard} from "../ReportModelWizard"
 import {convertHtmlTableSectionToCompleteRows} from "../../../../util/domWizard"
-import {tableText} from "../../../../properties";
+import {tableText} from "../../../../properties"
+
 export class TableWizard {
 
     // The primary columns are the most left columns consist of "string" type cells
     readonly primaryColumnsNumber: number
-    readonly columnMetas = this.modelWizard.tableColumnMetas
-    readonly pageSize = this.config.labelize ? 20 : 50
 
-    // Some boolean properties for convenience
-    readonly hasCheckboxes = !!this.config.checkboxButtons
+    // The number of rows in each page
+    readonly pageSize = this.config?.labelize ? 20 : 50
 
-    readonly data = this.modelWizard.data.map(rowData => {
-        const tableRowData: RowData = []
-        rowData.forEach(cell)
-    })
+    readonly hasTotal = this.config?.total
 
-    filteredData: MatrixData = []
+    readonly hasCheckboxes = !!this.config?.checkboxButtons
+
+    // If column meta for the table is not found then null will be added
+    readonly columnMetas: TableColumnMeta[] = Object.values(this.modelWizard.model.config.columns)
+        .map(meta => meta.inTable ? meta.inTable : null)
 
     constructor(private readonly modelWizard: ReportModelWizard,
                 private readonly config: TableConfig) {
 
         // Find primary columns number
         let primaryColumnsNumber = 0
-        this.modelWizard.data.forEach(row => {
+        this.modelWizard.properData.forEach(row => {
             for (let i = 1; i <= row.length; i++) {
                 if (typeof row[i - 1] !== "string") break
                 if (i > primaryColumnsNumber) primaryColumnsNumber = i
@@ -32,10 +32,9 @@ export class TableWizard {
         this.primaryColumnsNumber = primaryColumnsNumber
     }
 
-    // Filtrate the properData by given filter values where each value refers to each column and apply the result to filteredData.
-    // Return filteredData
+    // Return filtrated properData by given filter values where each value refers to each column
     filtrateData(filterValues: string[]): MatrixData {
-        return this.filteredData = this.data.filter(row =>
+        return this.modelWizard.properData.filter(row =>
             filterValues.every((filterValue, index) =>
                 filterValue === undefined
                 || filterValue === ""

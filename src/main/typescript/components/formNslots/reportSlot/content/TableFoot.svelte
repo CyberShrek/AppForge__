@@ -5,12 +5,12 @@
 
     export let
         tableWizard: TableWizard,
-        addTotal = false
+        hasTotal = false
 
 </script>
 
 <tfoot>
-    {#if addTotal}
+    {#if hasTotal}
         <tr class="total">
             {#if tableWizard.hasCheckboxes}
                 <td class="checkbox"></td>

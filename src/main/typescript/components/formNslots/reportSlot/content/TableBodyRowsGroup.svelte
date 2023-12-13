@@ -4,7 +4,6 @@
     import TableBodyRow from "./TableBodyRow.svelte"
 
     export let
-        config: TableColumnMeta,
         matrixData: MatrixData,
         tableWizard: TableWizard,
         size: number = null,

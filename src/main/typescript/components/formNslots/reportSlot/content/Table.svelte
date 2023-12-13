@@ -6,9 +6,10 @@
     import {scrollIntoElement} from "../../../../util/domWizard"
     import Fix from "../../../misc/Fix.svelte"
     import Button from "../../../input/Button.svelte"
-    import TableRowsGroup from "./TableBodyRowsGroup.svelte"
     import {XlsxAccessor} from "../../../../api/XlsxAccessor"
-    import TableHead from "./TableHead.svelte";
+    import TableHead from "./TableHead.svelte"
+    import TableFoot from "./TableFoot.svelte"
+    import TableBody from "./TableBody.svelte"
 
     resolveStyle("table")
 
@@ -21,6 +22,7 @@
     let rootElement: HTMLDivElement,
         tableWizard: TableWizard,
         checkedRowsSet = new Set<RowData>(),
+        // Determines the currently selected page index
         pickedPageI = 0
 
     $: if(config && modelWizard)
@@ -29,12 +31,13 @@
     $: if(rootElement)
         xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
-    $: allRowsAreChecked =
-        checkedRowsSet.size === modelWizard.data.length
+    $: hasCheckboxes = !!config?.checkboxButtons
+
+    $: allRowsAreChecked = checkedRowsSet.size === modelWizard.properData.length
 
     function togglePickAll() {
         if(!allRowsAreChecked)
-            checkedRowsSet = new Set(modelWizard.data)
+            checkedRowsSet = new Set(modelWizard.properData)
         else
             checkedRowsSet = new Set()
     }
@@ -53,26 +56,18 @@
      on:scroll={handleScroll}>
 
     <table>
-
         {#if tableWizard}
 
             <TableHead {tableWizard}
                        on:check={togglePickAll}
-                       bind:checked={allRowsAreChecked}
-                       bind:pickedPageI/>
+                       bind:checked={allRowsAreChecked}/>
 
+            <TableFoot {tableWizard}
+                       {hasTotal}/>
 
-            {#each tableWizard.splitData(filteredData, pageSize) as pageData, pageI}
-                {#if pageI === pickedPageI}
-                    <tbody>
-                        <TableRowsGroup matrixData={pageData}
-                                        bind:checkedRowsSet
-                                        on:apiAction={event => submittedApiAction = event.detail}
-                                        {config}
-                                        {tableWizard}/>
-                    </tbody>
-                {/if}
-            {/each}
+            <TableBody {tableWizard}
+                       bind:checkedRowsSet
+                       on:apiAction={event => submittedApiAction = event.detail}/>
         {/if}
     </table>
 

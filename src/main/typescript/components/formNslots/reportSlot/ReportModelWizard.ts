@@ -3,17 +3,13 @@ import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
-    readonly data: MatrixData     = [] // model.data modified by formulas
+    readonly properData: MatrixData     = [] // model.data modified by formulas
     readonly totalRow: RowData              = []
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
 
     // Key of the columns meta used in the formulas and associated with the columns data
     readonly columnNames:        string[] = Object.keys(this.model.config.columns)
-
-    readonly chartMetas: ChartMeta[] = []
-    readonly labelMetas: LabelMeta[] = []
-    readonly tableColumnMetas: TableColumnMeta[] = []
 
     private readonly formulaFunctions: Function[] = Object.values(this.model.config.columns)
         .map(column =>
@@ -34,15 +30,8 @@ export class ReportModelWizard {
             this.applyFormulasToRow(this.averageRow)
 
             // Calculate the proper data
-            this.data = deepCopyOf(model.data)
-            this.data.forEach(row => this.applyFormulasToRow(row))
-
-            // Distribute meta
-            Object.values(model.config.columns).forEach(meta => {
-                if(meta.inLabel) this.labelMetas.push(meta.inLabel)
-                if(meta.inChart) this.chartMetas.push(meta.inChart)
-                if(meta.inTable) this.tableColumnMetas.push(meta.inTable)
-            })
+            this.properData = deepCopyOf(model.data)
+            this.properData.forEach(row => this.applyFormulasToRow(row))
 
             // Find visible context values by associated fields with used values
             if (model.config.context?.fields && model.usedValues)

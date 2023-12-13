@@ -75,8 +75,6 @@ export function compare(a: any, b: any): boolean{
     return JSON.stringify(valueOrDefault(a, null)) === JSON.stringify(valueOrDefault(b, null))
 }
 
-
-
 export function setToArray<T>(set: Set<T>): T[] {
     return [...set]
 }
