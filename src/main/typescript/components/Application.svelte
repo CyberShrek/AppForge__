@@ -2,11 +2,9 @@
 
     import {resolveStyle} from "../util/resolver"
     import Header from "./navigation/Header.svelte"
-    import {extractJsonItemsWithSuffix} from "../util/data"
     import FormNSlots from "./formNslots/FormNSlots.svelte"
-    import Fix from "./misc/Fix.svelte";
-    import Button from "./input/Button.svelte";
-    import ToTopButton from "./misc/ToTopButton.svelte";
+    import Fix from "./misc/Fix.svelte"
+    import ToTopButton from "./misc/ToTopButton.svelte"
 
     export let
         config:    AppConfig,
@@ -34,7 +32,7 @@
 <Header {appInfo}></Header>
 {#if config.form}
     <FormNSlots formConfig={config.form}
-                reportConfigsObject={extractJsonItemsWithSuffix(config, "Slot")}/>
+                slotConfigs={config.slots}/>
 {/if}
 
 <svelte:window bind:scrollY/>

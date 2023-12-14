@@ -3,10 +3,17 @@ import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
-    readonly properData: MatrixData     = [] // model.data modified by formulas
+    readonly properData: MatrixData         = [] // model.data modified by formulas
     readonly totalRow: RowData              = []
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
+
+    private isColumnHasField = (fieldKey: keyof ColumnMeta) =>
+        !!Object.values(this.model.config?.columns).find(column => column[fieldKey])
+
+    readonly hasTable: boolean = this.isColumnHasField("inTable")
+    readonly hasChart: boolean = this.isColumnHasField("inChart")
+    readonly hasLabel: boolean = this.isColumnHasField("inLabel")
 
     // Key of the columns meta used in the formulas and associated with the columns data
     readonly columnNames:        string[] = Object.keys(this.model.config.columns)
@@ -37,6 +44,7 @@ export class ReportModelWizard {
             if (model.config.context?.fields && model.usedValues)
             this.visibleContextValues = Object.entries(model.config.context.fields)
                 .map(([fieldKey, fieldNaturalName]) => fieldNaturalName + ":\t" + model.usedValues[fieldKey])
+
         }
     }
 

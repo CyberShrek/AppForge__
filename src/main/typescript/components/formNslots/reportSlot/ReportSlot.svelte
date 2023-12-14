@@ -3,17 +3,14 @@
     import {ReportModelWizard} from "./ReportModelWizard"
     import Table from "./content/Table.svelte"
     import {resolveStyle} from "../../../util/resolver"
-    import Label from "./content/Label.svelte"
     import Button from "../../input/Button.svelte"
     import {exportAsJpeg, getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../../util/domWizard"
     import {slide} from "svelte/transition"
     import {compare, deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
     import {afterUpdate, createEventDispatcher} from "svelte"
-    import Charts from "./content/Charts.svelte"
     import {XlsxAccessor} from "../../../api/XlsxAccessor"
-    import Context from "./content/Context.svelte";
-    import ToTopButton from "../../misc/ToTopButton.svelte";
+    import ToTopButton from "../../misc/ToTopButton.svelte"
 
     resolveStyle("report")
 
@@ -21,7 +18,8 @@
 
     export let
         config: ReportSlotConfig,
-        model:  ReportModel
+        model:  ReportModel,
+        modal = false
 
     let rootElement: HTMLDivElement,
         prevModel: ReportModel,
@@ -29,10 +27,12 @@
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor,
         chartsElement: HTMLDivElement,
-        showCharts = model?.charts && !model?.table,
         fullScreen = false
 
-    $: modelWizard = model && new ReportModelWizard(config, model)
+    $: if(model && !model.config)
+        model.config = config
+
+    $: modelWizard = model && new ReportModelWizard(model)
 
     $: if(modelWizard)
         collapsed = false
@@ -65,35 +65,35 @@
 
 <div class="report" bind:this={rootElement}>
     <div class="head">
-        <h3>{model?.title ? model.title : config.title}</h3>
+        <h3>{model.config.title}</h3>
         {#if model && modelWizard.properData.length > 0}
-            {#if !config.modal}
+            {#if !modal}
                 <ToTopButton/>
             {/if}
-            {#if model.charts && showCharts}
-                <Button unavailable={collapsed}
-                        hint="Экспортировать графики в .jpeg"
-                        text=".jpeg"
-                        on:click={() => exportAsJpeg(chartsElement, modelWizard.model.title)}/>
-            {/if}
-            {#if model.charts && model.table}
-                <Button image="graph.svg"
-                        unavailable={collapsed}
-                        hint="Графическое представление"
-                        on:click={() => showCharts = !showCharts}/>
-            {/if}
-            {#if model.table}
+            <!--{#if model.charts && showCharts}-->
+            <!--    <Button unavailable={collapsed}-->
+            <!--            hint="Экспортировать графики в .jpeg"-->
+            <!--            text=".jpeg"-->
+            <!--            on:click={() => exportAsJpeg(chartsElement, modelWizard.model.title)}/>-->
+            <!--{/if}-->
+            <!--{#if model.charts && model.table}-->
+            <!--    <Button image="graph.svg"-->
+            <!--            unavailable={collapsed}-->
+            <!--            hint="Графическое представление"-->
+            <!--            on:click={() => showCharts = !showCharts}/>-->
+            <!--{/if}-->
+            {#if modelWizard.hasTable}
                 <Button image="download.svg"
                         hint="Экспортировать таблицу в .xlsx"
                         on:click={() => xlsxAccessor?.fetch()}/>
             {/if}
-            {#if !config.modal}
+            {#if !modal}
                 <Button image="collapse.svg"
                         hint={collapsed ? "Развернуть" : "Свернуть"}
                         on:click={() => collapsed = !collapsed}/>
             {/if}
             <Button image={fullScreen ? "restore.svg" : "expand.svg"} hint={fullScreen ? "Нормальный вид" : "На весь экран"} on:click={() => toggleFullscreen(rootElement)}/>
-            {#if config.modal}
+            {#if modal}
                 <Button image="close.svg"
                         hint="Закрыть"
                         on:click={() => window.dispatchEvent(new KeyboardEvent("keydown",{ key: "Escape" }))}/>
@@ -119,8 +119,8 @@
             <!--{#if model.charts}-->
             <!--    <Charts configs={model.charts} {modelWizard} show={showCharts} bind:rootElement={chartsElement}/>-->
             <!--{/if}-->
-            {#if model.table}
-                <Table config={model.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
+            {#if modelWizard.hasTable}
+                <Table config={model.config.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
             {/if}
         </div>
     {/if}

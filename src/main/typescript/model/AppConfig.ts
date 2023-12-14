@@ -11,7 +11,5 @@ type AppConfig = {
 
 type FormNReportsConfig = {
     form: FormConfig
-} & {
-    // slotName must end with the "Slot" word
-    [slotName: string]: ReportSlotConfig
+    slots: { [slotName: string]: ReportSlotConfig }
 }

@@ -23,7 +23,9 @@
         tableWizard: TableWizard,
         checkedRowsSet = new Set<RowData>(),
         // Determines the currently selected page index
-        pickedPageI = 0
+        pickedPageI = 0,
+        // Data filtered by head filters
+        filteredData: MatrixData
 
     $: if(config && modelWizard)
         tableWizard = new TableWizard(modelWizard, config)
@@ -31,9 +33,9 @@
     $: if(rootElement)
         xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
-    $: hasCheckboxes = !!config?.checkboxButtons
-
     $: allRowsAreChecked = checkedRowsSet.size === modelWizard.properData.length
+
+    $: totalRow = tableWizard?.getMatrixTotal(filteredData)
 
     function togglePickAll() {
         if(!allRowsAreChecked)
@@ -60,18 +62,23 @@
 
             <TableHead {tableWizard}
                        on:check={togglePickAll}
+                       bind:pickedPageI
+                       bind:filteredData
                        bind:checked={allRowsAreChecked}/>
 
             <TableFoot {tableWizard}
-                       {hasTotal}/>
+                       {totalRow}/>
 
             <TableBody {tableWizard}
+                       {filteredData}
+                       {totalRow}
+                       {pickedPageI}
                        bind:checkedRowsSet
-                       on:apiAction={event => submittedApiAction = event.detail}/>
+                       on:action={event => submittedApiAction = event.detail}/>
         {/if}
     </table>
 
-    {#if checkedRowsSet.size > 0 && config.checkboxButtons}
+    {#if tableWizard.hasCheckboxes && checkedRowsSet.size > 0}
         <Fix framed={true}
              left={true}
              bottom={true}>

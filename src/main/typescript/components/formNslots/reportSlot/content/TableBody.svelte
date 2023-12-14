@@ -4,16 +4,20 @@
 
     export let
         tableWizard: TableWizard,
+        filteredData: MatrixData,
+        totalRow: RowData,
+        pickedPageI: number,
         checkedRowsSet: Set<RowData>
 
 </script>
 
-{#each tableWizard.splitData(this.filteredData, this.pageSize) as pageData, pageI}
-    {#if pageI === tableWizard.pickedPageI}
+{#each tableWizard.splitDataIntoPages(filteredData) as pageData, pageI}
+    {#if pageI === pickedPageI}
         <tbody>
         <TableRowsGroup matrixData={pageData}
+                        {totalRow}
                         bind:checkedRowsSet
-                        on:apiAction
+                        on:action
                         {tableWizard}/>
         </tbody>
     {/if}

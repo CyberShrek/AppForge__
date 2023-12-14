@@ -1,11 +1,10 @@
 <script lang="ts">
     import Form from "./form/Form.svelte"
     import ReportSlot from "./reportSlot/ReportSlot.svelte"
-    import Modal from "../misc/Modal.svelte";
 
     export let
         formConfig: FormConfig,
-        reportConfigsObject: {[configKey: string]: ReportSlotConfig}
+        slotConfigs: FormNReportsConfig["slots"]
 
     let reportModels: {[reportSlot: string]: ReportModel} = {}
 
@@ -18,18 +17,14 @@
 <Form config={formConfig}
       on:report={e => setReport(e.detail)}/>
 
-{#each Object.keys(reportConfigsObject) as reportKey}
-    {#if reportConfigsObject[reportKey].modal}
-        {#if reportModels[reportKey]}
-            <Modal on:close={() => reportModels[reportKey] = null}>
-                <ReportSlot config={reportConfigsObject[reportKey]}
-                            model={reportModels[reportKey]}
-                            on:report={e => setReport(e.detail)}/>
-            </Modal>
-        {/if}
-    {:else}
-        <ReportSlot config={reportConfigsObject[reportKey]}
-                    model={reportModels[reportKey]}
-                    on:report={e => setReport(e.detail)}/>
-    {/if}
+{#each Object.keys(slotConfigs) as slotKey}
+    <ReportSlot config={slotConfigs[slotKey]}
+                model={reportModels[slotKey]}
+                on:report={e => setReport(e.detail)}/>
 {/each}
+
+<!--<Modal on:close={() => reportModels[reportKey] = null}>-->
+<!--    <ReportSlot config={reportConfigsObject[reportKey]}-->
+<!--                model={reportModels[reportKey]}-->
+<!--                on:report={e => setReport(e.detail)}/>-->
+<!--</Modal>-->

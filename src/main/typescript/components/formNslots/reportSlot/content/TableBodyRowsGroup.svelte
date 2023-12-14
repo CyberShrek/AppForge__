@@ -5,18 +5,19 @@
 
     export let
         matrixData: MatrixData,
+        totalRow: RowData,
         tableWizard: TableWizard,
         size: number = null,
         groupSizes: number[] = null,
         checkedRowsSet: Set<RowData>,
-        collapseStartIndex: number = config.columns?.findIndex(feature => feature?.totalize === "collapse") ?? -1,
+        collapseStartIndex: number = -1,
         nesting = 0
 
     $: innerSizes = [matrixData.length]
 
     let checkedRows: boolean[] = []
 
-    $: totalize = matrixData.length > 1 && !!config.columns?.[nesting - 1]?.totalize
+    $: totalize = matrixData.length > 1 && !!tableWizard.columnMetas?.[nesting - 1]?.totalize
 
     // The sum of all inner sizes + 1 if has total
     $: size = innerSizes.reduce((sum, size) => sum + size, Number(totalize))
@@ -56,7 +57,6 @@
         <svelte:self
                 matrixData={groupData}
                 {tableWizard}
-                {config}
                 bind:size={innerSizes[groupI]}
                 bind:checkedRowsSet
                 groupSizes={groupSizes === null ? [] : (groupI === 0 ? [...groupSizes] : groupSizes.map((size, index) => index < nesting ? null : size))}
@@ -69,26 +69,22 @@
 {:else}
     {#each matrixData as rowData, rowI}
         <TableBodyRow data={rowData}
-                      width={tableWizard.tableWidth}
-                      features={config.columns}
+                      totalData={totalRow}
+                      {tableWizard}
                       isGroupStart={rowI === 0}
-                      primaryColumnsNumber={tableWizard.primaryColumnsNumber}
                       primaryGroupSizes={groupSizes}
                       {collapseStartIndex}
-                      addCheckbox={!!config.checkboxButtons}
                       bind:checked={checkedRows[rowI]}
                       on:collapse
                       on:collapse={event => toggleCollapse(true,  event.detail)}
                       on:expand
                       on:expand={  event => toggleCollapse(false, event.detail)}
-                      on:apiAction/>
+                      on:action/>
     {/each}
 {/if}
 {#if totalize}
     <TableBodyRow data={tableWizard.getMatrixTotal(matrixData, nesting - 1)}
-                  width={tableWizard.tableWidth}
-                  features={config.columns}
-                  primaryColumnsNumber={tableWizard.primaryColumnsNumber}
+                  {tableWizard}
                   totalColI={nesting}
                   collapseStartIndex={collapseStartIndex > -1 && collapseStartIndex < nesting - 1 ? collapseStartIndex : -1}/>
 {/if}

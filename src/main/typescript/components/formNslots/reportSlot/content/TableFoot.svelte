@@ -5,12 +5,12 @@
 
     export let
         tableWizard: TableWizard,
-        hasTotal = false
+        totalRow: RowData
 
 </script>
 
 <tfoot>
-    {#if hasTotal}
+    {#if totalRow && tableWizard.hasTotal}
         <tr class="total">
             {#if tableWizard.hasCheckboxes}
                 <td class="checkbox"></td>
@@ -18,10 +18,10 @@
             <td colspan={tableWizard.primaryColumnsNumber}>
                 {tableText.foot.total}
             </td>
-            {#each tableWizard.getMatrixTotal(tableWizard.filteredData) as cellData, i}
+            {#each totalRow as cell, i}
                 {#if i >= tableWizard.primaryColumnsNumber}
-                    <td class={typeof cellData}>
-                        {cellData}
+                    <td class={typeof cell}>
+                        {cell}
                     </td>
                 {/if}
             {/each}

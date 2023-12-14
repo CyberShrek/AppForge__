@@ -72,8 +72,9 @@ interface TableColumnMeta extends ApiAction {
     title?: string
     filter?: boolean
     totalize?: boolean,
+    labelize?: boolean,
     collapse?: boolean,
-    compare?: string,
+    compare?: boolean,
     share?: boolean,
     linkCells?: string[]
 }

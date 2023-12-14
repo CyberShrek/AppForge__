@@ -1,6 +1,7 @@
 import {ReportModelWizard} from "../ReportModelWizard"
 import {convertHtmlTableSectionToCompleteRows} from "../../../../util/domWizard"
 import {tableText} from "../../../../properties"
+import {valueOrDefault} from "../../../../util/data";
 
 export class TableWizard {
 
@@ -8,15 +9,17 @@ export class TableWizard {
     readonly primaryColumnsNumber: number
 
     // The number of rows in each page
-    readonly pageSize = this.config?.labelize ? 20 : 50
-
-    readonly hasTotal = this.config?.total
-
-    readonly hasCheckboxes = !!this.config?.checkboxButtons
+    readonly pageSize = this.config.labelize ? 20 : 50
 
     // If column meta for the table is not found then null will be added
     readonly columnMetas: TableColumnMeta[] = Object.values(this.modelWizard.model.config.columns)
         .map(meta => meta.inTable ? meta.inTable : null)
+
+    readonly hasTotal = this.config.total
+
+    readonly hasCheckboxes = !!this.config.checkboxButtons
+
+    readonly firstInnerTotalIndex = this.columnMetas.findIndex(meta => meta?.totalize)
 
     constructor(private readonly modelWizard: ReportModelWizard,
                 private readonly config: TableConfig) {
@@ -30,6 +33,13 @@ export class TableWizard {
             }
         })
         this.primaryColumnsNumber = primaryColumnsNumber
+
+        this.mappedComparisonData = new Map(this.modelWizard.model.comparisonData
+            .map(row => [
+                this.getPrimaryCellsJoined(row),
+                row
+            ])
+        )
     }
 
     // Return filtrated properData by given filter values where each value refers to each column
@@ -41,6 +51,13 @@ export class TableWizard {
                 || String(row[index]).toLowerCase().includes(filterValue.toLowerCase())
             )
         )
+    }
+    // Needed to quickly find comparison rows
+    private readonly mappedComparisonData: Map<string, RowData>
+
+    // Return comparison row equal to given row by primary cells. If not found, returns empty row
+    getComparisonRow(row: RowData): RowData {
+        return valueOrDefault(this.mappedComparisonData.get(this.getPrimaryCellsJoined(row)), [])
     }
 
     // Split the matrix into groups by the given colIndex.
@@ -70,11 +87,11 @@ export class TableWizard {
             )
     }
 
-    // Split the data into pages with the given pageSize
-    splitData(data: MatrixData, pageSize: number = data.length): MatrixData[]{
+    // Split the data into pages with this.pageSize
+    splitDataIntoPages(data: MatrixData): MatrixData[]{
         let result: MatrixData[] = []
-        for (let i = 0; i < data.length; i += pageSize)
-            result.push(data.slice(i, i + pageSize))
+        for (let i = 0; i < data.length; i += this.pageSize)
+            result.push(data.slice(i, i + this.pageSize))
         return result
     }
 
@@ -89,4 +106,6 @@ export class TableWizard {
             ]
         }
     }
+
+    private getPrimaryCellsJoined = (row: RowData): string => row.slice(0, this.primaryColumnsNumber).join()
 }

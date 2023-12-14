@@ -10,15 +10,18 @@
 
     export let
         tableWizard: TableWizard,
-        checked = false
+        // Provides
+        pickedPageI: number,
+        checked: boolean,
+        filteredData: MatrixData
 
     let filterValues: string[] = []
+
+    $: filteredData = tableWizard.filtrateData(filterValues)
 
     const isComplex: boolean = !!tableWizard.columnMetas.find(column => isColumnComplex(column))
 
     const isColumnComplex = (column: TableColumnMeta) => !!column.compare || !!column.share || !!column.filter
-
-    $: tableWizard.filtrateData(filterValues)
 
 </script>
 
@@ -28,8 +31,8 @@
     <tr class="tool-bar">
         <td colspan=-1>
             <PagesBar pageSize={tableWizard.pageSize}
-                      itemsCount={tableWizard.filteredData.length}
-                      bind:pickedPageI={tableWizard.pickedPageI}/>
+                      itemsCount={filteredData.length}
+                      bind:pickedPageI={pickedPageI}/>
         </td>
     </tr>
 
