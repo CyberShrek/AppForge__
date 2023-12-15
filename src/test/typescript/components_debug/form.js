@@ -6,16 +6,16 @@ export const form = {
     firstSection: {
         firstField: {
             type: "calendar",
-            label: "firstField"
+            title: "firstField"
         },
         secondField: {
             type: "calendar",
-            label: "secondField",
+            title: "secondField",
             range: true
         },
         thirdField: {
             type: "calendar",
-            label: "thirdField",
+            title: "thirdField",
             range: true,
             minDays: 5,
             maxDays: 15
@@ -53,15 +53,15 @@ export const form = {
     thirdSection: {
         firstField: {
             type: "switch",
-            label: "firstField"
+            title: "firstField"
         },
         secondField: {
             type: "switch",
-            label: "secondField"
+            title: "secondField"
         },
         thirdField: {
             type: "switch",
-            label: "thirdField"
+            title: "thirdField"
         }
     },
     departureSection: {

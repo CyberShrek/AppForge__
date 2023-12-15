@@ -23,10 +23,10 @@ function randomWord() {
 const data =  createMatrixData(2, 4, 10)
 
 export const reportModel = {
-
+    slot: "main",
     data: createMatrixData(1, 4, 100),
     config: {
         title: "Debug",
-        slot: "mainSlot"
+
     }
 }

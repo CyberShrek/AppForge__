@@ -8,20 +8,24 @@
 
     let reportModels: {[reportSlot: string]: ReportModel} = {}
 
-    function setReport(report: ReportModel): void {
-        reportModels[report.slot] = report
+    function setReport(model: ReportModel): void {
+        reportModels[model.slot] = model
     }
 
 </script>
 
-<Form config={formConfig}
-      on:report={e => setReport(e.detail)}/>
+{#if formConfig}
+    <Form config={formConfig}
+          on:report={e => setReport(e.detail)}/>
+{/if}
 
-{#each Object.keys(slotConfigs) as slotKey}
-    <ReportSlot config={slotConfigs[slotKey]}
-                model={reportModels[slotKey]}
-                on:report={e => setReport(e.detail)}/>
-{/each}
+{#if slotConfigs}
+    {#each Object.keys(slotConfigs) as slotKey}
+        <ReportSlot config={slotConfigs[slotKey]}
+                    model={reportModels[slotKey]}
+                    on:report={e => setReport(e.detail)}/>
+    {/each}
+{/if}
 
 <!--<Modal on:close={() => reportModels[reportKey] = null}>-->
 <!--    <ReportSlot config={reportConfigsObject[reportKey]}-->

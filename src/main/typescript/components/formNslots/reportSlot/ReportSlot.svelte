@@ -8,7 +8,7 @@
     import {slide} from "svelte/transition"
     import {compare, deepCopyOf} from "../../../util/data";
     import {ReportAccessor} from "../../../api/ReportAccessor"
-    import {afterUpdate, createEventDispatcher} from "svelte"
+    import {createEventDispatcher} from "svelte"
     import {XlsxAccessor} from "../../../api/XlsxAccessor"
     import ToTopButton from "../../misc/ToTopButton.svelte"
 
@@ -65,7 +65,7 @@
 
 <div class="report" bind:this={rootElement}>
     <div class="head">
-        <h3>{model.config.title}</h3>
+        <h3>{model ? model.config.title : config.title}</h3>
         {#if model && modelWizard.properData.length > 0}
             {#if !modal}
                 <ToTopButton/>

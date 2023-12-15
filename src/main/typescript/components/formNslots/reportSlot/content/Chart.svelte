@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ChartJsModule} from "../../../../third-party/ChartJsModule";
+    // import {ChartJsModule} from "../../../../third-party/ChartJsModule";
     import {resolveStyle} from "../../../../util/resolver";
 
     resolveStyle("chart")
@@ -10,13 +10,13 @@
         config: ChartMeta
 
     let rootCanvas: HTMLCanvasElement,
-        chartJsModule: ChartJsModule
+        chartJsModule
 
     $: if (rootCanvas) {
         if(chartJsModule)
             chartJsModule.destroy()
 
-        chartJsModule = new ChartJsModule(rootCanvas, data, config)
+        // chartJsModule = new ChartJsModule(rootCanvas, data, config)
     }
 
 </script>

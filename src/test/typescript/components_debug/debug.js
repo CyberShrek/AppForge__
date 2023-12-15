@@ -11,11 +11,13 @@ const config = {
         additional: ""
     },
     form,
-    mainSlot: {
-        title: "Main"
-    },
-    lateralSlot: {
-        title: "lateral"
+    slots: {
+        main: {
+            title: "Main"
+        },
+        lateral: {
+            title: "Lateral"
+        }
     }
 }
 
@@ -45,12 +47,12 @@ const app = new App({
     }
 });
 
-const report = new ReportSlot({
-    target: document.body,
-    props: {
-        config: {
-            title: "Extra"
-        },
-        model: reportModel
-    }
-})
+// const report = new ReportSlot({
+//     target: document.body,
+//     props: {
+//         config: {
+//             title: "Extra"
+//         },
+//         model: reportModel
+//     }
+// })
