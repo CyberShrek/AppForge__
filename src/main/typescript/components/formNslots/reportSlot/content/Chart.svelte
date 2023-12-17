@@ -7,7 +7,7 @@
 
     export let
         data: MatrixData,
-        config: ChartMeta
+        config: ChartValue
 
     let rootCanvas: HTMLCanvasElement,
         chartJsModule

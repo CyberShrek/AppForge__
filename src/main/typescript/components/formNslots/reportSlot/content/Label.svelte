@@ -7,7 +7,7 @@
 
     export let
         data: RowData,
-        config: LabelMeta
+        config: LabelConfig
 
 </script>
 

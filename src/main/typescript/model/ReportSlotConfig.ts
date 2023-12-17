@@ -1,23 +1,17 @@
 interface ReportSlotConfig {
     title: string
-    columns: {[colName: string]: ColumnMeta}
-    charts?: {[chartName: string]: ChartConfig}
+    charts?: ChartConfig[]
+    labels?: LabelConfig[]
     table?: TableConfig
     context?: ContextConfig
-}
-
-interface ColumnMeta {
-    formula?: string
-    inLabel?: LabelMeta
-    inChart?: ChartMeta
-    inTable?: TableColumnMeta
 }
 
 ///////////
 // LABEL //
 ///////////
-interface LabelMeta {
+interface LabelConfig {
     title?: string
+    value?: string
     unit?: string
     compare?: string
     image?: string
@@ -28,32 +22,29 @@ interface LabelMeta {
 ///////////
 interface ChartConfig {
     title?: string
-    keyColumn: string
+    key: string
+    values: ChartValue[]
     size?: number
-
-    // Extra graphs
-    average?: boolean
 }
 
-
-interface ChartMeta {
-    chart: string
+interface ChartValue {
     type: "line" | "bar" | "pie" | "donut"
     title: string
+    value: string
 }
 
-interface LineGraphMeta extends ChartMeta {
+interface LineGraph extends ChartValue {
     type:   "line"
     dash?:  boolean
     curve?: boolean
     fill?:  boolean
 }
 
-interface BarGraphMeta extends ChartMeta {
+interface BarGraph extends ChartValue {
     type: "bar"
 }
 
-interface PieGraphMeta extends ChartMeta {
+interface PieGraph extends ChartValue {
     type: "pie" | "donut"
 }
 
@@ -61,6 +52,7 @@ interface PieGraphMeta extends ChartMeta {
 // TABLE //
 ///////////
 interface TableConfig {
+    columns?: TableColumnConfig[]
     total?: boolean,
     labelize?: boolean,
     checkboxButtons?: {
@@ -68,15 +60,15 @@ interface TableConfig {
         actions?: ActionButton[]
     }
 }
-interface TableColumnMeta extends ApiAction {
+interface TableColumnConfig extends ApiAction {
     title?: string
+    value?: string
     filter?: boolean
     totalize?: boolean,
     labelize?: boolean,
     collapse?: boolean,
-    compare?: boolean,
-    share?: boolean,
-    linkCells?: string[]
+    linkCells?: string[],
+    extraColumns?: TableColumnConfig[]
 }
 
 /////////////

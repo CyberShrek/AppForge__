@@ -1,7 +1,7 @@
 interface ReportModel {
     slot?: string
     data: MatrixData
-    comparisonData?: MatrixData
+    dataNames: string[]
     config?: ReportSlotConfig
 
     // Apply after fetching the report from server

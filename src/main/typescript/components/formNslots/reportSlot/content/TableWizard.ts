@@ -12,7 +12,7 @@ export class TableWizard {
     readonly pageSize = this.config.labelize ? 20 : 50
 
     // If column meta for the table is not found then null will be added
-    readonly columnMetas: TableColumnMeta[] = Object.values(this.modelWizard.model.config.columns)
+    readonly columnMetas: TableColumnConfig[] = Object.values(this.modelWizard.model.config.columns)
         .map(meta => meta.inTable ? meta.inTable : null)
 
     readonly hasTotal = this.config.total

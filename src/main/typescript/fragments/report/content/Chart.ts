@@ -7,13 +7,13 @@ const defaultColors = ["#fd7f6f", "#7eb0d5", "#b2e061", "#bd7ebe", "#ffb55a", "#
 
 export class Chart extends Fragment<HTMLCanvasElement>{
 
-    constructor(model: ChartMeta) {
+    constructor(model: ChartValue) {
         super(`<canvas></canvas>`)
         createChartJS(this.root, model)
     }
 }
 
-function createChartJS(chartCanvas: HTMLCanvasElement, model: ChartMeta): ChartJS{
+function createChartJS(chartCanvas: HTMLCanvasElement, model: ChartValue): ChartJS{
     const labels = Object.keys(model.data)
     const dataMatrix: number[][] = transposeMatrix(Object.values(model.data).map(data => {
         if (typeof data === "number") data = [data]
