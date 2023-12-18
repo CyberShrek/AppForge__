@@ -3,7 +3,6 @@ import Decimal from "decimal.js"
 
 export class ReportModelWizard {
 
-    readonly properData: MatrixData         = [] // model.data modified by formulas
     readonly totalRow: RowData              = []
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
@@ -20,16 +19,6 @@ export class ReportModelWizard {
     constructor(readonly model: ReportModel) {
         if(model.data?.length > 0) {
 
-            // Calculate the total and average to use them in the formulas
-            this.totalRow   = this.getMatrixTotal(model.data, false)
-            this.averageRow = this.totalRow.map(cellData => typeof cellData === "number" ? cellData/this.totalRow.length : cellData)
-            this.applyFormulasToRow(this.totalRow)
-            this.applyFormulasToRow(this.averageRow)
-
-            // Calculate the proper data
-            this.properData = deepCopyOf(model.data)
-            this.properData.forEach(row => this.applyFormulasToRow(row))
-
             // Find visible context values by associated fields with used values
             if (model.config.context?.fields && model.usedValues)
             this.visibleContextValues = Object.entries(model.config.context.fields)
@@ -39,7 +28,7 @@ export class ReportModelWizard {
     }
 
     // Calculates total row for the given data
-    getMatrixTotal(matrix: MatrixData, applyFormulas: boolean = true): RowData{
+    getMatrixTotal(matrix: MatrixData): RowData{
         let total: RowData = []
 
         for(const rowData of matrix){
@@ -54,19 +43,17 @@ export class ReportModelWizard {
                 }
             )
         }
-        if(applyFormulas)
-            this.applyFormulasToRow(total)
 
         return total
     }
 
-    private applyFormulasToRow(row: RowData) {
-        // The copy is used to avoid changing the original data
-        const rowCopy = [...row]
-        this.formulaFunctions.forEach((formula, i) => {
-            if(formula) {
-                row[i] = formula(...rowCopy)
-            }
-        })
-    }
+    // private applyFormulasToRow(row: RowData) {
+    //     // The copy is used to avoid changing the original data
+    //     const rowCopy = [...row]
+    //     this.formulaFunctions.forEach((formula, i) => {
+    //         if(formula) {
+    //             row[i] = formula(...rowCopy)
+    //         }
+    //     })
+    // }
 }

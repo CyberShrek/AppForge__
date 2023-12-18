@@ -11,15 +11,11 @@ export class TableWizard {
     // The number of rows in each page
     readonly pageSize = this.config.labelize ? 20 : 50
 
-    // If column meta for the table is not found then null will be added
-    readonly columnMetas: ColumnMeta[] = Object.values(this.modelWizard.model.config.columns)
-        .map(meta => meta.inTable ? meta.inTable : null)
-
     readonly hasTotal = this.config.total
 
     readonly hasCheckboxes = !!this.config.checkboxAction
 
-    readonly firstInnerTotalIndex = this.columnMetas.findIndex(meta => meta?.totalize)
+    readonly firstInnerTotalIndex = this.config.columns.findIndex(meta => meta?.totalize)
 
     constructor(private readonly modelWizard: ReportModelWizard,
                 private readonly config: TableConfig) {

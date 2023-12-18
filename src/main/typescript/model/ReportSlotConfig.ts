@@ -52,18 +52,13 @@ interface PieGraph extends ChartValue {
 // TABLE //
 ///////////
 interface TableConfig {
-    columns?: (ParentColumnMeta | ColumnMeta)[]
+    columns?: ColumnMeta[]
     total?: boolean,
     labelize?: boolean,
     checkboxAction?: {
         title?: string
         buttons?: ActionButton[]
     }
-}
-
-interface ParentColumnMeta {
-    title?: string,
-    columns?: ColumnMeta[]
 }
 
 interface ColumnMeta extends ApiAction {
@@ -73,7 +68,8 @@ interface ColumnMeta extends ApiAction {
     totalize?: boolean,
     labelize?: boolean,
     collapse?: boolean,
-    linkCells?: string[]
+    linkCells?: string[],
+    columns?: ColumnMeta[]
 }
 
 /////////////

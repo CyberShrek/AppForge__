@@ -101,7 +101,7 @@
         {/if}
     </div>
 
-    {#if model && !collapsed && modelWizard.properData.length > 0}
+    {#if model && !collapsed && model.data.length > 0}
         <div class="body"
              transition:slide>
             <!--{#if model.context}-->
@@ -119,7 +119,7 @@
             <!--{#if model.charts}-->
             <!--    <Charts configs={model.charts} {modelWizard} show={showCharts} bind:rootElement={chartsElement}/>-->
             <!--{/if}-->
-            {#if modelWizard.hasTable}
+            {#if model.config.table}
                 <Table config={model.config.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
             {/if}
         </div>

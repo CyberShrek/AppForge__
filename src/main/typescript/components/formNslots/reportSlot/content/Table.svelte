@@ -33,13 +33,13 @@
     $: if(rootElement)
         xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
-    $: allRowsAreChecked = checkedRowsSet.size === modelWizard.properData.length
+    $: allRowsAreChecked = checkedRowsSet.size === modelWizard.model.data.length
 
     $: totalRow = tableWizard?.getMatrixTotal(filteredData)
 
     function togglePickAll() {
         if(!allRowsAreChecked)
-            checkedRowsSet = new Set(modelWizard.properData)
+            checkedRowsSet = new Set(modelWizard.model.data)
         else
             checkedRowsSet = new Set()
     }
