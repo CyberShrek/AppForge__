@@ -82,7 +82,7 @@
             <!--            hint="Графическое представление"-->
             <!--            on:click={() => showCharts = !showCharts}/>-->
             <!--{/if}-->
-            {#if modelWizard.hasTable}
+            {#if config.table}
                 <Button image="download.svg"
                         hint="Экспортировать таблицу в .xlsx"
                         on:click={() => xlsxAccessor?.fetch()}/>

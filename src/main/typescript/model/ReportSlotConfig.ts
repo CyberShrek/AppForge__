@@ -23,7 +23,7 @@ interface LabelConfig {
 interface ChartConfig {
     title?: string
     key: string
-    values: ChartValue[]
+    graphs: ChartValue[]
     size?: number
 }
 
@@ -52,23 +52,28 @@ interface PieGraph extends ChartValue {
 // TABLE //
 ///////////
 interface TableConfig {
-    columns?: TableColumnConfig[]
+    columns?: (ParentColumnMeta | ColumnMeta)[]
     total?: boolean,
     labelize?: boolean,
-    checkboxButtons?: {
+    checkboxAction?: {
         title?: string
-        actions?: ActionButton[]
+        buttons?: ActionButton[]
     }
 }
-interface TableColumnConfig extends ApiAction {
+
+interface ParentColumnMeta {
+    title?: string,
+    columns?: ColumnMeta[]
+}
+
+interface ColumnMeta extends ApiAction {
     title?: string
     value?: string
     filter?: boolean
     totalize?: boolean,
     labelize?: boolean,
     collapse?: boolean,
-    linkCells?: string[],
-    extraColumns?: TableColumnConfig[]
+    linkCells?: string[]
 }
 
 /////////////

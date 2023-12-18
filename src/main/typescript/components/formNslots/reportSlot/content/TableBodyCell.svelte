@@ -7,7 +7,7 @@
 
     export let
         value: CellData,
-        meta: TableColumnConfig,
+        meta: ColumnMeta,
         total: boolean = false,
         collapsed: boolean = false,
         rowSpan = 1,

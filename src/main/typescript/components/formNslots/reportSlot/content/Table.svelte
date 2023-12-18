@@ -82,10 +82,10 @@
         <Fix framed={true}
              left={true}
              bottom={true}>
-            {#if config.checkboxButtons.title}
-                <p>{config.checkboxButtons.title}</p>
+            {#if config.checkboxAction.title}
+                <p>{config.checkboxAction.title}</p>
             {/if}
-            {#each config.checkboxButtons.actions as action}
+            {#each config.checkboxAction.buttons as action}
                 <Button image={action.image}
                         imageLocation=""
                         hint={action.hint}

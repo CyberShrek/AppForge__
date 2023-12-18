@@ -21,7 +21,7 @@
 
     const isComplex: boolean = !!tableWizard.columnMetas.find(column => isColumnComplex(column))
 
-    const isColumnComplex = (column: TableColumnConfig) => !!column.compare || !!column.share || !!column.filter
+    const isColumnComplex = (column: ColumnMeta) => !!column.compare || !!column.share || !!column.filter
 
 </script>
 

@@ -12,12 +12,12 @@ export class TableWizard {
     readonly pageSize = this.config.labelize ? 20 : 50
 
     // If column meta for the table is not found then null will be added
-    readonly columnMetas: TableColumnConfig[] = Object.values(this.modelWizard.model.config.columns)
+    readonly columnMetas: ColumnMeta[] = Object.values(this.modelWizard.model.config.columns)
         .map(meta => meta.inTable ? meta.inTable : null)
 
     readonly hasTotal = this.config.total
 
-    readonly hasCheckboxes = !!this.config.checkboxButtons
+    readonly hasCheckboxes = !!this.config.checkboxAction
 
     readonly firstInnerTotalIndex = this.columnMetas.findIndex(meta => meta?.totalize)
 

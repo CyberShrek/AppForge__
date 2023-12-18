@@ -8,24 +8,14 @@ export class ReportModelWizard {
     readonly averageRow: RowData            = []
     readonly visibleContextValues: string[] = []
 
-    private isColumnHasField = (fieldKey: keyof ColumnMeta) =>
-        !!Object.values(this.model.config?.columns ?? {}).find(column => column[fieldKey])
-
-    readonly hasTable: boolean = this.isColumnHasField("inTable")
-    readonly hasChart: boolean = this.isColumnHasField("inChart")
-    readonly hasLabel: boolean = this.isColumnHasField("inLabel")
-
-    // Key of the columns meta used in the formulas and associated with the columns data
-    readonly columnNames:        string[] = Object.keys(this.model.config?.columns ?? {})
-
-    private readonly formulaFunctions: Function[] = Object.values(this.model.config?.columns ?? {})
-        .map(column =>
-            column.formula?.length > 0 ?
-                new Function(
-                    ...this.columnNames,
-                    `return ${column.formula}`
-                )
-                : null )
+    // private readonly formulaFunctions: Function[] = Object.values(this.model.config?.columns ?? {})
+    //     .map(column =>
+    //         column.formula?.length > 0 ?
+    //             new Function(
+    //                 ...this.columnNames,
+    //                 `return ${column.formula}`
+    //             )
+    //             : null )
 
     constructor(readonly model: ReportModel) {
         if(model.data?.length > 0) {
@@ -65,12 +55,12 @@ export class ReportModelWizard {
             )
         }
         if(applyFormulas)
-            this.applyFormulasToRow(total, true)
+            this.applyFormulasToRow(total)
 
         return total
     }
 
-    private applyFormulasToRow(row: RowData, isTotalRow: boolean = false) {
+    private applyFormulasToRow(row: RowData) {
         // The copy is used to avoid changing the original data
         const rowCopy = [...row]
         this.formulaFunctions.forEach((formula, i) => {
