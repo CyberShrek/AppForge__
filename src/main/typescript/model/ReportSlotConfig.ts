@@ -11,7 +11,7 @@ interface ReportSlotConfig {
 ///////////
 interface LabelConfig {
     title?: string
-    value?: string
+    formula?: string
     unit?: string
     compare?: string
     image?: string
@@ -30,7 +30,7 @@ interface ChartConfig {
 interface ChartValue {
     type: "line" | "bar" | "pie" | "donut"
     title: string
-    value: string
+    formula: string
 }
 
 interface LineGraph extends ChartValue {
@@ -51,8 +51,7 @@ interface PieGraph extends ChartValue {
 ///////////
 // TABLE //
 ///////////
-interface TableConfig {
-    columns?: ColumnMeta[]
+interface TableConfig extends ComplexColumnMeta{
     total?: boolean,
     labelize?: boolean,
     checkboxAction?: {
@@ -61,15 +60,17 @@ interface TableConfig {
     }
 }
 
+interface ComplexColumnMeta{
+    columns?: ({title?: string} & (ComplexColumnMeta | ColumnMeta))[]
+}
+
 interface ColumnMeta extends ApiAction {
-    title?: string
-    value?: string
+    formula?: string
     filter?: boolean
     totalize?: boolean,
     labelize?: boolean,
     collapse?: boolean,
-    linkCells?: string[],
-    columns?: ColumnMeta[]
+    linkCells?: string[]
 }
 
 /////////////

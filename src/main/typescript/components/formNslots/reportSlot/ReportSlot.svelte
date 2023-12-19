@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "./ReportModelWizard"
+    import {ReportWizard} from "./ReportWizard"
     import Table from "./content/Table.svelte"
     import {resolveStyle} from "../../../util/resolver"
     import Button from "../../input/Button.svelte"
@@ -18,8 +18,7 @@
 
     export let
         config: ReportSlotConfig,
-        model:  ReportModel,
-        modal = false
+        model:  ReportModel
 
     let rootElement: HTMLDivElement,
         prevModel: ReportModel,
@@ -32,9 +31,9 @@
     $: if(model && !model.config)
         model.config = config
 
-    $: modelWizard = model && new ReportModelWizard(model)
+    $: report = model && new ReportWizard(model)
 
-    $: if(modelWizard)
+    $: if(report)
         collapsed = false
 
     $: if (submittedApiAction)
@@ -66,8 +65,8 @@
 <div class="report" bind:this={rootElement}>
     <div class="head">
         <h3>{model ? model.config.title : config.title}</h3>
-        {#if model && modelWizard.properData.length > 0}
-            {#if !modal}
+        {#if model?.data?.length > 0}
+            {#if !report.isModal}
                 <ToTopButton/>
             {/if}
             <!--{#if model.charts && showCharts}-->
@@ -87,13 +86,13 @@
                         hint="Экспортировать таблицу в .xlsx"
                         on:click={() => xlsxAccessor?.fetch()}/>
             {/if}
-            {#if !modal}
+            {#if !report.isModal}
                 <Button image="collapse.svg"
                         hint={collapsed ? "Развернуть" : "Свернуть"}
                         on:click={() => collapsed = !collapsed}/>
             {/if}
             <Button image={fullScreen ? "restore.svg" : "expand.svg"} hint={fullScreen ? "Нормальный вид" : "На весь экран"} on:click={() => toggleFullscreen(rootElement)}/>
-            {#if modal}
+            {#if report.isModal}
                 <Button image="close.svg"
                         hint="Закрыть"
                         on:click={() => window.dispatchEvent(new KeyboardEvent("keydown",{ key: "Escape" }))}/>
@@ -120,7 +119,7 @@
             <!--    <Charts configs={model.charts} {modelWizard} show={showCharts} bind:rootElement={chartsElement}/>-->
             <!--{/if}-->
             {#if model.config.table}
-                <Table config={model.config.table} {modelWizard} bind:submittedApiAction bind:xlsxAccessor/>
+                <Table config={model.config.table} {report} bind:submittedApiAction bind:xlsxAccessor/>
             {/if}
         </div>
     {/if}

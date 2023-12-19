@@ -14,5 +14,5 @@ type CompleteRow = CompleteCell[]
 type MatrixData = RowData[]
 type TableMapData = Map<PrimaryCellData[], CellData[]>
 type RowData = CellData[]
-type CellData = number|string
+type CellData = number|string|boolean|[]
 type PrimaryCellData = string

@@ -47,12 +47,12 @@ const app = new App({
     }
 });
 
-// const report = new ReportSlot({
-//     target: document.body,
-//     props: {
-//         config: {
-//             title: "Extra"
-//         },
-//         model: reportModel
-//     }
-// })
+const report = new ReportSlot({
+    target: document.body,
+    props: {
+        config: {
+            title: "Extra"
+        },
+        model: reportModel
+    }
+})

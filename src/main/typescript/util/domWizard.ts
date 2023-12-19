@@ -69,7 +69,7 @@ export function exportAsJpeg(element: HTMLElement, jpegName: string = "element")
 
 export function convertHtmlTableSectionToCompleteRows(htmlTableSection: HTMLTableSectionElement): CompleteRow[]{
     const completeRows: CompleteRow[] = []
-    for (const tableRow of htmlTableSection.rows) {
+    for (const tableRow of htmlTableSection.rows ?? []) {
         let row: CompleteRow = []
         for (const tableCell of tableRow.cells) {
             if (!tableCell.classList.contains("checkbox")) {

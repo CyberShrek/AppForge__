@@ -5,15 +5,15 @@
     export let
         pageSize: number,
         itemsCount: number,
-        pickedPageI: number
+        pickedPageNumber: number
 
     $: size = Math.ceil(itemsCount / pageSize)
 
-    $: pageStartI = pickedPageI * pageSize
+    $: pageStartI = pickedPageNumber * pageSize
     $: pageEndI   = Math.min(pageStartI + pageSize, itemsCount)
 
     $: if(itemsCount)
-        pickedPageI = pickedPageI >= size ? size - 1 : pickedPageI
+        pickedPageNumber = pickedPageNumber > size ? size : pickedPageNumber
 
 
 </script>
@@ -26,13 +26,13 @@
     </span>
 
     <div class="pages">
-        <Button unavailable={size <= 1 || pickedPageI === 0} text='❬' on:click={() => pickedPageI--}/>
+        <Button unavailable={size <= 1 || pickedPageNumber === 1} text='❬' on:click={() => pickedPageNumber--}/>
 
         {#each Array(size) as _, i}
-            <Button active={pickedPageI === i} text={String(i + 1)} on:click={() => pickedPageI = i}/>
+            <Button active={pickedPageNumber === i + 1} text={String(i + 1)} on:click={() => pickedPageNumber = i + 1}/>
         {/each}
 
-        <Button unavailable={size <= 1 || pickedPageI === size - 1} text='❭' on:click={() => pickedPageI++}/>
+        <Button unavailable={size <= 1 || pickedPageNumber === size} text='❭' on:click={() => pickedPageNumber++}/>
     </div>
 
     <slot/>

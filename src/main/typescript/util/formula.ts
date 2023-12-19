@@ -1,4 +1,6 @@
 
+
+
 export const
     // Return percentage share
     getShare = (value: number, of: number) => toPercents(value/of),

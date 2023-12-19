@@ -1,6 +1,6 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "../ReportModelWizard"
+    import {ReportWizard} from "../ReportWizard"
     import {resolveStyle} from "../../../../util/resolver"
     import {TableWizard} from "./TableWizard"
     import {scrollIntoElement} from "../../../../util/domWizard"
@@ -15,31 +15,30 @@
 
     export let
         config: TableConfig,
-        modelWizard: ReportModelWizard,
+        report: ReportWizard,
         submittedApiAction: SubmittedApiAction,
         xlsxAccessor: XlsxAccessor
 
     let rootElement: HTMLDivElement,
-        tableWizard: TableWizard,
+        table: TableWizard,
         checkedRowsSet = new Set<RowData>(),
         // Determines the currently selected page index
-        pickedPageI = 0,
+        pickedPageNumber = 0,
         // Data filtered by head filters
-        filteredData: MatrixData
+        filterValues: string[],
+        validRowsCount: number
 
-    $: if(config && modelWizard)
-        tableWizard = new TableWizard(modelWizard, config)
+    $: if(config && report)
+        table = new TableWizard(report, config)
 
     $: if(rootElement)
-        xlsxAccessor = new XlsxAccessor(tableWizard.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
+        xlsxAccessor = new XlsxAccessor(table.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
 
-    $: allRowsAreChecked = checkedRowsSet.size === modelWizard.model.data.length
-
-    $: totalRow = tableWizard?.getMatrixTotal(filteredData)
+    $: allRowsAreChecked = checkedRowsSet.size === report.model.data.length
 
     function togglePickAll() {
         if(!allRowsAreChecked)
-            checkedRowsSet = new Set(modelWizard.model.data)
+            checkedRowsSet = new Set(report.model.data)
         else
             checkedRowsSet = new Set()
     }
@@ -58,27 +57,28 @@
      on:scroll={handleScroll}>
 
     <table>
-        {#if tableWizard}
+        {#if table}
 
-            <TableHead {tableWizard}
+            <TableHead {table}
+                       rowsCount={validRowsCount}
                        on:check={togglePickAll}
-                       bind:pickedPageI
-                       bind:filteredData
+                       bind:pickedPageNumber
+                       bind:filterValues
                        bind:checked={allRowsAreChecked}/>
 
-            <TableFoot {tableWizard}
-                       {totalRow}/>
+            <TableFoot {table}
+                       totalRow={[]}/>
 
-            <TableBody {tableWizard}
-                       {filteredData}
-                       {totalRow}
-                       {pickedPageI}
+            <TableBody {table}
+                       {filterValues}
+                       {pickedPageNumber}
+                       bind:validRowsCount
                        bind:checkedRowsSet
                        on:action={event => submittedApiAction = event.detail}/>
         {/if}
     </table>
 
-    {#if tableWizard.hasCheckboxes && checkedRowsSet.size > 0}
+    {#if !!config.checkboxAction && checkedRowsSet.size > 0}
         <Fix framed={true}
              left={true}
              bottom={true}>

@@ -4,22 +4,22 @@
     import {tableText} from "../../../../properties";
 
     export let
-        tableWizard: TableWizard,
+        table: TableWizard,
         totalRow: RowData
 
 </script>
 
 <tfoot>
-    {#if totalRow && tableWizard.hasTotal}
+    {#if totalRow && table.config.total}
         <tr class="total">
-            {#if tableWizard.hasCheckboxes}
+            {#if !!table.config.checkboxAction}
                 <td class="checkbox"></td>
             {/if}
-            <td colspan={tableWizard.primaryColumnsNumber}>
+            <td colspan={table.primaryColumnsNumber}>
                 {tableText.foot.total}
             </td>
             {#each totalRow as cell, i}
-                {#if i >= tableWizard.primaryColumnsNumber}
+                {#if i >= table.primaryColumnsNumber}
                     <td class={typeof cell}>
                         {cell}
                     </td>

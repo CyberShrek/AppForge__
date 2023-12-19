@@ -6,7 +6,7 @@
     export let
         matrixData: MatrixData,
         totalRow: RowData,
-        tableWizard: TableWizard,
+        table: TableWizard,
         size: number = null,
         groupSizes: number[] = null,
         checkedRowsSet: Set<RowData>,
@@ -17,7 +17,7 @@
 
     let checkedRows: boolean[] = []
 
-    $: totalize = matrixData.length > 1 && !!tableWizard.columnMetas?.[nesting - 1]?.totalize
+    $: totalize = matrixData.length > 1 && !!table.columnMetas?.[nesting - 1]?.totalize
 
     // The sum of all inner sizes + 1 if has total
     $: size = innerSizes.reduce((sum, size) => sum + size, Number(totalize))
@@ -52,11 +52,11 @@
 
 </script>
 
-{#if nesting < tableWizard.primaryColumnsNumber - 1}
-    {#each tableWizard.splitMatrixByColIndex(matrixData, nesting) as groupData, groupI}
+{#if nesting < table.primaryColumnsNumber - 1}
+    {#each table.splitMatrixByColIndex(matrixData, nesting) as groupData, groupI}
         <svelte:self
                 matrixData={groupData}
-                {tableWizard}
+                {table}
                 bind:size={innerSizes[groupI]}
                 bind:checkedRowsSet
                 groupSizes={groupSizes === null ? [] : (groupI === 0 ? [...groupSizes] : groupSizes.map((size, index) => index < nesting ? null : size))}
@@ -70,7 +70,7 @@
     {#each matrixData as rowData, rowI}
         <TableBodyRow data={rowData}
                       totalData={totalRow}
-                      {tableWizard}
+                      {table}
                       isGroupStart={rowI === 0}
                       primaryGroupSizes={groupSizes}
                       {collapseStartIndex}
@@ -83,8 +83,8 @@
     {/each}
 {/if}
 {#if totalize}
-    <TableBodyRow data={tableWizard.getMatrixTotal(matrixData, nesting - 1)}
-                  {tableWizard}
+    <TableBodyRow data={table.getMatrixTotal(matrixData, nesting - 1)}
+                  {table}
                   totalColI={nesting}
                   collapseStartIndex={collapseStartIndex > -1 && collapseStartIndex < nesting - 1 ? collapseStartIndex : -1}/>
 {/if}

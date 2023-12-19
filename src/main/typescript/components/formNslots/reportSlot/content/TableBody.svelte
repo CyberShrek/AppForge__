@@ -1,24 +1,43 @@
 <script lang="ts">
-    import TableRowsGroup from "./TableBodyRowsGroup.svelte"
-    import {TableWizard} from "./TableWizard";
+    import {TableWizard} from "./TableWizard"
+    import {beforeUpdate} from "svelte"
+    import ProperTableRow from "./ProperTableRow.svelte"
 
     export let
-        tableWizard: TableWizard,
-        filteredData: MatrixData,
-        totalRow: RowData,
-        pickedPageI: number,
-        checkedRowsSet: Set<RowData>
+        table: TableWizard,
+        pickedPageNumber: number,
+        checkedRowsSet: Set<RowData>,
+        filterValues: string[],
+        validRowsCount: number = 0
+
+    function rowIsValid(row: RowData): boolean {
+        validRowsCount += 1
+        return filterValues?.every((filterValue, index) =>
+            filterValue === undefined
+            || filterValue === ""
+            || String(row[index]).toLowerCase().includes(filterValue.toLowerCase())
+        )
+    }
+
+    function rowIIsVisible(rowI: number): boolean {
+        const
+            minI = pickedPageNumber - 1 * table.pageSize,
+            maxI = pickedPageNumber * table.pageSize
+
+        return rowI >= minI && rowI <= maxI
+    }
+
+    // beforeUpdate(() => validRowsCount = 0)
 
 </script>
 
-{#each tableWizard.splitDataIntoPages(filteredData) as pageData, pageI}
-    {#if pageI === pickedPageI}
-        <tbody>
-        <TableRowsGroup matrixData={pageData}
-                        {totalRow}
-                        bind:checkedRowsSet
-                        on:action
-                        {tableWizard}/>
-        </tbody>
+<tbody>
+{#each table.data as row, rowI}
+    {#if rowIsValid(row)}
+        {validRowsCount}
+        {#if rowIIsVisible(rowI)}
+            <ProperTableRow data={row}/>
+        {/if}
     {/if}
 {/each}
+</tbody>

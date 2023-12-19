@@ -1,10 +1,10 @@
 <script lang="ts">
 
-    import {ReportModelWizard} from "../ReportModelWizard"
+    import {ReportWizard} from "../ReportWizard"
     import {popupList, popupTable} from "../../../../util/alert";
 
     export let
-        modelWizard: ReportModelWizard
+        modelWizard: ReportWizard
 
     function showContextPickedData(dataConfig: ContextConfig["pickedData"]){
         const dataToShow: MatrixData = modelWizard.model.usedData.map(rowData => {

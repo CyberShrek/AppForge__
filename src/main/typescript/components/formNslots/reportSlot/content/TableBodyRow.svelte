@@ -11,7 +11,7 @@
     export let
         data: RowData,
         totalData: RowData = [],
-        tableWizard: TableWizard,
+        table: TableWizard,
         primaryGroupSizes: number[] = [],
         checked = false,
         totalColI = -1,
@@ -25,7 +25,7 @@
     else
         collapseButtonsValues[collapseStartIndex] = true
 
-    const getMeta = (colI: number) => tableWizard.columnMetas[colI]
+    const getMeta = (colI: number) => table.columnMetas[colI]
 
     function toggleCollapse(colI: number) {
         collapseButtonsValues[colI] = !collapseButtonsValues[colI]
@@ -46,7 +46,7 @@
 </script>
 {#if data}
     <tr>
-        {#if tableWizard.hasCheckboxes}
+        {#if table.hasCheckboxes}
             <td class="checkbox" on:click={event => toggleCellCheckbox(event)}>
                 {#if totalColI <= -1}
                     <input type="checkbox"
@@ -57,20 +57,18 @@
         {/if}
         {#each data as cellValue, colI}
             {#if getMeta(colI) && (
-                colI >= tableWizard.primaryColumnsNumber - 1
+                colI >= table.primaryColumnsNumber - 1
                 || !getMeta(colI)?.totalize && (totalColI === -1 || colI < totalColI)
                 || primaryGroupSizes?.[colI] && isGroupStart)}
 
                <TableBodyCell value={cellValue}
                               meta={getMeta(colI)}
                               rowSpan={isGroupStart && getMeta(colI).totalize && primaryGroupSizes?.[colI] ? primaryGroupSizes?.[colI] : 1}
-                              colSpan={totalColI > -1 && colI === tableWizard.primaryColumnsNumber - 1 ? tableWizard.primaryColumnsNumber - totalColI : 0}
-                              shareValue={getShare(Number(cellValue), Number(totalData[colI]))}
-                              changeValue={getChange(Number(cellValue), Number(tableWizard.getComparisonRow(data)))}
+                              colSpan={totalColI > -1 && colI === table.primaryColumnsNumber - 1 ? table.primaryColumnsNumber - totalColI : 0}
                               collapsed={collapseStartIndex !== -1 && colI > collapseStartIndex}
                               on:action={interceptActionEvent}>
 
-                   {#if isGroupStart && getMeta(colI)?.totalize && (colI === 0 || tableWizard.firstInnerTotalIndex < colI && primaryGroupSizes?.[colI] > 1)}
+                   {#if isGroupStart && getMeta(colI)?.totalize && (colI === 0 || table.firstInnerTotalIndex < colI && primaryGroupSizes?.[colI] > 1)}
                        <Button text={collapseButtonsValues?.[colI] ? "▼" : "▲"}
                                on:click={(ev) => {
                                    ev.stopPropagation()
