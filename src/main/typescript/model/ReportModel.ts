@@ -1,7 +1,7 @@
 interface ReportModel {
     slot?: string
     data: MatrixData
-    dataNames: string[]
+    dataDefine: string[]
     config?: ReportSlotConfig
 
     // Apply after fetching the report from server

@@ -12,7 +12,7 @@ function createMatrixData(primaryCellsSize, valueCellsSize, tableHeight) {
             valueCells[j] = Math.round(Math.random()*1000)/10;
         matrixData[i] = [...primaryCells, ...valueCells]
     }
-    return matrixData
+    return matrixData.sort()
 }
 
 function randomWord() {
@@ -24,33 +24,55 @@ const data =  createMatrixData(2, 4, 10)
 
 export const reportModel = {
     slot: "main",
-    data: createMatrixData(1, 4, 150),
-    dataNames: ["prim", "val1", "val2", "val3", "val4"],
+    data: createMatrixData(1, 4, 50),
+    dataDefine: ["prim1", "val1", "val2", "val3", "val4"],
     config: {
         title: "Debug",
         table: {
             columns: [
                 {
                     title: "Primary",
-                    formula: "prim"
+                    formula: "prim1",
+                    filter: true,
+                    totalize: true
+                }, {
+                    title: "Value group 1",
+                    columns: [
+                        {
+                            title: "Value 1",
+                            formula: "val1"
+                        }, {
+                            title: "Value 2",
+                            formula: "val2"
+                        }
+                    ]
+                }, {
+                    title: "Value group 2",
+                    columns: [
+                        {
+                            title: "Value 1",
+                            formula: "val3"
+                        }, {
+                            title: "Value 2",
+                            formula: "val4"
+                        }
+                    ]
                 },
-                {
-                    title: "Value 1",
-                    formula: "val1"
-                },
-                {
-                    title: "Value 2",
-                    formula: "val2"
-                },
-                {
-                    title: "Value 3",
-                    formula: "val3"
-                },
-                {
-                    title: "Value 4",
-                    formula: "val4"
-                }
-            ]
+            ],
+            checkboxAction: {
+                title: "Action",
+                buttons: [
+                    {
+                        title: "O_o",
+                        hint: "What do you want"
+                    },
+                    {
+                        title: "^_^",
+                        hint: "I want some action"
+                    }
+                ]
+            },
+            total: true
         }
     }
 }

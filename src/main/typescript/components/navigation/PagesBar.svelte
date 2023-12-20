@@ -5,11 +5,11 @@
     export let
         pageSize: number,
         itemsCount: number,
-        pickedPageNumber: number
+        pickedPageNumber: number = 1
 
     $: size = Math.ceil(itemsCount / pageSize)
 
-    $: pageStartI = pickedPageNumber * pageSize
+    $: pageStartI = (pickedPageNumber - 1) * pageSize
     $: pageEndI   = Math.min(pageStartI + pageSize, itemsCount)
 
     $: if(itemsCount)

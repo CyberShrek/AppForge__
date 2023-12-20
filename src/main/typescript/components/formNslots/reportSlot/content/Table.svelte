@@ -4,9 +4,9 @@
     import {resolveStyle} from "../../../../util/resolver"
     import {TableWizard} from "./TableWizard"
     import {scrollIntoElement} from "../../../../util/domWizard"
+    import {XlsxAccessor} from "../../../../api/XlsxAccessor"
     import Fix from "../../../misc/Fix.svelte"
     import Button from "../../../input/Button.svelte"
-    import {XlsxAccessor} from "../../../../api/XlsxAccessor"
     import TableHead from "./TableHead.svelte"
     import TableFoot from "./TableFoot.svelte"
     import TableBody from "./TableBody.svelte"
@@ -21,26 +21,28 @@
 
     let rootElement: HTMLDivElement,
         table: TableWizard,
-        checkedRowsSet = new Set<RowData>(),
         // Determines the currently selected page index
-        pickedPageNumber = 0,
-        // Data filtered by head filters
-        filterValues: string[],
-        validRowsCount: number
+        pickedPageNumber: number,
+        // Filtered by head filters
+        filtratedRowsI: number[],
+        checkedRowsBool: boolean[],
+        headIsChecked = false
 
-    $: if(config && report)
-        table = new TableWizard(report, config)
+    $: if(config && report && rootElement)
+        table = new TableWizard(report, config, rootElement)
 
-    $: if(rootElement)
-        xlsxAccessor = new XlsxAccessor(table.convertHtmlTableToXlsxModel(rootElement.querySelector("table")))
+    // Checkboxes management
+    $: headIsChecked ? pickAll() : unpickAllIfAllArePicked()
+    $: allArePicked = checkedRowsBool && checkedRowsBool.length === filtratedRowsI?.length && !!checkedRowsBool.every(check => check === true)
+    $: headIsChecked = allArePicked
 
-    $: allRowsAreChecked = checkedRowsSet.size === report.model.data.length
+    function pickAll() {
+        checkedRowsBool = filtratedRowsI?.map(_ => true)
+    }
 
-    function togglePickAll() {
-        if(!allRowsAreChecked)
-            checkedRowsSet = new Set(report.model.data)
-        else
-            checkedRowsSet = new Set()
+    function unpickAllIfAllArePicked() {
+        if(allArePicked)
+            checkedRowsBool = []
     }
 
     function handleScroll(){
@@ -56,29 +58,26 @@
      bind:this={rootElement}
      on:scroll={handleScroll}>
 
-    <table>
-        {#if table}
+    {#if table}
+        <table on:load={() => xlsxAccessor = new XlsxAccessor(table.createXlsxModel())}>
 
             <TableHead {table}
-                       rowsCount={validRowsCount}
-                       on:check={togglePickAll}
                        bind:pickedPageNumber
-                       bind:filterValues
-                       bind:checked={allRowsAreChecked}/>
+                       bind:filtratedRowsI
+                       bind:checked={headIsChecked}/>
 
             <TableFoot {table}
-                       totalRow={[]}/>
+                       totalRow={filtratedRowsI ? table.getTotal(filtratedRowsI) : []}/>
 
             <TableBody {table}
-                       {filterValues}
+                       {filtratedRowsI}
                        {pickedPageNumber}
-                       bind:validRowsCount
-                       bind:checkedRowsSet
+                       bind:checkedRowsBool
                        on:action={event => submittedApiAction = event.detail}/>
-        {/if}
-    </table>
+        </table>
+    {/if}
 
-    {#if !!config.checkboxAction && checkedRowsSet.size > 0}
+    {#if checkedRowsBool?.find(check => check)}
         <Fix framed={true}
              left={true}
              bottom={true}>
@@ -93,7 +92,7 @@
                         submittedApiAction = {
                             linkToReport: action.linkToReport,
                             linkToFile: action.linkToFile,
-                            pickedData: Array.from(checkedRowsSet.values())
+                            pickedData: table.data.filter((_, i) => checkedRowsBool[i] === true)
                         }}
                 />
             {/each}

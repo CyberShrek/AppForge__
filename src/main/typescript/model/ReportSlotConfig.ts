@@ -51,20 +51,23 @@ interface PieGraph extends ChartValue {
 ///////////
 // TABLE //
 ///////////
-interface TableConfig extends ComplexColumnMeta{
+interface TableConfig {
     total?: boolean,
     labelize?: boolean,
     checkboxAction?: {
         title?: string
         buttons?: ActionButton[]
     }
+    columns?: (ComplexColumnMeta | ColumnMeta)[]
 }
 
 interface ComplexColumnMeta{
-    columns?: ({title?: string} & (ComplexColumnMeta | ColumnMeta))[]
+    title?: string
+    columns?: (ComplexColumnMeta | ColumnMeta)[]
 }
 
 interface ColumnMeta extends ApiAction {
+    title?: string
     formula?: string
     filter?: boolean
     totalize?: boolean,

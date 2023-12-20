@@ -29,26 +29,6 @@ export class ReportWizard {
         }
     }
 
-    // Calculates total row for the given data
-    getMatrixTotal(matrix: MatrixData): RowData{
-        let total: RowData = []
-
-        for(const rowData of matrix){
-            rowData.forEach(
-                (cellData, cellIndex) => {
-                    if(typeof cellData === "number") {
-                        total[cellIndex] = total[cellIndex]
-                            ? new Decimal(total[cellIndex]).plus(cellData).toNumber()
-                            : cellData
-                    }
-                    else total[cellIndex] = valueOrDefault(total[cellIndex], '')
-                }
-            )
-        }
-
-        return total
-    }
-
     // private applyFormulasToRow(row: RowData) {
     //     // The copy is used to avoid changing the original data
     //     const rowCopy = [...row]

@@ -83,7 +83,7 @@
     {/each}
 {/if}
 {#if totalize}
-    <TableBodyRow data={table.getMatrixTotal(matrixData, nesting - 1)}
+    <TableBodyRow data={table.getTotal(matrixData, nesting - 1)}
                   {table}
                   totalColI={nesting}
                   collapseStartIndex={collapseStartIndex > -1 && collapseStartIndex < nesting - 1 ? collapseStartIndex : -1}/>
