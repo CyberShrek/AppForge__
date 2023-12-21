@@ -1,7 +1,7 @@
 <script lang="ts">
 
     // import {ChartJsModule} from "../../../../third-party/ChartJsModule";
-    import {resolveStyle} from "../../../../util/resolver";
+    import {resolveStyle} from "../../../../../util/resolver";
 
     resolveStyle("chart")
 

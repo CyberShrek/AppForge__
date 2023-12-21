@@ -1,7 +1,7 @@
 <script lang="ts">
 
-    import Image from "../../../misc/Image.svelte"
-    import {resolveStyle} from "../../../../util/resolver";
+    import Image from "../../../../misc/Image.svelte"
+    import {resolveStyle} from "../../../../../util/resolver";
 
     resolveStyle("label")
 

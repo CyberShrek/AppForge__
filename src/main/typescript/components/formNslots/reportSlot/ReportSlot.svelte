@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import {ReportWizard} from "./ReportWizard"
-    import Table from "./content/Table.svelte"
+    import Table from "./content/table/Table.svelte"
     import {resolveStyle} from "../../../util/resolver"
     import Button from "../../input/Button.svelte"
     import {exportAsJpeg, getFullscreenElement, scrollIntoElement, toggleFullscreen} from "../../../util/domWizard"

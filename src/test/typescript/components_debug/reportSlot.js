@@ -24,17 +24,22 @@ const data =  createMatrixData(2, 4, 10)
 
 export const reportModel = {
     slot: "main",
-    data: createMatrixData(1, 4, 50),
-    dataDefine: ["prim1", "val1", "val2", "val3", "val4"],
+    data: createMatrixData(3, 4, 500),
+    dataDefine: ["prim1", "prim2", "prim3", "val1", "val2", "val3", "val4"],
     config: {
         title: "Debug",
         table: {
             columns: [
                 {
-                    title: "Primary",
-                    formula: "prim1",
-                    filter: true,
-                    totalize: true
+                    title: "Primary 1",
+                    formula: "prim1"
+                }, {
+                    title: "Primary 2",
+                    formula: "prim2",
+                    filter: true
+                },{
+                    title: "Primary 3",
+                    formula: "prim3"
                 }, {
                     title: "Value group 1",
                     columns: [
@@ -72,6 +77,7 @@ export const reportModel = {
                     }
                 ]
             },
+            group: true,
             total: true
         }
     }

@@ -1,15 +1,16 @@
 <script lang="ts">
 
-    import {ReportWizard} from "../ReportWizard"
-    import {resolveStyle} from "../../../../util/resolver"
+    import {ReportWizard} from "../../ReportWizard"
+    import {resolveStyle} from "../../../../../util/resolver"
     import {TableWizard} from "./TableWizard"
-    import {scrollIntoElement} from "../../../../util/domWizard"
-    import {XlsxAccessor} from "../../../../api/XlsxAccessor"
-    import Fix from "../../../misc/Fix.svelte"
-    import Button from "../../../input/Button.svelte"
-    import TableHead from "./TableHead.svelte"
-    import TableFoot from "./TableFoot.svelte"
-    import TableBody from "./TableBody.svelte"
+    import {scrollIntoElement} from "../../../../../util/domWizard"
+    import {XlsxAccessor} from "../../../../../api/XlsxAccessor"
+    import Fix from "../../../../misc/Fix.svelte"
+    import Button from "../../../../input/Button.svelte"
+    import TableHead from "./Head.svelte"
+    import TableFoot from "./Foot.svelte"
+    import TableBody from "./Body.svelte"
+    import CheckboxTreeManager from "./CheckboxTreeManager.svelte";
 
     resolveStyle("table")
 
@@ -24,26 +25,11 @@
         // Determines the currently selected page index
         pickedPageNumber: number,
         // Filtered by head filters
-        filtratedRowsI: number[],
-        checkedRowsBool: boolean[],
-        headIsChecked = false
+        filtratedRowsI: number[] = [],
+        checkedRowsBool: boolean[] = []
 
     $: if(config && report && rootElement)
         table = new TableWizard(report, config, rootElement)
-
-    // Checkboxes management
-    $: headIsChecked ? pickAll() : unpickAllIfAllArePicked()
-    $: allArePicked = checkedRowsBool && checkedRowsBool.length === filtratedRowsI?.length && !!checkedRowsBool.every(check => check === true)
-    $: headIsChecked = allArePicked
-
-    function pickAll() {
-        checkedRowsBool = filtratedRowsI?.map(_ => true)
-    }
-
-    function unpickAllIfAllArePicked() {
-        if(allArePicked)
-            checkedRowsBool = []
-    }
 
     function handleScroll(){
         const top = rootElement.getClientRects().item(0).top
@@ -64,7 +50,7 @@
             <TableHead {table}
                        bind:pickedPageNumber
                        bind:filtratedRowsI
-                       bind:checked={headIsChecked}/>
+                       bind:checkedRowsBool/>
 
             <TableFoot {table}
                        totalRow={filtratedRowsI ? table.getTotal(filtratedRowsI) : []}/>

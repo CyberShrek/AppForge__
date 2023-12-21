@@ -10,10 +10,17 @@ interface ReportSlotConfig {
 // LABEL //
 ///////////
 interface LabelConfig {
-    title?: string
-    formula?: string
-    unit?: string
-    compare?: string
+    title?: string,
+    formula?: {
+        value?: string,
+        comparison?: string,
+        proportion?: string
+    },
+    text?: {
+        value?: string,
+        comparison?: string,
+        proportion?: string
+    },
     image?: string
 }
 
@@ -53,6 +60,7 @@ interface PieGraph extends ChartValue {
 ///////////
 interface TableConfig {
     total?: boolean,
+    group?: boolean,
     labelize?: boolean,
     checkboxAction?: {
         title?: string
@@ -70,9 +78,8 @@ interface ColumnMeta extends ApiAction {
     title?: string
     formula?: string
     filter?: boolean
-    totalize?: boolean,
-    labelize?: boolean,
-    collapse?: boolean,
+    labelize?: boolean
+    collapse?: boolean
     linkCells?: string[]
 }
 

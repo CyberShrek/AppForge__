@@ -1,7 +1,7 @@
 <script lang="ts">
 
     import {TableWizard} from "./TableWizard"
-    import {tableText} from "../../../../properties";
+    import {tableText} from "../../../../../properties"
 
     export let
         table: TableWizard,
@@ -10,9 +10,9 @@
 </script>
 
 <tfoot>
-    {#if totalRow && table.config.total}
+    {#if totalRow && table.hasTotal}
         <tr class="total">
-            {#if !!table.config.checkboxAction}
+            {#if !!table.hasCheckboxes}
                 <td class="checkbox"></td>
             {/if}
             <td colspan={table.primaryColumnsNumber}>
