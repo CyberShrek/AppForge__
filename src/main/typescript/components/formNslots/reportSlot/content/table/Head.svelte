@@ -1,12 +1,9 @@
 <script lang="ts">
 
     import {TableWizard} from "./TableWizard"
-    import {createEventDispatcher} from "svelte"
-    import PagesBar from "../../../../navigation/PagesBar.svelte"
-    import Row from "./Row.svelte"
-    import CheckboxTreeManager from "./CheckboxTreeManager.svelte";
-
-    const dispatch = createEventDispatcher()
+    import CheckboxTreeManager from "./CheckboxTreeManager.svelte"
+    import ToolRow from "./rows/ToolRow.svelte"
+    import HeadRow from "./rows/HeadRow.svelte"
 
     export let
         table: TableWizard,
@@ -30,47 +27,24 @@
         })
     }
 
-    $: size = Math.max(...table.columnMetas.map(meta => meta.parentTitles.length + 1))
-
 </script>
 
 <thead>
-    <!-- Tool row -->
-    <tr class="tool-bar">
-        <td colspan={(table.data[0]?.length ?? 0)+ Number(table.hasCheckboxes)}>
-            {#if filtratedRowsI}
-                <PagesBar pageSize={table.pageSize}
-                          itemsCount={filtratedRowsI.length}
-                          bind:pickedPageNumber/>
-            {/if}
-        </td>
-    </tr>
+    <ToolRow {table}
+             {filtratedRowsI}
+             bind:pickedPageNumber/>
 
-    {#each Array(size) as _, headI}
+    {#each Array(table.headSize) as _, headI}
 
-        {#if table.hasCheckboxes && headI === size - 1 && checkedRowsBool}
+        {#if table.hasCheckboxes && headI === table.headSize - 1 && checkedRowsBool}
             <CheckboxTreeManager rowsI={filtratedRowsI}
                                  bind:checkedRowsBool
                                  bind:checked/>
         {/if}
 
-        <Row data={table.columnMetas.map(meta => meta.parentTitles[headI] ?? meta.title)}
-             hasCheckboxes={table.hasCheckboxes}
-             bind:checked>
-
-            {#if headI === size - 1}
-                {#each table.columnMetas as column, colI}
-                    {#if column.filter}
-                        <input type="text"
-                               placeholder={typeof column.filter === "string" ? column.filter : ''}
-                               bind:value={filterValues[colI]}/>
-                    {:else}
-                        <span/>
-                    {/if}
-                {/each}
-            {/if}
-
-        </Row>
+        <HeadRow {table}
+                 {headI}
+                 bind:checked
+                 bind:filterValues/>
     {/each}
-
 </thead>

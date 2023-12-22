@@ -1,10 +1,7 @@
 import {ReportWizard} from "../../ReportWizard"
 import {convertHtmlTableSectionToCompleteRows} from "../../../../../util/domWizard"
 import {tableText} from "../../../../../properties"
-import {valueOrDefault} from "../../../../../util/data";
-import _default from "chart.js/dist/core/core.interaction";
-import modes = _default.modes;
-import {inspect} from "util";
+import _default from "chart.js/dist/core/core.interaction"
 
 export class TableWizard {
 
@@ -18,7 +15,7 @@ export class TableWizard {
     // The primary columns are the most left columns consist of "string" type cells
     readonly primaryColumnsNumber: number
 
-    // The number of rows in each page
+    readonly headSize: number
     readonly pageSize = this.config.labelize ? 20 : 50
 
     readonly hasCheckboxes = !!this.config.checkboxAction
@@ -28,12 +25,28 @@ export class TableWizard {
     // Executes formulas for given origin row and returns ready-to-use result
     readonly prepareRow: (originRow: RowData) => RowData
 
+    private get htmlTable() {return this.rootElement.querySelector("table")}
+    get htmlHead() {return this.htmlTable.tHead}
+    get htmlFoot() {return this.htmlTable.tFoot}
+    get htmlBody() {return this.htmlTable.tBodies[0]}
+
     constructor(private readonly report: ReportWizard,
                 private readonly config: TableConfig,
                 private readonly rootElement: HTMLElement) {
 
-        // Flat the origin column metas
-        this.flatColumnMetas(config.columns)
+        const fillColumnMetas = (metas: typeof this.config.columns,
+                                 // Parent column titles
+                                 parentTitles: string[] = []) => {
+            metas.forEach(column => {
+                const childColumns = (column as ComplexColumnMeta).columns
+                if(childColumns)
+                    fillColumnMetas(childColumns, [...parentTitles, column.title])
+                else
+                    this.columnMetas.push({parentTitles, ...column})
+            })
+        }
+        fillColumnMetas(config.columns)
+        this.headSize = Math.max(...this.columnMetas.map(meta => meta.parentTitles.length + 1))
 
         // Assign Function which executes all the given formulas in a row
         const formulasFunction = new Function(
@@ -56,23 +69,6 @@ export class TableWizard {
         this.primaryColumnsNumber = primaryColumnsNumber
     }
 
-    // Split the matrix into groups by the given colIndex.
-    // Return an array of matrices where each matrix is a group.
-    // splitMatrixByColIndex(matrix: MatrixData, colIndex: number): MatrixData[]{
-    //     let result: MatrixData[] = [],
-    //         prevColValue: CellData
-    //
-    //     matrix.forEach(row => {
-    //         const colValue = row[colIndex]
-    //         if (prevColValue !== colValue){
-    //             result.push([])
-    //             prevColValue = colValue
-    //         }
-    //         result[result.length - 1].push(row)
-    //     })
-    //     return result
-    // }
-
     splitRowIndicesByColumnIndex(rowsI: number[], colIndex: number): number[][]{
         const result: number[][] = []
         let prevColValue: CellData
@@ -90,20 +86,50 @@ export class TableWizard {
     }
 
     // Calculate total row for the given row indices
-    getTotal(rowsI: number[]): RowData{
-
-        const total = []
-
+    getTotalRowForIndices(rowsI: number[]): RowData{
+        const rawTotalData = []
         rowsI.forEach(rowI => {
-            this.data[rowI].forEach((cell, cellI) => {
-                if(typeof cell === 'number'){
-                    total[cellI] = (total[cellI] ?? 0) + cell
-                }
-                else total[cellI] = tableText.foot.total
+            this.data[rowI].forEach((nextCellData, cellI) => {
+                rawTotalData[cellI] =
+                    !rawTotalData[cellI]
+                    || typeof rawTotalData[cellI] !== typeof nextCellData
+                    || (typeof nextCellData === "string" && rawTotalData[cellI] === nextCellData) ?
+                        nextCellData :
+                        cellI < this.primaryColumnsNumber ?
+                            tableText.total :
+                            typeof nextCellData === "number" ?
+                                rawTotalData[cellI] + nextCellData :
+                                typeof nextCellData === "boolean" ?
+                                    Boolean(rawTotalData[cellI] + nextCellData) :
+                                    typeof nextCellData === "object" && Array.isArray(nextCellData) ?
+                                        [...rawTotalData[cellI], ...nextCellData] :
+                                        ""
             })
         })
+        return this.prepareRow(rawTotalData)
+    }
 
-        return total
+    createXlsxModel(): XlsxTableModel{
+        return {
+            title: this.report.model.config.title,
+            context: this.report.visibleContextValues,
+            head:  convertHtmlTableSectionToCompleteRows(this.htmlHead),
+            body: [
+                ...convertHtmlTableSectionToCompleteRows(this.htmlBody),
+                ...convertHtmlTableSectionToCompleteRows(this.htmlFoot)
+            ]
+        }
+    }
+
+    spanHtmlBodyColumn(columnI: number,
+                       rowStartI = 0,
+                       rowEndI = this.htmlBody.rows.length) {
+
+        const getCell = (rowI: number): HTMLTableCellElement => this.htmlBody.rows[rowI].cells[columnI]
+
+        for (let rowI = rowStartI + 1; rowI <= rowEndI; rowI++) {
+            getCell(rowI).hidden = true
+        }
     }
 
     postprocessHead() {
@@ -115,33 +141,13 @@ export class TableWizard {
     }
 
     postprocessBody() {
-
+        // spanColumn(this.htmlTable.tBodies[0].rows, 0)
     }
 
-    createXlsxModel(): XlsxTableModel{
-        const htmlTable = this.rootElement.querySelector("table")
-        return {
-            title: this.report.model.config.title,
-            context: this.report.visibleContextValues,
-            head:  convertHtmlTableSectionToCompleteRows(htmlTable.tHead),
-            body: [
-                ...convertHtmlTableSectionToCompleteRows(htmlTable.tBodies[0]),
-                ...convertHtmlTableSectionToCompleteRows(htmlTable.tFoot)
-            ]
-        }
-    }
-
-    private flatColumnMetas = (metas: typeof this.config.columns,
-                               parentTitles: string[] = [] // Parent column titles
-    ) => {
-        metas.forEach(column => {
-            const childColumns = (column as ComplexColumnMeta).columns
-            if(childColumns)
-                this.flatColumnMetas(childColumns, [...parentTitles, column.title])
-            else
-                this.columnMetas.push({parentTitles, ...column})
-        })
-    }
 
     private getPrimaryCellsJoined = (row: RowData): string => row.slice(0, this.primaryColumnsNumber).join()
+}
+
+function spanColumn(htmlRows: HTMLCollectionOf<HTMLTableRowElement>, columnI: number){
+
 }

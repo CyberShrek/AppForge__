@@ -2,6 +2,7 @@
 
     import {TableWizard} from "./TableWizard"
     import {tableText} from "../../../../../properties"
+    import Row from "./rows/Row.svelte";
 
     export let
         table: TableWizard,
@@ -10,21 +11,6 @@
 </script>
 
 <tfoot>
-    {#if totalRow && table.hasTotal}
-        <tr class="total">
-            {#if !!table.hasCheckboxes}
-                <td class="checkbox"></td>
-            {/if}
-            <td colspan={table.primaryColumnsNumber}>
-                {tableText.foot.total}
-            </td>
-            {#each totalRow as cell, i}
-                {#if i >= table.primaryColumnsNumber}
-                    <td class={typeof cell}>
-                        {cell}
-                    </td>
-                {/if}
-            {/each}
-        </tr>
-    {/if}
+    <Row data={totalRow}
+         hasCheckboxSlot={table.hasCheckboxes}/>
 </tfoot>

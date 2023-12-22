@@ -1,6 +1,6 @@
 <script lang="ts">
     import {TableWizard} from "./TableWizard"
-    import RowsGroup from "./RowsGroup.svelte"
+    import RowsGroup from "./rows/BodyRowsGroup.svelte"
 
     export let
         table: TableWizard,
@@ -12,9 +12,9 @@
     $: pageEnd   = pickedPageNumber * table.pageSize
     $: pageRowsI = filtratedRowsI.slice(pageStart, pageEnd)
 
-    $: if(pickedPageNumber){
-        console.log("Page changed")
-    }
+    // $: if(pickedPageNumber){
+    //     table.postprocessBody()
+    // }
 
 </script>
 

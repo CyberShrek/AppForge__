@@ -1,9 +1,10 @@
 <script lang="ts">
     
-    import {TableWizard} from "./TableWizard"
+    import {TableWizard} from "../TableWizard"
     import Row from "./Row.svelte"
-    import CheckboxTreeManager from "./CheckboxTreeManager.svelte"
-    import Button from "../../../../input/Button.svelte"
+    import CheckboxTreeManager from "../CheckboxTreeManager.svelte"
+    import Button from "../../../../../input/Button.svelte"
+    import {onMount} from "svelte";
 
     export let
         table: TableWizard,
@@ -14,6 +15,20 @@
         collapsedTotal = false
 
     let checked = false
+
+    $: totalize = table.hasGrouping && columnI > 0 && rowsI.length > 1
+
+    onMount(() => {
+        if(totalize)
+            setTimeout(() =>
+            table
+                .spanHtmlBodyColumn(
+                    columnI + Number(table.hasCheckboxes),
+                    table.htmlBody.rows.length - rowsI.length
+                ), 500
+            )
+        }
+    )
     
 </script>
 
@@ -30,20 +45,20 @@
     {#each rowsI as rowI}
         <Row data={table.data[rowI]}
              {collapsed}
-             hasCheckboxes={table.hasCheckboxes}
+             hasCheckbox={table.hasCheckboxes}
              bind:checked={checkedRowsBool[rowI]}/>
     {/each}
 {/if}
 
 <!-- TOTALIZING -->
-{#if table.hasGrouping && columnI > 0 && rowsI.length > 1}
+{#if totalize}
 
     <CheckboxTreeManager {rowsI}
                          bind:checkedRowsBool
                          bind:checked/>
 
-    <Row data={[]}
-         hasCheckboxes={table.hasCheckboxes}
+    <Row data={table.getTotalRowForIndices(rowsI)}
+         hasCheckbox={table.hasCheckboxes}
          collapsed={collapsedTotal}
          bind:checked>
 

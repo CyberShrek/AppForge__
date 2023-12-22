@@ -8,9 +8,7 @@ export const
             shareInTotal: "Доля в общем объёме, %",
             compare: "Рост/падение, %"
         },
-        foot: {
-            total: "Итого"
-        }
+        total: "Итого"
     },
 
     virtualSelectProperties = {

@@ -1,34 +1,5 @@
-class Sample{
+const arr = [1 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ,9 ,10]
 
 
 
-    list = []
-
-    constructor() {
-
-        const
-            map = this.generateMap(500),
-            startTime = new Date().getTime()
-
-        for (let i = 0; i < 500; i++) {
-            this.list.push(map.get(i))
-        }
-
-        console.log(this.list.length)
-
-        console.log((new Date().getTime() - startTime)+" ms")
-    }
-
-    generateMap(size){
-        const map = new Map()
-        for(let i = 0; i < size; i++) {
-            map.set(
-                i,
-                [Math.random() * 10000]
-            )
-        }
-        return map
-    }
-}
-
-new Sample()
+console.log(arr[-3])

@@ -53,7 +53,7 @@
                        bind:checkedRowsBool/>
 
             <TableFoot {table}
-                       totalRow={filtratedRowsI ? table.getTotal(filtratedRowsI) : []}/>
+                       totalRow={filtratedRowsI ? table.getTotalRowForIndices(filtratedRowsI) : []}/>
 
             <TableBody {table}
                        {filtratedRowsI}
