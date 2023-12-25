@@ -8,17 +8,18 @@
         collapsed = false,
         hasCheckbox = false,
         hasCheckboxSlot = false,
+        rowspans: number[] = [],
 
         // Provides
         checked: boolean = false
 
-    let rootElement: HTMLTableRowElement
+    let htmlRow: HTMLTableRowElement
 
     onMount(() => {
-        const slot = rootElement.querySelector("td.slot")
+        const slot = htmlRow.querySelector("td.slot")
 
         slot.childNodes.forEach((child, index) =>
-            rootElement.cells[index + Number(hasCheckbox)]
+            htmlRow.cells[index + Number(hasCheckbox)]
                 ?.appendChild(child)
         )
         slot.remove()
@@ -27,7 +28,7 @@
 </script>
 
 <tr class:collapsed
-    bind:this={rootElement}>
+    bind:this={htmlRow}>
     {#if hasCheckbox || hasCheckboxSlot}
         <svelte:element this={cellTag}
                         class="checkbox"
@@ -44,8 +45,9 @@
         </svelte:element>
     {/if}
 
-    {#each data as cellData}
+    {#each data as cellData, cellI}
         <svelte:element this={cellTag}
+                        rowspan={rowspans[cellI + Number(hasCheckbox)]}
                         class={typeof cellData}>
             {cellData}
         </svelte:element>

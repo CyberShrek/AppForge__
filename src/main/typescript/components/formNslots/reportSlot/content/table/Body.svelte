@@ -12,9 +12,11 @@
     $: pageEnd   = pickedPageNumber * table.pageSize
     $: pageRowsI = filtratedRowsI.slice(pageStart, pageEnd)
 
-    // $: if(pickedPageNumber){
-    //     table.postprocessBody()
-    // }
+    $: if(pickedPageNumber){
+        console.log("picked page number")
+        // setTimeout(() => table.postprocessBody(), 1000)
+
+    }
 
 </script>
 

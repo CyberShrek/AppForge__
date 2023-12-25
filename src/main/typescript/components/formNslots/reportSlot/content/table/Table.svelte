@@ -34,6 +34,7 @@
     function handleScroll(){
         const top = rootElement.getClientRects().item(0).top
         if (top < -1 || top > 1) {
+            console.log(top)
             scrollIntoElement(rootElement)
         }
     }

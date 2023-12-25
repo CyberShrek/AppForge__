@@ -25,11 +25,6 @@ export class TableWizard {
     // Executes formulas for given origin row and returns ready-to-use result
     readonly prepareRow: (originRow: RowData) => RowData
 
-    private get htmlTable() {return this.rootElement.querySelector("table")}
-    get htmlHead() {return this.htmlTable.tHead}
-    get htmlFoot() {return this.htmlTable.tFoot}
-    get htmlBody() {return this.htmlTable.tBodies[0]}
-
     constructor(private readonly report: ReportWizard,
                 private readonly config: TableConfig,
                 private readonly rootElement: HTMLElement) {
@@ -68,6 +63,12 @@ export class TableWizard {
         })
         this.primaryColumnsNumber = primaryColumnsNumber
     }
+
+    get htmlTable() {return this.rootElement.querySelector("table")}
+    get htmlHead() {return this.htmlTable.tHead}
+    get htmlFoot() {return this.htmlTable.tFoot}
+    get htmlBody() {return this.htmlTable.tBodies[0]}
+
 
     splitRowIndicesByColumnIndex(rowsI: number[], colIndex: number): number[][]{
         const result: number[][] = []
@@ -125,10 +126,13 @@ export class TableWizard {
                        rowStartI = 0,
                        rowEndI = this.htmlBody.rows.length) {
 
-        const getCell = (rowI: number): HTMLTableCellElement => this.htmlBody.rows[rowI].cells[columnI]
+        console.log(columnI, rowStartI, rowEndI)
+
+        const getCell = (rowI: number): HTMLTableCellElement => this.htmlBody.rows[rowI]?.cells[columnI]
 
         for (let rowI = rowStartI + 1; rowI <= rowEndI; rowI++) {
-            getCell(rowI).hidden = true
+            const cell = getCell(rowI)
+            // cell.textContent += "+"
         }
     }
 
@@ -141,13 +145,36 @@ export class TableWizard {
     }
 
     postprocessBody() {
-        // spanColumn(this.htmlTable.tBodies[0].rows, 0)
+        // spanColumn([...this.htmlTable.tBodies[0].rows], Number(this.hasCheckboxes))
+        this.spanPrimaryColumns()
+    }
+
+    private spanPrimaryColumns(){
+        const
+            primaryCells: HTMLTableCellElement[] = new Array(this.primaryColumnsNumber),
+            rowSpans: number[] = new Array(this.primaryColumnsNumber)
+
+        Array.of(...this.htmlTable.tBodies[0].rows).forEach(row => {
+            for (let i = 0; i < this.primaryColumnsNumber; i++) {
+                const primaryCell = row.cells[i + Number(this.hasCheckboxes)]
+                if (primaryCells[i]?.innerText === primaryCell.innerText){
+                    rowSpans[i] = (rowSpans[i] ?? 1) + 1
+                    primaryCell.hidden = true
+                } else {
+                    primaryCell.hidden = false
+                    if(primaryCells[i])
+                        primaryCells[i].rowSpan = rowSpans[i] ?? 1
+                    primaryCells[i] = primaryCell
+                    rowSpans[i] = 1
+                }
+            }
+        })
     }
 
 
     private getPrimaryCellsJoined = (row: RowData): string => row.slice(0, this.primaryColumnsNumber).join()
 }
 
-function spanColumn(htmlRows: HTMLCollectionOf<HTMLTableRowElement>, columnI: number){
-
+function spanColumn(htmlRows: HTMLTableRowElement[], columnI: number){
+    htmlRows
 }

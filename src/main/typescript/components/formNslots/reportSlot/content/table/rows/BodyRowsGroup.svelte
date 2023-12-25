@@ -4,7 +4,6 @@
     import Row from "./Row.svelte"
     import CheckboxTreeManager from "../CheckboxTreeManager.svelte"
     import Button from "../../../../../input/Button.svelte"
-    import {onMount} from "svelte";
 
     export let
         table: TableWizard,
@@ -12,37 +11,30 @@
         rowsI: number[],
         columnI = 0,
         collapsed = false,
-        collapsedTotal = false
+        collapsedTotal = false,
+        calculatedSize = 0
 
-    let checked = false
+    let checked = false,
+        innerSizes: number[] = [rowsI.length]
 
-    $: totalize = table.hasGrouping && columnI > 0 && rowsI.length > 1
+    $: totalize = table.hasGrouping && rowsI.length > 1
 
-    onMount(() => {
-        if(totalize)
-            setTimeout(() =>
-            table
-                .spanHtmlBodyColumn(
-                    columnI + Number(table.hasCheckboxes),
-                    table.htmlBody.rows.length - rowsI.length
-                ), 500
-            )
-        }
-    )
-    
+    $: calculatedSize = innerSizes.reduce((sum, size) => (sum + size)) + Number(totalize)
+
 </script>
 
 {#if columnI < table.primaryColumnsNumber - 1}
-    {#each table.splitRowIndicesByColumnIndex(rowsI, columnI) as groupedRowsI}
+    {#each table.splitRowIndicesByColumnIndex(rowsI, columnI) as groupedRowsI, groupI}
         <svelte:self {table}
                      {collapsed}
                      collapsedTotal={collapsed}
                      bind:checkedRowsBool
+                     bind:calculatedSize={innerSizes[groupI]}
                      rowsI={groupedRowsI}
                      columnI={columnI + 1}/>
     {/each}
 {:else}
-    {#each rowsI as rowI}
+    {#each rowsI as rowI, i}
         <Row data={table.data[rowI]}
              {collapsed}
              hasCheckbox={table.hasCheckboxes}
@@ -51,7 +43,7 @@
 {/if}
 
 <!-- TOTALIZING -->
-{#if totalize}
+{#if totalize && columnI > 0}
 
     <CheckboxTreeManager {rowsI}
                          bind:checkedRowsBool
@@ -73,6 +65,6 @@
                 <span/>
             {/if}
         {/each}
-
     </Row>
+    <!--{calculatedSize}-->
 {/if}
