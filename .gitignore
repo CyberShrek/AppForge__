@@ -6,6 +6,7 @@ target/
 
 /node_modules/
 /src/main/resources/static/js/built/
+.svelte
 
 ### STS ###
 .apt_generated
